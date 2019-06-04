@@ -175,6 +175,8 @@
 </template>
 
 <script lang="ts">
+/* eslint-disable no-bitwise */
+
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
 enum PlanFlags {
@@ -189,11 +191,11 @@ export default class Calculator extends Vue {
   get planType(): PlanFlags {
     if (this.selectedPlanType === 1) {
       return PlanFlags.Type1;
-    } else if (this.selectedPlanType === 2) {
+    } if (this.selectedPlanType === 2) {
       return PlanFlags.Type2;
-    } else  {
-      return PlanFlags.Type1 | PlanFlags.Type2;
     }
+
+    return PlanFlags.Type1 | PlanFlags.Type2;
   }
 
   grossSalary: number = 50000;
@@ -292,6 +294,7 @@ export default class Calculator extends Vue {
       } else {
         repaymentThreshold = this.type1RepaymentThreshold;
       }
+
       return ((this.grossSalary - repaymentThreshold) / this.salaryEligibleForRepayments);
     }
 
@@ -349,9 +352,9 @@ export default class Calculator extends Vue {
 
     if (~this.planType & PlanFlags.Type2) {
       return this.totalMonthlyPaymentAmount * 12 * this.type1YearsRemaining;
-    } else {
-      return this.type1TotalPaidOnType2Completion + this.totalMonthlyPaymentAmount * 12 * (this.type1YearsRemaining - this.type2YearsRemaining);
     }
+
+    return this.type1TotalPaidOnType2Completion + this.totalMonthlyPaymentAmount * 12 * (this.type1YearsRemaining - this.type2YearsRemaining);
   }
 
   get type2TotalPaymentRemaining(): number {
@@ -391,11 +394,13 @@ export default class Calculator extends Vue {
   fv(rate: number, nper: number, pmt: number, pv: number = 0, type: number = 0): number {
     const pow = (1 + rate) ** nper;
     let fv;
+
     if (rate) {
       fv = (pmt * (1 + rate * type) * (1 - pow) / rate) - pv * pow;
     } else {
       fv = -1 * (pv + pmt * nper);
     }
+
     return fv;
   }
 }
