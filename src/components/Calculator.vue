@@ -3,85 +3,115 @@
     <div class="col">
       <h3>Your Details</h3>
       <form>
-        <div class="form-group">
-          <label for="grossSalary">Salary pre-tax</label>
-          <div class="input-group">
-            <div class="input-group-prepend">
-              <span class="input-group-text">£</span>
-            </div>
-            <input type="text" class="form-control" id="grossSalary" aria-describedby="grossSalaryHelp" placeholder="25000.00" v-model="grossSalary">
-          </div>
-          <small id="grossSalaryHelp" class="form-text text-muted">Enter your salary before any tax.</small>
-        </div>
-
-        <h4>Plan Details</h4>
-        <div class="form-group">
-          <label for="plan1BalanceRemaining">Plan 1 balance remaining</label>
-          <div class="input-group">
-            <div class="input-group-prepend">
-              <span class="input-group-text">£</span>
-            </div>
-            <input type="text" class="form-control" id="plan1BalanceRemaining" aria-describedby="plan1BalanceRemainingHelp" placeholder="10000.00" v-model="plan1BalanceRemaining">
-          </div>
-          <small id="plan1BalanceRemainingHelp" class="form-text text-muted">The remaining balance of your plan 2 loan.</small>
-        </div>
-        <div class="form-group">
-          <label for="plan2BalanceRemaining">Plan 2 balance remaining</label>
-          <div class="input-group">
-            <div class="input-group-prepend">
-              <span class="input-group-text">£</span>
-            </div>
-            <input type="text" class="form-control" id="plan2BalanceRemaining" aria-describedby="plan2BalanceRemainingHelp" placeholder="15000.00" v-model="plan2BalanceRemaining">
-          </div>
-          <small id="plan2BalanceRemainingHelp" class="form-text text-muted">The remaining balance of your plan 2 loan.</small>
-        </div>
-
-        <h4>Advanced Plan Details</h4>
-        <div class="form-group">
-          <label for="plan1InterestRate">Plan 1 interest rate</label>
-          <div class="input-group">
-            <input type="text" class="form-control" id="plan1InterestRate" aria-describedby="plan1InterestRateHelp" placeholder="1.5" v-model="plan1InterestRate">
-            <div class="input-group-append">
-              <span class="input-group-text">%</span>
+        <div class="row">
+          <div class="col">
+            <div class="form-group">
+              <label for="grossSalary">Annual salary before tax</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">£</span>
+                </div>
+                <input type="text" class="form-control" id="grossSalary" placeholder="25000.00" v-model="grossSalary">
+              </div>
             </div>
           </div>
-          <small id="plan1InterestRateHelp" class="form-text text-muted">The current interest rate of your plan 1 loan.</small>
-        </div>
-        <div class="form-group">
-          <label for="plan2InterestRate">Plan 2 interest rate</label>
-          <div class="input-group">
-            <input type="text" class="form-control" id="plan2InterestRate" aria-describedby="plan2InterestRateHelp" placeholder="6" v-model="plan2InterestRate">
-            <div class="input-group-append">
-              <span class="input-group-text">%</span>
+          <div class="col">
+            <div class="form-group">
+              <label for="planType">Loan type</label>
+              <select class="form-control" v-model="selectedPlanType" :change="onPlanTypeChange">
+                <option :value="1">Type 1</option>
+                <option :value="2">Type 2</option>
+                <option :value="3">Type 1 & Type 2</option>
+              </select>
             </div>
-          </div>
-          <small id="plan2InterestRateHelp" class="form-text text-muted">The current interest rate of your plan 1 loan.</small>
-        </div>
-
-        <div class="form-group">
-          <label for="plan1RepaymentThreshold">Plan 1 repayment threshold</label>
-          <div class="input-group">
-            <div class="input-group-prepend">
-              <span class="input-group-text">£</span>
-            </div>
-            <input type="text" class="form-control" id="plan1RepaymentThreshold" placeholder="15000.00" v-model="plan1RepaymentThreshold">
           </div>
         </div>
 
-        <div class="form-group">
-          <label for="plan2RepaymentThreshold">Plan 2 repayment threshold</label>
-          <div class="input-group">
-            <div class="input-group-prepend">
-              <span class="input-group-text">£</span>
+        <div v-if="planType & PlanFlags.Type1">
+          <h4>Type 1 Loan Details</h4>
+          <div class="row">
+            <div class="col">
+              <div class="form-group">
+                <label for="type1BalanceRemaining">Balance remaining</label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">£</span>
+                  </div>
+                  <input type="text" class="form-control" id="type1BalanceRemaining" placeholder="10000.00" v-model="type1BalanceRemaining">
+                </div>
+              </div>
             </div>
-            <input type="text" class="form-control" id="plan2RepaymentThreshold" placeholder="15000.00" v-model="plan2RepaymentThreshold">
+            <div class="col">
+              <div class="form-group">
+                <label for="type1InterestRate">Interest rate</label>
+                <div class="input-group">
+                  <input type="text" class="form-control" id="type1InterestRate" placeholder="1.5" v-model="type1InterestRate">
+                  <div class="input-group-append">
+                    <span class="input-group-text">%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div v-if="planType & PlanFlags.Type2">
+          <h4>Type 2 Loan Details</h4>
+          <div class="row">
+            <div class="col">
+              <div class="form-group">
+                <label for="type2BalanceRemaining">Balance remaining</label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">£</span>
+                  </div>
+                  <input type="text" class="form-control" id="type2BalanceRemaining" placeholder="15000.00" v-model="type2BalanceRemaining">
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-group">
+                <label for="type2InterestRate">Interest rate</label>
+                <div class="input-group">
+                  <input type="text" class="form-control" id="type2InterestRate" placeholder="6" v-model="type2InterestRate">
+                  <div class="input-group-append">
+                    <span class="input-group-text">%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <h4>Advanced Options</h4>
+        <div v-if="planType & PlanFlags.Type1">
+          <div class="form-group">
+            <label for="type1RepaymentThreshold">Type 1 repayment threshold</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">£</span>
+              </div>
+              <input type="text" class="form-control" id="type1RepaymentThreshold" placeholder="15000.00" v-model="type1RepaymentThreshold">
+            </div>
+          </div>
+        </div>
+
+        <div v-if="planType & PlanFlags.Type2">
+          <div class="form-group">
+            <label for="type2RepaymentThreshold">Type 2 repayment threshold</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">£</span>
+              </div>
+              <input type="text" class="form-control" id="type2RepaymentThreshold" placeholder="15000.00" v-model="type2RepaymentThreshold">
+            </div>
           </div>
         </div>
       </form>
     </div>
     <div class="col">
       <h3>Results</h3>
-      <p>Salary eligible for repayment: <span>{{ formatMoney(salaryEligibleForRepayments) }}</span></p>
+      <p>Salary amount eligible for repayments: <strong>{{ formatMoney(salaryEligibleForRepayments) }}</strong></p>
 
       <table class="table">
         <thead>
@@ -92,15 +122,15 @@
         </thead>
         <tbody>
           <tr>
-            <th scope="row">Plan 1 payment</th>
-            <td>{{ formatMoney(plan1YearlyPaymentAmount) }}</td>
-            <td>{{ formatMoney(plan1MonthlyPaymentAmount) }}</td>
+            <th scope="row">Type 1 payment</th>
+            <td>{{ formatMoney(type1YearlyPaymentAmount) }}</td>
+            <td>{{ formatMoney(type1MonthlyPaymentAmount) }}</td>
             <td>{{ (payment1SplitPercentage * 100).toFixed(2) }}%</td>
           </tr>
           <tr>
-            <th scope="row">Plan 2 payment</th>
-            <td>{{ formatMoney(plan2YearlyPaymentAmount) }}</td>
-            <td>{{ formatMoney(plan2MonthlyPaymentAmount) }}</td>
+            <th scope="row">Type 2 payment</th>
+            <td>{{ formatMoney(type2YearlyPaymentAmount) }}</td>
+            <td>{{ formatMoney(type2MonthlyPaymentAmount) }}</td>
             <td>{{ (payment2SplitPercentage * 100).toFixed(2) }}%</td>
           </tr>
           <tr>
@@ -115,27 +145,27 @@
       <table class="table">
         <thead>
           <th scope="col">&nbsp;</th>
-          <th scope="col">Plan 1</th>
-          <th scope="col">Plan 2</th>
+          <th scope="col">Type 1</th>
+          <th scope="col">Type 2</th>
           <th scope="col">Total</th>
         </thead>
         <tbody>
           <tr>
             <th scope="row">Interest to pay on balances</th>
-            <td>{{ formatMoney(plan1TotalInterestToPay) }}</td>
-            <td>{{ formatMoney(plan2TotalInterestToPay) }}</td>
+            <td>{{ formatMoney(type1TotalInterestToPay) }}</td>
+            <td>{{ formatMoney(type2TotalInterestToPay) }}</td>
             <td>{{ formatMoney(totalInterestToPay) }}</td>
           </tr>
           <tr>
             <th scope="row">Total payment remaining</th>
-            <td>{{ formatMoney(plan1TotalPaymentRemaining) }}</td>
-            <td>{{ formatMoney(plan2TotalPaymentRemaining) }}</td>
+            <td>{{ formatMoney(type1TotalPaymentRemaining) }}</td>
+            <td>{{ formatMoney(type2TotalPaymentRemaining) }}</td>
             <td>{{ formatMoney(totalPaymentRemaining) }}</td>
           </tr>
           <tr>
             <th scope="row">Years remaining</th>
-            <td>{{ plan1YearsRemaining.toFixed(2) }}</td>
-            <td>{{ plan2YearsRemaining.toFixed(2) }}</td>
+            <td>{{ type1YearsRemaining.toFixed(2) }}</td>
+            <td>{{ type2YearsRemaining.toFixed(2) }}</td>
             <td>{{ totalYearsRemaining.toFixed(2) }}</td>
           </tr>
         </tbody>
@@ -147,31 +177,71 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
+enum PlanFlags {
+    Type1 = 1 << 0,
+    Type2 = 1 << 1,
+}
+
 @Component
 export default class Calculator extends Vue {
+  selectedPlanType: number = 1;
+
+  get planType(): PlanFlags {
+    if (this.selectedPlanType === 1) {
+      return PlanFlags.Type1;
+    } else if (this.selectedPlanType === 2) {
+      return PlanFlags.Type2;
+    } else  {
+      return PlanFlags.Type1 | PlanFlags.Type2;
+    }
+  }
 
   grossSalary: number = 50000;
-  plan1BalanceRemaining: number = 7000;
-  plan1InterestRate: number = 1.5;
-  plan1RepaymentThreshold: number = 18935;
-  plan2BalanceRemaining: number = 5000;
-  plan2InterestRate: number = 5.34;
-  plan2RepaymentThreshold: number = 25725;
 
-  get plan1InterestRateDecimal(): number {
-    return this.plan1InterestRate / 100;
-  }
+  type1BalanceRemaining: number = 7000;
 
-  get plan2InterestRateDecimal(): number {
-    return this.plan2InterestRate / 100;
-  }
+  type1InterestRate: number = 1.5;
 
-  get salaryEligibleForRepayments(): number {
-    if (this.grossSalary <= this.plan1RepaymentThreshold) {
+  type1RepaymentThreshold: number = 18935;
+
+  type2BalanceRemaining: number = 5000;
+
+  type2InterestRate: number = 5.34;
+
+  type2RepaymentThreshold: number = 25725;
+
+  PlanFlags = PlanFlags;
+
+  get type1BalanceRemainingForCalc() {
+    if (~this.planType & PlanFlags.Type1) {
       return 0;
     }
 
-    return (this.grossSalary - this.plan1RepaymentThreshold);
+    return this.type1BalanceRemaining;
+  }
+
+  get type2BalanceRemainingForCalc() {
+    if (~this.planType & PlanFlags.Type2) {
+      return 0;
+    }
+
+    return this.type2BalanceRemaining;
+  }
+
+  get type1InterestRateDecimal(): number {
+    return this.type1InterestRate / 100;
+  }
+
+  get type2InterestRateDecimal(): number {
+    return this.type2InterestRate / 100;
+  }
+
+  get salaryEligibleForRepayments(): number {
+    if (this.grossSalary <= this.type1RepaymentThreshold) {
+      return 0;
+    }
+
+    return (this.grossSalary - this.type1RepaymentThreshold);
   }
 
   get totalYearlyPaymentAmount(): number {
@@ -182,113 +252,147 @@ export default class Calculator extends Vue {
     return this.totalYearlyPaymentAmount / 12;
   }
 
-  get plan1MonthlyPaymentAmount(): number {
+  get type1MonthlyPaymentAmount(): number {
     return this.totalMonthlyPaymentAmount * this.payment1SplitPercentage;
   }
 
-  get plan1YearlyPaymentAmount(): number {
+  get type1YearlyPaymentAmount(): number {
     return this.totalYearlyPaymentAmount * this.payment1SplitPercentage;
   }
 
-  get plan2MonthlyPaymentAmount(): number {
+  get type2MonthlyPaymentAmount(): number {
     return this.totalMonthlyPaymentAmount * this.payment2SplitPercentage;
   }
 
-  get plan2YearlyPaymentAmount(): number {
+  get type2YearlyPaymentAmount(): number {
     return this.totalYearlyPaymentAmount * this.payment2SplitPercentage;
   }
 
   get payment1SplitPercentage(): number {
-    if (this.grossSalary > this.plan2RepaymentThreshold) {
-      return ((this.plan2RepaymentThreshold - this.plan1RepaymentThreshold) / this.salaryEligibleForRepayments);
-    } else {
-      return 1;
+    if (~this.planType & PlanFlags.Type1) {
+      return 0;
     }
+
+    if (this.planType & PlanFlags.Type2 && this.grossSalary > this.type2RepaymentThreshold) {
+      return ((this.type2RepaymentThreshold - this.type1RepaymentThreshold) / this.salaryEligibleForRepayments);
+    }
+
+    return 1;
   }
 
   get payment2SplitPercentage(): number {
-    if (this.grossSalary > this.plan2RepaymentThreshold) {
-      return ((this.grossSalary - this.plan2RepaymentThreshold) / this.salaryEligibleForRepayments);
-    } else {
+    if (~this.planType & PlanFlags.Type2) {
       return 0;
     }
-  }
 
-  get plan1TotalTimeRemainingExclusive(): number {
-    return (this.nper(this.plan1InterestRateDecimal / 12, -(this.plan1MonthlyPaymentAmount), this.plan1BalanceRemaining) / 12)
-  }
-
-  get plan2TotalTimeRemainingExclusive(): number {
-    return (this.nper(this.plan2InterestRateDecimal / 12, -(this.plan2MonthlyPaymentAmount), this.plan2BalanceRemaining) / 12)
-  }
-
-  get plan1RemainingBalanceOnPlan2Completion(): number {
-    return this.fv(this.plan1InterestRateDecimal / 12,this.plan2TotalTimeRemainingExclusive * 12, this.plan1MonthlyPaymentAmount, -(this.plan1BalanceRemaining));
-  }
-
-  get plan1TotalPaidOnPlan2Completion(): number {
-    return this.plan1MonthlyPaymentAmount * 12 * this.plan2TotalTimeRemainingExclusive;
-  }
-
-  get plan1InterestPaidOnPlan2Completion(): number {
-    return this.plan1TotalPaidOnPlan2Completion - (this.plan1BalanceRemaining - this.plan1RemainingBalanceOnPlan2Completion);
-  }
-
-  get plan1YearsRemaining(): number {
-    if(this.plan1TotalTimeRemainingExclusive > this.plan2TotalTimeRemainingExclusive) {
-      return this.plan2YearsRemaining + (this.nper(this.plan1InterestRateDecimal / 12, -(this.totalMonthlyPaymentAmount), this.plan1RemainingBalanceOnPlan2Completion) / 12);
-    } else {
-      return (this.nper(this.plan1InterestRateDecimal / 12, -(this.totalMonthlyPaymentAmount), this.plan1BalanceRemaining) / 12);
+    if (this.grossSalary > this.type2RepaymentThreshold) {
+      let repaymentThreshold;
+      if (this.planType & PlanFlags.Type1) {
+        repaymentThreshold = this.type2RepaymentThreshold;
+      } else {
+        repaymentThreshold = this.type1RepaymentThreshold;
+      }
+      return ((this.grossSalary - repaymentThreshold) / this.salaryEligibleForRepayments);
     }
+
+    return 0;
   }
 
-  get plan2YearsRemaining(): number {
-    return (this.nper(this.plan2InterestRateDecimal / 12, -(this.plan2MonthlyPaymentAmount), this.plan2BalanceRemaining) / 12);
+  get type1TotalTimeRemainingExclusive(): number {
+    return (this.nper(this.type1InterestRateDecimal / 12, -(this.type1MonthlyPaymentAmount), this.type1BalanceRemainingForCalc) / 12);
+  }
+
+  get type2TotalTimeRemainingExclusive(): number {
+    return (this.nper(this.type2InterestRateDecimal / 12, -(this.type2MonthlyPaymentAmount), this.type2BalanceRemainingForCalc) / 12);
+  }
+
+  get type1RemainingBalanceOnType2Completion(): number {
+    return this.fv(this.type1InterestRateDecimal / 12, this.type2TotalTimeRemainingExclusive * 12, this.type1MonthlyPaymentAmount, -(this.type1BalanceRemainingForCalc));
+  }
+
+  get type1TotalPaidOnType2Completion(): number {
+    return this.type1MonthlyPaymentAmount * 12 * this.type2TotalTimeRemainingExclusive;
+  }
+
+  get type1InterestPaidOnType2Completion(): number {
+    return this.type1TotalPaidOnType2Completion - (this.type1BalanceRemainingForCalc - this.type1RemainingBalanceOnType2Completion);
+  }
+
+  get type1YearsRemaining(): number {
+    if (~this.planType & PlanFlags.Type1) {
+      return 0;
+    }
+
+    if (this.planType & PlanFlags.Type2 && this.type1TotalTimeRemainingExclusive > this.type2TotalTimeRemainingExclusive) {
+      return this.type2YearsRemaining + (this.nper(this.type1InterestRateDecimal / 12, -(this.totalMonthlyPaymentAmount), this.type1RemainingBalanceOnType2Completion) / 12);
+    }
+
+    return (this.nper(this.type1InterestRateDecimal / 12, -(this.totalMonthlyPaymentAmount), this.type1BalanceRemainingForCalc) / 12);
+  }
+
+  get type2YearsRemaining(): number {
+    if (~this.planType & PlanFlags.Type2) {
+      return 0;
+    }
+
+    return (this.nper(this.type2InterestRateDecimal / 12, -(this.type2MonthlyPaymentAmount), this.type2BalanceRemainingForCalc) / 12);
   }
 
   get totalYearsRemaining(): number {
-    return Math.max(this.plan1YearsRemaining, this.plan2YearsRemaining);
+    return Math.max(this.type1YearsRemaining, this.type2YearsRemaining);
   }
 
-  get plan1TotalPaymentRemaining(): number {
-    return this.plan1TotalPaidOnPlan2Completion + this.totalMonthlyPaymentAmount * 12 * (this.plan1YearsRemaining - this.plan2YearsRemaining);
+  get type1TotalPaymentRemaining(): number {
+    if (~this.planType & PlanFlags.Type1) {
+      return 0;
+    }
+
+    if (~this.planType & PlanFlags.Type2) {
+      return this.totalMonthlyPaymentAmount * 12 * this.type1YearsRemaining;
+    } else {
+      return this.type1TotalPaidOnType2Completion + this.totalMonthlyPaymentAmount * 12 * (this.type1YearsRemaining - this.type2YearsRemaining);
+    }
   }
 
-  get plan2TotalPaymentRemaining(): number {
-    return this.plan2MonthlyPaymentAmount * 12 * this.plan2YearsRemaining;
+  get type2TotalPaymentRemaining(): number {
+    if (~this.planType & PlanFlags.Type2) {
+      return 0;
+    }
+
+    return this.type2MonthlyPaymentAmount * 12 * this.type2YearsRemaining;
   }
 
   get totalPaymentRemaining(): number {
-    return this.plan1TotalPaymentRemaining + this.plan2TotalPaymentRemaining;
+    return this.type1TotalPaymentRemaining + this.type2TotalPaymentRemaining;
   }
 
-  get plan1TotalInterestToPay(): number {
-    return this.plan1TotalPaymentRemaining - this.plan1BalanceRemaining;
+  get type1TotalInterestToPay(): number {
+    return this.type1TotalPaymentRemaining - this.type1BalanceRemainingForCalc;
   }
 
-  get plan2TotalInterestToPay(): number {
-    return this.plan2TotalPaymentRemaining - this.plan2BalanceRemaining;
+  get type2TotalInterestToPay(): number {
+    return this.type2TotalPaymentRemaining - this.type2BalanceRemainingForCalc;
   }
 
   get totalInterestToPay(): number {
-    return this.plan1TotalInterestToPay + this.plan2TotalInterestToPay;
+    return this.type1TotalInterestToPay + this.type2TotalInterestToPay;
   }
 
   formatMoney(money: number): string {
-    return '£' + money.toFixed(2);
+    return `£${money.toFixed(2)}`;
   }
 
   nper(rate: number, pmt: number, pv: number, type: number = 0, fv: number = 0): number {
-    var num = pmt * (1 + rate * type) - fv * rate;
-    var den = (pv * rate + pmt * (1 + rate * type));
+    const num = pmt * (1 + rate * type) - fv * rate;
+    const den = (pv * rate + pmt * (1 + rate * type));
     return Math.log(num / den) / Math.log(1 + rate);
   }
 
-  fv(rate: number, nper: number, pmt: number, pv: number = 0, type: number = 0) {
-    var pow = Math.pow(1 + rate, nper),
-      fv;
+  fv(rate: number, nper: number, pmt: number, pv: number = 0, type: number = 0): number {
+    const pow = (1 + rate) ** nper;
+    let fv;
     if (rate) {
-      fv = (pmt*(1+rate*type)*(1-pow)/rate)-pv*pow;
+      fv = (pmt * (1 + rate * type) * (1 - pow) / rate) - pv * pow;
     } else {
       fv = -1 * (pv + pmt * nper);
     }
