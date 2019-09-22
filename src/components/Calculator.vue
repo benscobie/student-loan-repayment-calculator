@@ -178,6 +178,7 @@
 /* eslint-disable no-bitwise */
 
 import { Component, Prop, Vue } from 'vue-property-decorator';
+import Finance from '../calculators/finance';
 
 enum PlanFlags {
     Type1 = 1 << 0,
@@ -302,15 +303,15 @@ export default class Calculator extends Vue {
   }
 
   get type1TotalTimeRemainingExclusive(): number {
-    return (this.nper(this.type1InterestRateDecimal / 12, -(this.type1MonthlyPaymentAmount), this.type1BalanceRemainingForCalc) / 12);
+    return (Finance.nper(this.type1InterestRateDecimal / 12, -(this.type1MonthlyPaymentAmount), this.type1BalanceRemainingForCalc) / 12);
   }
 
   get type2TotalTimeRemainingExclusive(): number {
-    return (this.nper(this.type2InterestRateDecimal / 12, -(this.type2MonthlyPaymentAmount), this.type2BalanceRemainingForCalc) / 12);
+    return (Finance.nper(this.type2InterestRateDecimal / 12, -(this.type2MonthlyPaymentAmount), this.type2BalanceRemainingForCalc) / 12);
   }
 
   get type1RemainingBalanceOnType2Completion(): number {
-    return this.fv(this.type1InterestRateDecimal / 12, this.type2TotalTimeRemainingExclusive * 12, this.type1MonthlyPaymentAmount, -(this.type1BalanceRemainingForCalc));
+    return Finance.fv(this.type1InterestRateDecimal / 12, this.type2TotalTimeRemainingExclusive * 12, this.type1MonthlyPaymentAmount, -(this.type1BalanceRemainingForCalc));
   }
 
   get type1TotalPaidOnType2Completion(): number {
@@ -327,10 +328,10 @@ export default class Calculator extends Vue {
     }
 
     if (this.planType & PlanFlags.Type2 && this.type1TotalTimeRemainingExclusive > this.type2TotalTimeRemainingExclusive) {
-      return this.type2YearsRemaining + (this.nper(this.type1InterestRateDecimal / 12, -(this.totalMonthlyPaymentAmount), this.type1RemainingBalanceOnType2Completion) / 12);
+      return this.type2YearsRemaining + (Finance.nper(this.type1InterestRateDecimal / 12, -(this.totalMonthlyPaymentAmount), this.type1RemainingBalanceOnType2Completion) / 12);
     }
 
-    return (this.nper(this.type1InterestRateDecimal / 12, -(this.totalMonthlyPaymentAmount), this.type1BalanceRemainingForCalc) / 12);
+    return (Finance.nper(this.type1InterestRateDecimal / 12, -(this.totalMonthlyPaymentAmount), this.type1BalanceRemainingForCalc) / 12);
   }
 
   get type2YearsRemaining(): number {
@@ -338,7 +339,7 @@ export default class Calculator extends Vue {
       return 0;
     }
 
-    return (this.nper(this.type2InterestRateDecimal / 12, -(this.type2MonthlyPaymentAmount), this.type2BalanceRemainingForCalc) / 12);
+    return (Finance.nper(this.type2InterestRateDecimal / 12, -(this.type2MonthlyPaymentAmount), this.type2BalanceRemainingForCalc) / 12);
   }
 
   get totalYearsRemaining(): number {
@@ -383,25 +384,6 @@ export default class Calculator extends Vue {
 
   formatMoney(money: number): string {
     return `£${money.toFixed(2)}`;
-  }
-
-  nper(rate: number, pmt: number, pv: number, type: number = 0, fv: number = 0): number {
-    const num = pmt * (1 + rate * type) - fv * rate;
-    const den = (pv * rate + pmt * (1 + rate * type));
-    return Math.log(num / den) / Math.log(1 + rate);
-  }
-
-  fv(rate: number, nper: number, pmt: number, pv: number = 0, type: number = 0): number {
-    const pow = (1 + rate) ** nper;
-    let fv;
-
-    if (rate) {
-      fv = (pmt * (1 + rate * type) * (1 - pow) / rate) - pv * pow;
-    } else {
-      fv = -1 * (pv + pmt * nper);
-    }
-
-    return fv;
   }
 }
 </script>
