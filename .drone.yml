@@ -1,0 +1,26 @@
+kind: pipeline
+type: docker
+name: default
+
+steps:
+- name: ui
+  image: node:lts-alpine
+  commands:
+    - npm install
+    - npm run build
+
+- name: publish_linux-amd64
+  image: plugins/docker
+  settings:
+    repo: benscobie/student-loan-repayment-calculator
+    dockerfile: docker/Dockerfile.linux.amd64
+    tags: latest
+    username:
+      from_secret: docker_hub_username
+    password:
+      from_secret: docker_hub_password
+  trigger:
+    branch:
+    - master
+    event:
+    - push
