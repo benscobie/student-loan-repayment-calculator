@@ -205,13 +205,13 @@ export default class Calculator extends Vue {
 
   type1InterestRate: number = 1.5;
 
-  type1RepaymentThreshold: number = 18935;
+  type1RepaymentThreshold: number = 19390;
 
   type2BalanceRemaining: number = 5000;
 
   type2InterestRate: number = 5.34;
 
-  type2RepaymentThreshold: number = 25725;
+  type2RepaymentThreshold: number = 26575;
 
   PlanFlags = PlanFlags;
 
