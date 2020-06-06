@@ -179,7 +179,9 @@
 /* eslint-disable class-methods-use-this */
 
 import { Component, Vue } from 'vue-property-decorator';
-import Finance from '../calculators/finance';
+import Finance from '@/calculators/finance';
+import LoanCalculatorService from '@/calculators/loanCalculatorService';
+import Loan from '@/calculators/loan';
 
 enum PlanFlags {
     Type1 = 1 << 0,
@@ -386,6 +388,22 @@ export default class Calculator extends Vue {
 
   formatMoney(money: number): string {
     return `£${money.toFixed(2)}`;
+  }
+
+  calculate() {
+    let loanService = new LoanCalculatorService();
+
+    let plans = new Array<Loan>();
+
+    if (this.planType & PlanFlags.Type1) {
+      plans.push(new Loan(this.type1BalanceRemaining, this.type1InterestRate));
+    }
+
+    if (this.planType & PlanFlags.Type2) {
+      plans.push(new Loan(this.type2BalanceRemaining, this.type2InterestRate));
+    }
+
+    LoanCalculatorService.calculate(plans);
   }
 }
 </script>
