@@ -13,7 +13,6 @@ steps:
   when:
     ref:
     - refs/heads/master
-    - refs/tags/*
   image: plugins/docker
   settings:
     repo: benscobie/student-loan-repayment-calculator
