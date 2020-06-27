@@ -1,22 +1,16 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
+    <header>
+      <nav class="navbar navbar-dark bg-dark">
+        <div class="container d-flex justify-content-between">
+          <span class="navbar-brand  mb-0 h1">Student Loan Repayment Calculator</span>
+        </div>
+      </nav>
+    </header>
+    <main class="mt-3" role="main">
+      <div class="container">
+        <router-view/>
+      </div>
+    </main>
   </div>
 </template>
-
-<style lang="scss">
-#nav {
-  padding: 30px;
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
-}
-</style>

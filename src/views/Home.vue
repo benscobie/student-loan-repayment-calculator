@@ -1,5 +1,6 @@
 <template>
   <div class="home">
+    <p class="text-muted">Disclaimer: This calculator does not constitute financial advice.</p>
     <Calculator/>
   </div>
 </template>
