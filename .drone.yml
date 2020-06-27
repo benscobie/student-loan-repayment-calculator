@@ -10,6 +10,10 @@ steps:
     - npm run build
 
 - name: publish_linux-amd64
+  when:
+    ref:
+    - refs/heads/master
+    - refs/tags/*
   image: plugins/docker
   settings:
     repo: benscobie/student-loan-repayment-calculator
@@ -19,8 +23,3 @@ steps:
       from_secret: docker_hub_username
     password:
       from_secret: docker_hub_password
-  trigger:
-    branch:
-    - master
-    event:
-    - push
