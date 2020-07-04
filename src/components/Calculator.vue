@@ -18,7 +18,7 @@
           <div class="col">
             <div class="form-group">
               <label for="planType">Loan type</label>
-              <select class="form-control" v-model="selectedPlanType" :change="onPlanTypeChange">
+              <select class="form-control" v-model="selectedPlanType">
                 <option :value="1">Type 1</option>
                 <option :value="2">Type 2</option>
                 <option :value="3">Type 1 & Type 2</option>
