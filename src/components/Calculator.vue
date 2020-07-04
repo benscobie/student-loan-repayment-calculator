@@ -1,6 +1,6 @@
 <template>
   <div class="row">
-    <div class="col">
+    <div class="col-5">
       <h3>Your Details</h3>
       <form>
         <div class="row">
@@ -109,16 +109,16 @@
         </div>
       </form>
     </div>
-    <div class="col">
+    <div class="col-7">
       <h3>Results</h3>
       <p>Salary amount eligible for repayments: <strong>{{ formatMoney(salaryEligibleForRepayments) }}</strong></p>
 
-      <table class="table">
-        <thead>
-          <th scope="col">&nbsp;</th>
-          <th scope="col">Yearly</th>
-          <th scope="col">Monthly</th>
-          <th scope="col">Split</th>
+      <table class="table table-bordered">
+        <thead class="thead-light">
+          <th scope="col" class="w-40">&nbsp;</th>
+          <th scope="col" class="w-20">Yearly</th>
+          <th scope="col" class="w-20">Monthly</th>
+          <th scope="col" class="w-20">Split</th>
         </thead>
         <tbody>
           <tr>
@@ -142,12 +142,12 @@
         </tbody>
       </table>
 
-      <table class="table">
-        <thead>
-          <th scope="col">&nbsp;</th>
-          <th scope="col">Type 1</th>
-          <th scope="col">Type 2</th>
-          <th scope="col">Total</th>
+      <table class="table table-bordered">
+        <thead class="thead-light">
+          <th scope="col" class="w-40">&nbsp;</th>
+          <th scope="col" class="w-20">Type 1</th>
+          <th scope="col" class="w-20">Type 2</th>
+          <th scope="col" class="w-20">Total</th>
         </thead>
         <tbody>
           <tr>
@@ -392,5 +392,11 @@ export default class Calculator extends Vue {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
+  .w-40 {
+    width: 40%;
+  }
 
+  .w-20 {
+    width: 20%;
+  }
 </style>
