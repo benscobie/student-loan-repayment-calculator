@@ -13,4 +13,4 @@
       </div>
     </main>
   </div>
-</template>
+</template>;

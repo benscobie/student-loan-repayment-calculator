@@ -176,8 +176,9 @@
 
 <script lang="ts">
 /* eslint-disable no-bitwise */
+/* eslint-disable class-methods-use-this */
 
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Vue } from 'vue-property-decorator';
 import Finance from '../calculators/finance';
 
 enum PlanFlags {
@@ -187,7 +188,7 @@ enum PlanFlags {
 
 @Component
 export default class Calculator extends Vue {
-  selectedPlanType: number = 1;
+  selectedPlanType = 1;
 
   get planType(): PlanFlags {
     if (this.selectedPlanType === 1) {
@@ -199,19 +200,19 @@ export default class Calculator extends Vue {
     return PlanFlags.Type1 | PlanFlags.Type2;
   }
 
-  grossSalary: number = 50000;
+  grossSalary = 50000;
 
-  type1BalanceRemaining: number = 7000;
+  type1BalanceRemaining = 7000;
 
-  type1InterestRate: number = 1.5;
+  type1InterestRate = 1.5;
 
-  type1RepaymentThreshold: number = 19390;
+  type1RepaymentThreshold = 19390;
 
-  type2BalanceRemaining: number = 5000;
+  type2BalanceRemaining = 5000;
 
-  type2InterestRate: number = 5.34;
+  type2InterestRate = 5.34;
 
-  type2RepaymentThreshold: number = 26575;
+  type2RepaymentThreshold = 26575;
 
   PlanFlags = PlanFlags;
 
