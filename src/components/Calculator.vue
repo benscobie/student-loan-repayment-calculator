@@ -245,7 +245,11 @@ export default class Calculator extends Vue {
       return 0;
     }
 
-    return (this.grossSalary - this.type1RepaymentThreshold);
+    if (~this.planType & PlanFlags.Type1 && this.planType & PlanFlags.Type2) {
+      return (this.grossSalary - this.type2RepaymentThreshold)
+    }
+
+    return (this.grossSalary - this.type1RepaymentThreshold)
   }
 
   get totalYearlyPaymentAmount(): number {
@@ -289,15 +293,12 @@ export default class Calculator extends Vue {
       return 0;
     }
 
-    if (this.grossSalary > this.type2RepaymentThreshold) {
-      let repaymentThreshold;
-      if (this.planType & PlanFlags.Type1) {
-        repaymentThreshold = this.type2RepaymentThreshold;
-      } else {
-        repaymentThreshold = this.type1RepaymentThreshold;
-      }
+    if (~this.planType & PlanFlags.Type1) {
+      return 1;
+    }
 
-      return ((this.grossSalary - repaymentThreshold) / this.salaryEligibleForRepayments);
+    if (this.grossSalary > this.type2RepaymentThreshold) {
+      return ((this.grossSalary - this.type2RepaymentThreshold) / this.salaryEligibleForRepayments);
     }
 
     return 0;
