@@ -11,7 +11,7 @@
                 <div class="input-group-prepend">
                   <span class="input-group-text">£</span>
                 </div>
-                <input type="text" class="form-control" id="grossSalary" placeholder="25000.00" v-model="grossSalary">
+                <currency-input id="grossSalary" class="form-control" placeholder="25000.00" v-model="grossSalary" />
               </div>
             </div>
           </div>
@@ -37,7 +37,7 @@
                   <div class="input-group-prepend">
                     <span class="input-group-text">£</span>
                   </div>
-                  <input type="text" class="form-control" id="type1BalanceRemaining" placeholder="10000.00" v-model="type1BalanceRemaining">
+                  <currency-input id="type1BalanceRemaining" class="form-control" placeholder="10000.00" precision="2" v-model="type1BalanceRemaining" />
                 </div>
               </div>
             </div>
@@ -65,7 +65,7 @@
                   <div class="input-group-prepend">
                     <span class="input-group-text">£</span>
                   </div>
-                  <input type="text" class="form-control" id="type2BalanceRemaining" placeholder="15000.00" v-model="type2BalanceRemaining">
+                  <currency-input id="type2BalanceRemaining" class="form-control" placeholder="10000.00" precision="2" v-model="type2BalanceRemaining" />
                 </div>
               </div>
             </div>
@@ -91,7 +91,7 @@
               <div class="input-group-prepend">
                 <span class="input-group-text">£</span>
               </div>
-              <input type="text" class="form-control" id="type1RepaymentThreshold" placeholder="15000.00" v-model="type1RepaymentThreshold">
+              <currency-input id="type1RepaymentThreshold" class="form-control" v-model="type1RepaymentThreshold" />
             </div>
           </div>
         </div>
@@ -103,7 +103,7 @@
               <div class="input-group-prepend">
                 <span class="input-group-text">£</span>
               </div>
-              <input type="text" class="form-control" id="type2RepaymentThreshold" placeholder="15000.00" v-model="type2RepaymentThreshold">
+              <currency-input id="type2RepaymentThreshold" class="form-control" v-model="type2RepaymentThreshold" />
             </div>
           </div>
         </div>
