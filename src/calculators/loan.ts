@@ -13,10 +13,16 @@ export default class Loan {
   }
 
   period(amountPaid: number): void {
-    let balanceBeforePeriod: number = this.balance;
-    console.log("Current balance: " + balanceBeforePeriod);
+    const balanceBeforePeriod: number = this.balance;
+    const requiredPaymentAmount: number = Finance.pmt((this.interestRate / 100) / 12, 1, -this.balance, 0, 0);
 
-    let newBalanceAfterPayment: number = Finance.fv(this.interestRate / 100, 1, amountPaid, -this.balance, 1);
+    let newBalanceAfterPayment: number;
+    if (amountPaid >= requiredPaymentAmount) {
+      // How do HMRC deal with refunds, or do they take the correct amount at the end?
+      newBalanceAfterPayment = 0;
+    } else {
+      newBalanceAfterPayment = Finance.fv((this.interestRate / 100) / 12, 1, amountPaid, -this.balance, 1);
+    }
 
     console.log("New balance: " + newBalanceAfterPayment);
 
