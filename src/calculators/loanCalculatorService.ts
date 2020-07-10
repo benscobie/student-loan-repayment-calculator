@@ -1,17 +1,15 @@
-import Finance from "./finance";
-import Loan from "@/calculators/loan";
-import LoanDescription from "@/calculators/loanDescription";
-import { LoanType } from "@/calculators/loanType";
+import Loan from '@/calculators/loan';
+import LoanDescription from '@/calculators/loanDescription';
+import { LoanType } from '@/calculators/loanType';
+import Finance from './finance';
 
 export default class LoanCalculatorService {
-
-  periodsRemainingForLoan(balanceRemaining: number, interestRate: number, paymentPerPeriod: number): number {
+  static periodsRemainingForLoan(balanceRemaining: number, interestRate: number, paymentPerPeriod: number): number {
     return Finance.nper(interestRate, -paymentPerPeriod, balanceRemaining);
   }
 
-
-  calculate(grossSalary: number, loanOneDescription?: LoanDescription, loanTwoDescription?: LoanDescription) {
-    let loanOne: Loan | null= null;
+  static calculate(grossSalary: number, loanOneDescription?: LoanDescription, loanTwoDescription?: LoanDescription) {
+    let loanOne: Loan | null = null;
     let loanTwo: Loan | null = null;
 
     if (loanOneDescription != null) {
@@ -30,7 +28,7 @@ export default class LoanCalculatorService {
       return false;
     }
 
-    let hasBalanceLeft: boolean = true;
+    let hasBalanceLeft = true;
     let salaryEligibleForRepayments: number;
 
     if (loanOne) {
@@ -43,23 +41,21 @@ export default class LoanCalculatorService {
       return false;
     }
 
-    let monthlyPaymentToAllocate: number = (salaryEligibleForRepayments * 0.09) / 12;
-    let numPeriods: number = 0;
+    const monthlyPaymentToAllocate: number = (salaryEligibleForRepayments * 0.09) / 12;
+    let numPeriods = 0;
 
     while (hasBalanceLeft) {
       numPeriods++;
 
       if (loanOne && !loanTwo) {
-        loanOne.period(Math.min(monthlyPaymentToAllocate, loanOne.balance));
+        loanOne.period(monthlyPaymentToAllocate);
         hasBalanceLeft = loanOne.balance > 0;
       } else if (!loanOne && loanTwo) {
-        loanTwo.period(Math.min(monthlyPaymentToAllocate, loanTwo.balance));
+        loanTwo.period(monthlyPaymentToAllocate);
         hasBalanceLeft = loanTwo.balance > 0;
       } else {
-        let loanOneSplitPercentage: number = (loanTwoDescription!.repayment_threshold - loanOneDescription!.repayment_threshold) / salaryEligibleForRepayments;
-        let loanTwoSplitPercentage: number = 1 - loanOneSplitPercentage;
-
-
+        const loanOneSplitPercentage: number = (loanTwoDescription!.repayment_threshold - loanOneDescription!.repayment_threshold) / salaryEligibleForRepayments;
+        const loanTwoSplitPercentage: number = 1 - loanOneSplitPercentage;
         let loanOnePaymentAmount: number = 0;
 
         if (loanOne!.balance <= 0) {
