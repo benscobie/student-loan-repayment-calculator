@@ -19,7 +19,7 @@ module.exports = {
     {
       files: ['*.vue'],
       rules: {
-        'semi': 'off',
+        semi: 'off',
         'max-len': 'off',
         'vue/max-len': ['warn', {
           template: 80000,
