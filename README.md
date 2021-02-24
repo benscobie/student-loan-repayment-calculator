@@ -6,7 +6,7 @@ A UK student loan repayment calculator. It supports both type 1 and type 2 plans
 
 This project is a work in progress and the calculations may not be 100% correct, this calculator does not constitute financial advice.
 
-An up-to-date live version of this application can be found at the following URL: http://student-loan-repayment-calculator.benscobie.com/
+An up-to-date live version of this application can be found at the following URL: https://student-loan-repayment-calculator.benscobie.com/
 
 ## Project setup
 ```
