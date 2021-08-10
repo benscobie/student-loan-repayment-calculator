@@ -107,11 +107,16 @@
             </div>
           </div>
         </div>
+        <button class="btn btn-primary" v-on:click.stop.prevent="calculate">
+          Calculate
+        </button>
       </form>
     </div>
     <div class="col-7">
       <h3>Results</h3>
       <p>Salary amount eligible for repayments: <strong>{{ formatMoney(salaryEligibleForRepayments) }}</strong></p>
+
+      <loan-breakdown-chart></loan-breakdown-chart>
 
       <table class="table table-bordered">
         <thead class="thead-light">
@@ -181,14 +186,18 @@
 import { Component, Vue } from 'vue-property-decorator';
 import Finance from '@/calculators/finance';
 import LoanCalculatorService from '@/calculators/loanCalculatorService';
-import Loan from '@/calculators/loan';
+import LoanDescription from '@/calculators/loanDescription';
+import { LoanType } from '@/calculators/loanType';
+import LoanBreakdownChart from '@/components/LoanBreakdownChart.vue';
 
 enum PlanFlags {
     Type1 = 1 << 0,
     Type2 = 1 << 1,
 }
 
-@Component
+@Component({
+  components: { LoanBreakdownChart },
+})
 export default class Calculator extends Vue {
   selectedPlanType = 1;
 
@@ -391,19 +400,18 @@ export default class Calculator extends Vue {
   }
 
   calculate() {
-    let loanService = new LoanCalculatorService();
-
-    let plans = new Array<Loan>();
+    let plan1: LoanDescription | undefined;
+    let plan2: LoanDescription | undefined;
 
     if (this.planType & PlanFlags.Type1) {
-      plans.push(new Loan(this.type1BalanceRemaining, this.type1InterestRate));
+      plan1 = new LoanDescription(this.type1BalanceRemaining, this.type1InterestRate, this.type1RepaymentThreshold, LoanType.Type1);
     }
 
     if (this.planType & PlanFlags.Type2) {
-      plans.push(new Loan(this.type2BalanceRemaining, this.type2InterestRate));
+      plan2 = new LoanDescription(this.type2BalanceRemaining, this.type2InterestRate, this.type2RepaymentThreshold, LoanType.Type2);
     }
 
-    LoanCalculatorService.calculate(plans);
+    LoanCalculatorService.calculate(this.grossSalary, plan1, plan2);
   }
 }
 </script>

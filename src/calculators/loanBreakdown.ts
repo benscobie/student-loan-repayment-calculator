@@ -1,10 +1,13 @@
 export default class LoanBreakdown {
-  constructor(debt: number,
+  constructor(
+    period: number,
+    debt: number,
     interest_rate: number,
     paid_in_period: number,
     interest_applied_in_period: number,
     total_paid: number,
     total_interest_paid: number) {
+    this.period = period;
     this.debt = debt;
     this.interest_rate = interest_rate;
     this.paid_in_period = paid_in_period;
@@ -13,6 +16,7 @@ export default class LoanBreakdown {
     this.total_interest_paid = total_interest_paid;
   }
 
+  period: number;
   debt: number;
   interest_rate: number;
   paid_in_period: number;

@@ -1,17 +1,18 @@
 import Loan from '@/calculators/loan';
 import LoanDescription from '@/calculators/loanDescription';
-import { LoanType } from '@/calculators/loanType';
 import Finance from './finance';
+import LoanCalculationResult from "@/calculators/loanCalculationResult";
 
 export default class LoanCalculatorService {
   static periodsRemainingForLoan(balanceRemaining: number, interestRate: number, paymentPerPeriod: number): number {
     return Finance.nper(interestRate, -paymentPerPeriod, balanceRemaining);
   }
 
-  static calculate(grossSalary: number, loanOneDescription?: LoanDescription, loanTwoDescription?: LoanDescription) {
+  static calculate(grossSalary: number, loanOneDescription?: LoanDescription, loanTwoDescription?: LoanDescription): LoanCalculationResult {
     let loanOne: Loan | null = null;
     let loanTwo: Loan | null = null;
 
+    // TODO Move loan creation out
     if (loanOneDescription != null) {
       loanOne = new Loan(loanOneDescription.balance, loanOneDescription.interest_rate);
     }
@@ -21,11 +22,12 @@ export default class LoanCalculatorService {
     }
 
     if (!loanOne && !loanTwo) {
-      return false;
+      throw new Error("No loans")
     }
 
+    // TODO Move loan validation
     if (loanOne && loanTwo && loanOneDescription!.repayment_threshold > loanTwoDescription!.repayment_threshold) {
-      return false;
+      throw new Error("Loan two threshold must be greater than loan one threshold")
     }
 
     let hasBalanceLeft = true;
@@ -38,20 +40,27 @@ export default class LoanCalculatorService {
     }
 
     if (salaryEligibleForRepayments <= 0) {
-      return false;
+      throw new Error("Invalid salary eligible for repayment calculated.")
     }
 
     const monthlyPaymentToAllocate: number = (salaryEligibleForRepayments * 0.09) / 12;
     let numPeriods = 0;
 
+    let loanOneBreakdowns = [];
+    let loanTwoBreakdowns = [];
+
     while (hasBalanceLeft) {
       numPeriods++;
 
       if (loanOne && !loanTwo) {
-        loanOne.period(monthlyPaymentToAllocate);
+        let paymentAmount = Math.min(monthlyPaymentToAllocate, loanOne.balance);
+        let loanBreakdown = loanOne.pay(paymentAmount);
+        loanOneBreakdowns.push(loanBreakdown);
         hasBalanceLeft = loanOne.balance > 0;
       } else if (!loanOne && loanTwo) {
-        loanTwo.period(monthlyPaymentToAllocate);
+        let paymentAmount = Math.min(monthlyPaymentToAllocate, loanTwo.balance);
+        let loanBreakdown = loanTwo.pay(monthlyPaymentToAllocate);
+        loanTwoBreakdowns.push(loanBreakdown);
         hasBalanceLeft = loanTwo.balance > 0;
       } else {
         const loanOneSplitPercentage: number = (loanTwoDescription!.repayment_threshold - loanOneDescription!.repayment_threshold) / salaryEligibleForRepayments;
@@ -66,7 +75,6 @@ export default class LoanCalculatorService {
       }
     }
 
-    return numPeriods;
+    return new LoanCalculationResult(numPeriods, loanOneBreakdowns, loanTwoBreakdowns);
   }
-
 }
