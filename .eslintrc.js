@@ -30,6 +30,7 @@ module.exports = {
         'vue/max-len': ['warn', {
           template: 80000,
         }],
+        "linebreak-style": "off"
       },
       env: {
         jest: true,

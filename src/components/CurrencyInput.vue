@@ -18,12 +18,9 @@ export default {
       currency: 'GBP',
       currencyDisplay: 'hidden',
       precision: 0,
-      allowNegative: false,
-      distractionFree: {
-        hideGroupingSymbol: false,
-        hideCurrencySymbol: true,
-        hideNegligibleDecimalDigits: true,
-      },
+      hideGroupingSeparatorOnFocus: false,
+      valueRange: { min: 0, max: 10000000 },
+      exportValueAsInteger: true,
     })
 
     return { inputRef, formattedValue }
