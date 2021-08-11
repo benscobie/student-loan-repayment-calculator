@@ -146,7 +146,7 @@ enum PlanFlags {
 export default class Calculator extends Vue {
   selectedPlanType = 1;
 
-  calculatorResult: LoanCalculationResult = new LoanCalculationResult(0, new Array<LoanBreakdown>(), new Array<LoanBreakdown>());
+  calculatorResult: LoanCalculationResult = new LoanCalculationResult(0, new Array<LoanBreakdown>());
 
   get planType(): PlanFlags {
     if (this.selectedPlanType === 1) {

@@ -1,5 +1,8 @@
+import LoanType from '@/calculators/loanType';
+
 export default class LoanBreakdown {
   constructor(
+    loanType: LoanType,
     period: number,
     debt: number,
     interestRate: number,
@@ -8,6 +11,7 @@ export default class LoanBreakdown {
     totalPaid: number,
     totalInterestPaid: number,
   ) {
+    this.loanType = loanType;
     this.period = period;
     this.debt = debt;
     this.interestRate = interestRate;
@@ -16,6 +20,8 @@ export default class LoanBreakdown {
     this.totalPaid = totalPaid;
     this.totalInterestPaid = totalInterestPaid;
   }
+
+  loanType: LoanType;
 
   period: number;
 

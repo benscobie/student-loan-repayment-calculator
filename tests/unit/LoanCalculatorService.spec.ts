@@ -10,6 +10,5 @@ test('paying off loan 1 only returns expected', () => {
   const result = LoanCalculatorService.calculate(50000, loanOneDescription);
 
   expect(result.periods).toBe(45);
-  expect(result.loanOneBreakdowns.length).toBe(45);
-  expect(result.loanTwoBreakdowns).toStrictEqual(new Array<LoanBreakdown>());
+  expect(result.loanBreakdowns.length).toBe(45);
 });
