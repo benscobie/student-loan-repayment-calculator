@@ -17,7 +17,7 @@ module.exports = {
   },
   overrides: [
     {
-      files: ['*.vue'],
+      files: ['*.vue', '*.ts'],
       rules: {
         semi: 'off',
         'max-len': 'off',

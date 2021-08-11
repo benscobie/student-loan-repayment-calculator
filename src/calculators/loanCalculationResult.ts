@@ -1,18 +1,17 @@
-﻿import LoanBreakdown from "@/calculators/loanBreakdown";
+﻿import LoanBreakdown from '@/calculators/loanBreakdown';
 
 export default class LoanCalculationResult {
-
   constructor(periods: number,
-              loanOneBreakdowns: Array<LoanBreakdown>,
-              loanTwoBreakdowns: Array<LoanBreakdown>) {
-    this.loan_one_breakdowns = loanOneBreakdowns;
-    this.loan_two_breakdowns = loanTwoBreakdowns;
+    loanOneBreakdowns: Array<LoanBreakdown>,
+    loanTwoBreakdowns: Array<LoanBreakdown>) {
+    this.loanOneBreakdowns = loanOneBreakdowns;
+    this.loanTwoBreakdowns = loanTwoBreakdowns;
     this.periods = periods;
   }
 
-  loan_one_breakdowns: Array<LoanBreakdown>;
+  loanOneBreakdowns: Array<LoanBreakdown>;
 
-  loan_two_breakdowns: Array<LoanBreakdown>;
+  loanTwoBreakdowns: Array<LoanBreakdown>;
 
   periods: number;
 }

@@ -4,7 +4,7 @@ import Loan from '@/calculators/loan';
 
 test.skip('payment for single period calculates correctly', () => {
   const loan: Loan = new Loan(100.00, 1.0);
-  let result = loan.pay(10.00);
+  const result = loan.pay(10.00);
 
   expect(loan.balance).toBeCloseTo(90.90);
   expect(loan.totalPaid).toBeCloseTo(10.00);
@@ -13,13 +13,13 @@ test.skip('payment for single period calculates correctly', () => {
 
 test.skip('payment for two periods calculates correctly', () => {
   const loan: Loan = new Loan(100.00, 1.0);
-  let resultPeriodOne = loan.pay(10.00);
+  const resultPeriodOne = loan.pay(10.00);
 
   expect(loan.balance).toBeCloseTo(90.90);
   expect(loan.totalPaid).toBeCloseTo(10.00);
   expect(loan.totalInterestPaid).toBeCloseTo(0.90);
 
-  let resultPeriodTwo = loan.pay(10.00);
+  const resultPeriodTwo = loan.pay(10.00);
 
   expect(loan.balance).toBeCloseTo(81.71);
   expect(loan.totalPaid).toBeCloseTo(20.00);

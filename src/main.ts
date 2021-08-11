@@ -20,6 +20,12 @@ Vue.use(VueCurrencyInput, {
   },
 });
 
+Vue.mixin({
+  methods: {
+    formatMoney: (str) => `£${str.toFixed(2)}`,
+  },
+});
+
 new Vue({
   router,
   render: (h) => h(App),
