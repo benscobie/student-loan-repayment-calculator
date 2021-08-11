@@ -37,7 +37,7 @@
                   <div class="input-group-prepend">
                     <span class="input-group-text">£</span>
                   </div>
-                  <currency-input id="type1BalanceRemaining" class="form-control" placeholder="10000.00" precision="2" v-model="type1BalanceRemaining" />
+                  <currency-input id="type1BalanceRemaining" class="form-control" placeholder="10000.00" v-bind:precision="2" v-model="type1BalanceRemaining" />
                 </div>
               </div>
             </div>
@@ -65,7 +65,7 @@
                   <div class="input-group-prepend">
                     <span class="input-group-text">£</span>
                   </div>
-                  <currency-input id="type2BalanceRemaining" class="form-control" placeholder="10000.00" precision="2" v-model="type2BalanceRemaining" />
+                  <currency-input id="type2BalanceRemaining" class="form-control" placeholder="10000.00" v-bind:precision="2" v-model="type2BalanceRemaining" />
                 </div>
               </div>
             </div>
@@ -107,69 +107,16 @@
             </div>
           </div>
         </div>
+        <button class="btn btn-primary" v-on:click.stop.prevent="calculate">
+          Calculate
+        </button>
       </form>
     </div>
     <div class="col-7">
       <h3>Results</h3>
-      <p>Salary amount eligible for repayments: <strong>{{ formatMoney(salaryEligibleForRepayments) }}</strong></p>
 
-      <table class="table table-bordered">
-        <thead class="thead-light">
-          <th scope="col" class="w-40">&nbsp;</th>
-          <th scope="col" class="w-20">Yearly</th>
-          <th scope="col" class="w-20">Monthly</th>
-          <th scope="col" class="w-20">Split</th>
-        </thead>
-        <tbody>
-          <tr>
-            <th scope="row">Type 1 payment</th>
-            <td>{{ formatMoney(type1YearlyPaymentAmount) }}</td>
-            <td>{{ formatMoney(type1MonthlyPaymentAmount) }}</td>
-            <td>{{ (payment1SplitPercentage * 100).toFixed(2) }}%</td>
-          </tr>
-          <tr>
-            <th scope="row">Type 2 payment</th>
-            <td>{{ formatMoney(type2YearlyPaymentAmount) }}</td>
-            <td>{{ formatMoney(type2MonthlyPaymentAmount) }}</td>
-            <td>{{ (payment2SplitPercentage * 100).toFixed(2) }}%</td>
-          </tr>
-          <tr>
-            <th scope="row">Total payment</th>
-            <td>{{ formatMoney(totalYearlyPaymentAmount) }}</td>
-            <td>{{ formatMoney(totalMonthlyPaymentAmount) }}</td>
-            <td>&nbsp;</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <table class="table table-bordered">
-        <thead class="thead-light">
-          <th scope="col" class="w-40">&nbsp;</th>
-          <th scope="col" class="w-20">Type 1</th>
-          <th scope="col" class="w-20">Type 2</th>
-          <th scope="col" class="w-20">Total</th>
-        </thead>
-        <tbody>
-          <tr>
-            <th scope="row">Interest to pay on balances</th>
-            <td>{{ formatMoney(type1TotalInterestToPay) }}</td>
-            <td>{{ formatMoney(type2TotalInterestToPay) }}</td>
-            <td>{{ formatMoney(totalInterestToPay) }}</td>
-          </tr>
-          <tr>
-            <th scope="row">Total payment remaining</th>
-            <td>{{ formatMoney(type1TotalPaymentRemaining) }}</td>
-            <td>{{ formatMoney(type2TotalPaymentRemaining) }}</td>
-            <td>{{ formatMoney(totalPaymentRemaining) }}</td>
-          </tr>
-          <tr>
-            <th scope="row">Years remaining</th>
-            <td>{{ type1YearsRemaining.toFixed(2) }}</td>
-            <td>{{ type2YearsRemaining.toFixed(2) }}</td>
-            <td>{{ totalYearsRemaining.toFixed(2) }}</td>
-          </tr>
-        </tbody>
-      </table>
+      <loan-breakdown-table v-if="calculatorResult != null" v-bind:calculator-result="calculatorResult"></loan-breakdown-table>
+      <!-- <loan-breakdown-chart v-if="calculatorResult != null"></loan-breakdown-chart> -->
     </div>
   </div>
 </template>
@@ -178,17 +125,28 @@
 /* eslint-disable no-bitwise */
 /* eslint-disable class-methods-use-this */
 
-import { Component, Vue } from 'vue-property-decorator';
-import Finance from '../calculators/finance';
+import { Options, Vue } from 'vue-class-component';
+import LoanCalculatorService from '@/calculators/loanCalculatorService';
+import LoanDescription from '@/calculators/loanDescription';
+import LoanType from '@/calculators/loanType';
+import LoanBreakdownChart from '@/components/LoanBreakdownChart.vue';
+import LoanBreakdownTable from '@/components/LoanBreakdownTable.vue';
+import CurrencyInput from '@/components/CurrencyInput.vue'
+import LoanCalculationResult from '@/calculators/loanCalculationResult';
+import LoanBreakdown from '@/calculators/loanBreakdown';
 
 enum PlanFlags {
     Type1 = 1 << 0,
     Type2 = 1 << 1,
 }
 
-@Component
+@Options({
+  components: { LoanBreakdownChart, LoanBreakdownTable, CurrencyInput },
+})
 export default class Calculator extends Vue {
   selectedPlanType = 1;
+
+  calculatorResult: LoanCalculationResult = new LoanCalculationResult(0, new Array<LoanBreakdown>());
 
   get planType(): PlanFlags {
     if (this.selectedPlanType === 1) {
@@ -200,6 +158,7 @@ export default class Calculator extends Vue {
     return PlanFlags.Type1 | PlanFlags.Type2;
   }
 
+  // TODO Move to a loan definitions class
   grossSalary = 50000;
 
   type1BalanceRemaining = 7000;
@@ -216,181 +175,23 @@ export default class Calculator extends Vue {
 
   PlanFlags = PlanFlags;
 
-  get type1BalanceRemainingForCalc() {
-    if (~this.planType & PlanFlags.Type1) {
-      return 0;
+  calculate() {
+    let plan1: LoanDescription | undefined;
+    let plan2: LoanDescription | undefined;
+
+    if (this.planType & PlanFlags.Type1) {
+      plan1 = new LoanDescription(this.type1BalanceRemaining, this.type1InterestRate, this.type1RepaymentThreshold, LoanType.Type1);
     }
 
-    return this.type1BalanceRemaining;
-  }
-
-  get type2BalanceRemainingForCalc() {
-    if (~this.planType & PlanFlags.Type2) {
-      return 0;
+    if (this.planType & PlanFlags.Type2) {
+      plan2 = new LoanDescription(this.type2BalanceRemaining, this.type2InterestRate, this.type2RepaymentThreshold, LoanType.Type2);
     }
 
-    return this.type2BalanceRemaining;
-  }
-
-  get type1InterestRateDecimal(): number {
-    return this.type1InterestRate / 100;
-  }
-
-  get type2InterestRateDecimal(): number {
-    return this.type2InterestRate / 100;
-  }
-
-  get salaryEligibleForRepayments(): number {
-    if (this.grossSalary <= this.type1RepaymentThreshold) {
-      return 0;
-    }
-
-    if (~this.planType & PlanFlags.Type1 && this.planType & PlanFlags.Type2) {
-      return (this.grossSalary - this.type2RepaymentThreshold)
-    }
-
-    return (this.grossSalary - this.type1RepaymentThreshold)
-  }
-
-  get totalYearlyPaymentAmount(): number {
-    return this.salaryEligibleForRepayments * 0.09;
-  }
-
-  get totalMonthlyPaymentAmount(): number {
-    return this.totalYearlyPaymentAmount / 12;
-  }
-
-  get type1MonthlyPaymentAmount(): number {
-    return this.totalMonthlyPaymentAmount * this.payment1SplitPercentage;
-  }
-
-  get type1YearlyPaymentAmount(): number {
-    return this.totalYearlyPaymentAmount * this.payment1SplitPercentage;
-  }
-
-  get type2MonthlyPaymentAmount(): number {
-    return this.totalMonthlyPaymentAmount * this.payment2SplitPercentage;
-  }
-
-  get type2YearlyPaymentAmount(): number {
-    return this.totalYearlyPaymentAmount * this.payment2SplitPercentage;
-  }
-
-  get payment1SplitPercentage(): number {
-    if (~this.planType & PlanFlags.Type1) {
-      return 0;
-    }
-
-    if (this.planType & PlanFlags.Type2 && this.grossSalary > this.type2RepaymentThreshold) {
-      return ((this.type2RepaymentThreshold - this.type1RepaymentThreshold) / this.salaryEligibleForRepayments);
-    }
-
-    return 1;
-  }
-
-  get payment2SplitPercentage(): number {
-    if (~this.planType & PlanFlags.Type2) {
-      return 0;
-    }
-
-    if (~this.planType & PlanFlags.Type1) {
-      return 1;
-    }
-
-    if (this.grossSalary > this.type2RepaymentThreshold) {
-      return ((this.grossSalary - this.type2RepaymentThreshold) / this.salaryEligibleForRepayments);
-    }
-
-    return 0;
-  }
-
-  get type1TotalTimeRemainingExclusive(): number {
-    return (Finance.nper(this.type1InterestRateDecimal / 12, -(this.type1MonthlyPaymentAmount), this.type1BalanceRemainingForCalc) / 12);
-  }
-
-  get type2TotalTimeRemainingExclusive(): number {
-    return (Finance.nper(this.type2InterestRateDecimal / 12, -(this.type2MonthlyPaymentAmount), this.type2BalanceRemainingForCalc) / 12);
-  }
-
-  get type1RemainingBalanceOnType2Completion(): number {
-    return Finance.fv(this.type1InterestRateDecimal / 12, this.type2TotalTimeRemainingExclusive * 12, this.type1MonthlyPaymentAmount, -(this.type1BalanceRemainingForCalc));
-  }
-
-  get type1TotalPaidOnType2Completion(): number {
-    return this.type1MonthlyPaymentAmount * 12 * this.type2TotalTimeRemainingExclusive;
-  }
-
-  get type1InterestPaidOnType2Completion(): number {
-    return this.type1TotalPaidOnType2Completion - (this.type1BalanceRemainingForCalc - this.type1RemainingBalanceOnType2Completion);
-  }
-
-  get type1YearsRemaining(): number {
-    if (~this.planType & PlanFlags.Type1) {
-      return 0;
-    }
-
-    if (this.planType & PlanFlags.Type2 && this.type1TotalTimeRemainingExclusive > this.type2TotalTimeRemainingExclusive) {
-      return this.type2YearsRemaining + (Finance.nper(this.type1InterestRateDecimal / 12, -(this.totalMonthlyPaymentAmount), this.type1RemainingBalanceOnType2Completion) / 12);
-    }
-
-    return (Finance.nper(this.type1InterestRateDecimal / 12, -(this.totalMonthlyPaymentAmount), this.type1BalanceRemainingForCalc) / 12);
-  }
-
-  get type2YearsRemaining(): number {
-    if (~this.planType & PlanFlags.Type2) {
-      return 0;
-    }
-
-    return (Finance.nper(this.type2InterestRateDecimal / 12, -(this.type2MonthlyPaymentAmount), this.type2BalanceRemainingForCalc) / 12);
-  }
-
-  get totalYearsRemaining(): number {
-    return Math.max(this.type1YearsRemaining, this.type2YearsRemaining);
-  }
-
-  get type1TotalPaymentRemaining(): number {
-    if (~this.planType & PlanFlags.Type1) {
-      return 0;
-    }
-
-    if (~this.planType & PlanFlags.Type2) {
-      return this.totalMonthlyPaymentAmount * 12 * this.type1YearsRemaining;
-    }
-
-    return this.type1TotalPaidOnType2Completion + this.totalMonthlyPaymentAmount * 12 * (this.type1YearsRemaining - this.type2YearsRemaining);
-  }
-
-  get type2TotalPaymentRemaining(): number {
-    if (~this.planType & PlanFlags.Type2) {
-      return 0;
-    }
-
-    return this.type2MonthlyPaymentAmount * 12 * this.type2YearsRemaining;
-  }
-
-  get totalPaymentRemaining(): number {
-    return this.type1TotalPaymentRemaining + this.type2TotalPaymentRemaining;
-  }
-
-  get type1TotalInterestToPay(): number {
-    return this.type1TotalPaymentRemaining - this.type1BalanceRemainingForCalc;
-  }
-
-  get type2TotalInterestToPay(): number {
-    return this.type2TotalPaymentRemaining - this.type2BalanceRemainingForCalc;
-  }
-
-  get totalInterestToPay(): number {
-    return this.type1TotalInterestToPay + this.type2TotalInterestToPay;
-  }
-
-  formatMoney(money: number): string {
-    return `£${money.toFixed(2)}`;
+    this.calculatorResult = LoanCalculatorService.calculate(this.grossSalary, plan1, plan2);
   }
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
   .w-40 {
     width: 40%;

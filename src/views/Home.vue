@@ -6,10 +6,10 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { Options, Vue } from 'vue-class-component';
 import Calculator from '@/components/Calculator.vue'; // @ is an alias to /src
 
-@Component({
+@Options({
   components: {
     Calculator,
   },
