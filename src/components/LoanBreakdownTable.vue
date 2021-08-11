@@ -30,14 +30,17 @@
 </template>
 <script lang="ts">
 
-import { Vue, Component, Prop } from 'vue-property-decorator'
+import { Options, Vue } from 'vue-class-component';
 import LoanBreakdown from '@/calculators/loanBreakdown';
 import LoanCalculationResult from '@/calculators/loanCalculationResult';
 
-@Component
+@Options({
+  props: {
+    calculatorResult: LoanCalculationResult,
+  },
+})
 export default class LoanBreakdownTable extends Vue {
-  @Prop(LoanCalculationResult)
-  readonly calculatorResult!: LoanCalculationResult;
+  readonly calculatorResult!: LoanCalculationResult
 
   get loanOneBreakdown(): LoanBreakdown {
     if (this.calculatorResult.loanOneBreakdowns.length === 0) {

@@ -116,7 +116,7 @@
       <h3>Results</h3>
 
       <loan-breakdown-table v-if="calculatorResult != null" v-bind:calculator-result="calculatorResult"></loan-breakdown-table>
-      <loan-breakdown-chart v-if="calculatorResult != null"></loan-breakdown-chart>
+      <!-- <loan-breakdown-chart v-if="calculatorResult != null"></loan-breakdown-chart> -->
     </div>
   </div>
 </template>
@@ -125,12 +125,13 @@
 /* eslint-disable no-bitwise */
 /* eslint-disable class-methods-use-this */
 
-import { Component, Vue } from 'vue-property-decorator';
+import { Options, Vue } from 'vue-class-component';
 import LoanCalculatorService from '@/calculators/loanCalculatorService';
 import LoanDescription from '@/calculators/loanDescription';
 import LoanType from '@/calculators/loanType';
 import LoanBreakdownChart from '@/components/LoanBreakdownChart.vue';
 import LoanBreakdownTable from '@/components/LoanBreakdownTable.vue';
+import CurrencyInput from '@/components/CurrencyInput.vue'
 import LoanCalculationResult from '@/calculators/loanCalculationResult';
 import LoanBreakdown from '@/calculators/loanBreakdown';
 
@@ -139,8 +140,8 @@ enum PlanFlags {
     Type2 = 1 << 1,
 }
 
-@Component({
-  components: { LoanBreakdownChart, LoanBreakdownTable },
+@Options({
+  components: { LoanBreakdownChart, LoanBreakdownTable, CurrencyInput },
 })
 export default class Calculator extends Vue {
   selectedPlanType = 1;
