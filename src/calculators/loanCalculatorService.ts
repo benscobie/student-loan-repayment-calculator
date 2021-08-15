@@ -3,45 +3,36 @@ import LoanDescription from '@/calculators/loanDescription';
 import LoanCalculationResult from '@/calculators/loanCalculationResult';
 import LoanType from '@/calculators/loanType';
 import loanBreakdown from './loanBreakdown';
+import LoanCalculatorOptions from '@/calculators/loanCalculatorOptions';
 
 export default class LoanCalculatorService {
-  static calculate(grossSalary: number, loanOneDescription?: LoanDescription, loanTwoDescription?: LoanDescription): LoanCalculationResult {
-    let loanOne: Loan | null = null;
-    let loanTwo: Loan | null = null;
-
-    // TODO Move loan creation out
-    if (loanOneDescription != null) {
-      loanOne = new Loan(loanOneDescription.balance, loanOneDescription.interestRate, LoanType.Type1);
-    }
-
-    if (loanTwoDescription != null) {
-      loanTwo = new Loan(loanTwoDescription.balance, loanTwoDescription.interestRate, LoanType.Type2);
-    }
-
-    if (!loanOne && !loanTwo) {
+  static calculate(options: LoanCalculatorOptions): LoanCalculationResult {
+    if (options.loanDescriptions.length === 0) {
       throw new Error('No loans');
     }
 
+    const loanThresholds: { [id: string]: any; } = {};
+    const loansToPay = [];
+
+    // eslint-disable-next-line no-nested-ternary
+    const sortedLoanDescriptions = options.loanDescriptions.sort((a, b) => (a.repaymentThreshold < b.repaymentThreshold ? 1 : a.repaymentThreshold > b.repaymentThreshold ? -1 : 0))
+
+    // eslint-disable-next-line no-restricted-syntax
+    for (const loanDesc of sortedLoanDescriptions) {
+      const loan = new Loan(loanDesc.balance, loanDesc.interestRate, loanDesc.type);
+      loansToPay.push(loan);
+
+      loanThresholds[loan.loanType] = loanDesc.repaymentThreshold;
+    }
+
     // TODO Move loan validation
+    /*
     if (loanOne && loanTwo && loanOneDescription!.repaymentThreshold > loanTwoDescription!.repaymentThreshold) {
       throw new Error('Loan two threshold must be greater than loan one threshold');
     }
-
-    const loanThresholds = {
-      [LoanType.Type1]: loanOneDescription?.repaymentThreshold,
-      [LoanType.Type2]: loanTwoDescription?.repaymentThreshold,
-    }
+    */
 
     const loanBreakdowns: loanBreakdown[] = [];
-    const loansToPay = [];
-
-    if (loanTwo) {
-      loansToPay.push(loanTwo);
-    }
-
-    if (loanOne) {
-      loansToPay.push(loanOne);
-    }
 
     let numPeriods = 0;
     let hasBalanceLeft = true;
@@ -59,7 +50,7 @@ export default class LoanCalculatorService {
           const previousLoan = loansToPay[i - 1]
           paymentToAllocate = (((loanThresholds[previousLoan.loanType]! - loanThresholds[loan.loanType]!) * 0.09) / 12) + amountLeftover;
         } else {
-          const salaryEligibleForRepayment = grossSalary - loanThresholds[loan.loanType]!;
+          const salaryEligibleForRepayment = options.grossSalary - loanThresholds[loan.loanType]!;
           paymentToAllocate = (salaryEligibleForRepayment * 0.09) / 12;
         }
 
