@@ -35,12 +35,12 @@ export default class LoanCalculatorService {
     const loanBreakdowns: loanBreakdown[] = [];
     const loansToPay = [];
 
-    if (loanOne) {
-      loansToPay.push(loanOne);
-    }
-
     if (loanTwo) {
       loansToPay.push(loanTwo);
+    }
+
+    if (loanOne) {
+      loansToPay.push(loanOne);
     }
 
     let numPeriods = 0;
@@ -50,13 +50,13 @@ export default class LoanCalculatorService {
 
       let balanceLeft = false;
       let amountLeftover = 0;
-      for (let i = loansToPay.length - 1; i >= 0; i -= 1) {
+      for (let i = 0; i < loansToPay.length; i += 1) {
         const loan = loansToPay[i];
 
         let paymentToAllocate = 0;
 
-        if (i < loansToPay.length - 1) {
-          const previousLoan = loansToPay[i + 1]
+        if (i > 0) {
+          const previousLoan = loansToPay[i - 1]
           paymentToAllocate = (((loanThresholds[previousLoan.loanType]! - loanThresholds[loan.loanType]!) * 0.09) / 12) + amountLeftover;
         } else {
           const salaryEligibleForRepayment = grossSalary - loanThresholds[loan.loanType]!;
