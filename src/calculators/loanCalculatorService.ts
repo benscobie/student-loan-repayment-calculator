@@ -1,7 +1,5 @@
 import Loan from '@/calculators/loan';
-import LoanDescription from '@/calculators/loanDescription';
 import LoanCalculationResult from '@/calculators/loanCalculationResult';
-import LoanType from '@/calculators/loanType';
 import loanBreakdown from './loanBreakdown';
 import LoanCalculatorOptions from '@/calculators/loanCalculatorOptions';
 
@@ -11,13 +9,11 @@ export default class LoanCalculatorService {
       throw new Error('No loans');
     }
 
-    const loanThresholds: { [id: string]: any; } = {};
+    const loanThresholds: { [id: string]: number; } = {};
     const loansToPay = [];
 
-    // eslint-disable-next-line no-nested-ternary
     const sortedLoanDescriptions = options.loanDescriptions.sort((a, b) => (a.repaymentThreshold < b.repaymentThreshold ? 1 : a.repaymentThreshold > b.repaymentThreshold ? -1 : 0))
 
-    // eslint-disable-next-line no-restricted-syntax
     for (const loanDesc of sortedLoanDescriptions) {
       const loan = new Loan(loanDesc.balance, loanDesc.interestRate, loanDesc.type);
       loansToPay.push(loan);
@@ -35,41 +31,37 @@ export default class LoanCalculatorService {
     const loanBreakdowns: loanBreakdown[] = [];
 
     let numPeriods = 0;
-    let hasBalanceLeft = true;
-    while (hasBalanceLeft) {
+    let hasBalancesLeftToPay = true;
+    while (hasBalancesLeftToPay) {
       numPeriods += 1;
+      hasBalancesLeftToPay = false;
 
-      let balanceLeft = false;
       let amountLeftover = 0;
-      for (let i = 0; i < loansToPay.length; i += 1) {
-        const loan = loansToPay[i];
-
+      for (let loanNumber = 0; loanNumber < loansToPay.length; loanNumber += 1) {
+        const loan = loansToPay[loanNumber];
         let paymentToAllocate = 0;
 
-        if (i > 0) {
-          const previousLoan = loansToPay[i - 1]
-          paymentToAllocate = (((loanThresholds[previousLoan.loanType]! - loanThresholds[loan.loanType]!) * 0.09) / 12) + amountLeftover;
-        } else {
-          const salaryEligibleForRepayment = options.grossSalary - loanThresholds[loan.loanType]!;
+        if (loanNumber == 0) {
+          const salaryEligibleForRepayment = options.grossSalary - loanThresholds[loan.loanType];
           paymentToAllocate = (salaryEligibleForRepayment * 0.09) / 12;
+        } else {
+          const previousLoan = loansToPay[loanNumber - 1]
+          paymentToAllocate = (((loanThresholds[previousLoan.loanType] - loanThresholds[loan.loanType]) * 0.09) / 12) + amountLeftover;
         }
 
         if (loan.balance > 0) {
           const amountToPay = Math.min(paymentToAllocate, loan.amountRemainingForNextPeriod());
           const loanBreakdown = loan.pay(amountToPay);
+          loanBreakdowns.push(loanBreakdown)
           amountLeftover = paymentToAllocate - amountToPay;
 
-          loanBreakdowns.push(loanBreakdown)
-
           if (loan.balance > 0) {
-            balanceLeft = true
+            hasBalancesLeftToPay = true
           }
         } else {
           amountLeftover = paymentToAllocate;
         }
       }
-
-      hasBalanceLeft = balanceLeft;
     }
 
     return new LoanCalculationResult(numPeriods, loanBreakdowns);
