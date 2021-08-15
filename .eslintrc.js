@@ -4,8 +4,7 @@ module.exports = {
     node: true,
   },
   extends: [
-    'plugin:vue/vue3-essential',
-    '@vue/airbnb',
+    'plugin:vue/vue3-strongly-recommended',
     '@vue/typescript/recommended',
   ],
   parserOptions: {
@@ -34,9 +33,7 @@ module.exports = {
         'no-shadow': 'off',
         semi: 'off',
         'max-len': 'off',
-        'vue/max-len': ['warn', {
-          template: 80000,
-        }],
+        'vue/max-len': 'off',
         'linebreak-style': 'off',
       },
     },

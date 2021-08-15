@@ -176,18 +176,17 @@ export default class Calculator extends Vue {
   PlanFlags = PlanFlags;
 
   calculate() {
-    let plan1: LoanDescription | undefined;
-    let plan2: LoanDescription | undefined;
+    const plans: LoanDescription[] = [];
 
     if (this.planType & PlanFlags.Type1) {
-      plan1 = new LoanDescription(this.type1BalanceRemaining, this.type1InterestRate, this.type1RepaymentThreshold, LoanType.Type1);
+      plans.push(new LoanDescription(this.type1BalanceRemaining, this.type1InterestRate, this.type1RepaymentThreshold, LoanType.Type1));
     }
 
     if (this.planType & PlanFlags.Type2) {
-      plan2 = new LoanDescription(this.type2BalanceRemaining, this.type2InterestRate, this.type2RepaymentThreshold, LoanType.Type2);
+      plans.push(new LoanDescription(this.type2BalanceRemaining, this.type2InterestRate, this.type2RepaymentThreshold, LoanType.Type2));
     }
 
-    this.calculatorResult = LoanCalculatorService.calculate(this.grossSalary, plan1, plan2);
+    this.calculatorResult = LoanCalculatorService.calculate({ grossSalary: this.grossSalary, loanDescriptions: plans, yearlySalaryIncrease: 0 });
   }
 }
 </script>
