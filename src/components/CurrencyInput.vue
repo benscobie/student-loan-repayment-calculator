@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <input
     ref="inputRef"
     :value="formattedValue"

@@ -20,20 +20,24 @@ module.exports = {
       files: [
         '**/__tests__/*.{j,t}s?(x)',
         '**/tests/unit/**/*.spec.{j,t}s?(x)',
+      ],
+      env: {
+        jest: true,
+      },
+    },
+    {
+      files: [
         '*.vue',
-        '*.ts'
+        '*.ts',
       ],
       rules: {
-        "no-shadow": "off",
+        'no-shadow': 'off',
         semi: 'off',
         'max-len': 'off',
         'vue/max-len': ['warn', {
           template: 80000,
         }],
-        "linebreak-style": "off"
-      },
-      env: {
-        jest: true,
+        'linebreak-style': 'off',
       },
     },
   ],

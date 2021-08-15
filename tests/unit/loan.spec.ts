@@ -1,5 +1,5 @@
 import Loan from '@/calculators/loan';
-import LoanType from "@/calculators/loanType";
+import LoanType from '@/calculators/loanType';
 
 // TODO Fix these tests, they assume interest is applied for 1 period, not 12
 

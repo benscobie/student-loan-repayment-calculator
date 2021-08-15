@@ -1,5 +1,5 @@
 module.exports = {
   transpileDependencies: [
-    'vue-currency-input'
+    'vue-currency-input',
   ],
 };

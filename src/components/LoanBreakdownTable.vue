@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <table class="table table-bordered">
     <thead class="thead-light">
       <tr>

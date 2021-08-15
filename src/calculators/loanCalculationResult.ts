@@ -1,4 +1,4 @@
-﻿import LoanBreakdown from '@/calculators/loanBreakdown';
+import LoanBreakdown from '@/calculators/loanBreakdown';
 
 export default class LoanCalculationResult {
   constructor(periods: number,
