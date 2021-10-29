@@ -1,4 +1,7 @@
 FROM nginx:stable-alpine
+
+RUN apt-get update && apt-get -y upgrade
+
 COPY dist /usr/share/nginx/html
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
