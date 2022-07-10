@@ -12,7 +12,7 @@
     "bootstrap": "^4.6.1",
     "chart.js": "^3.6.0",
     "core-js": "^3.19.0",
-    "vue": "^3.2.20",
+    "vue": "^3.2.37",
     "vue-chartjs": "^3.5.1",
     "vue-class-component": "^8.0.0-0",
     "vue-currency-input": "^2.1.2",
