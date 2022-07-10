@@ -16,7 +16,7 @@
     "vue-chartjs": "^3.5.1",
     "vue-class-component": "^8.0.0-0",
     "vue-currency-input": "^2.1.2",
-    "vue-router": "^4.0.12"
+    "vue-router": "^4.0.16"
   },
   "devDependencies": {
     "@types/jest": "^24.0.19",
