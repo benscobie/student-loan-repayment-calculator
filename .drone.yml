@@ -25,6 +25,6 @@ steps:
       from_secret: docker_hub_password
 ---
 kind: signature
-hmac: c4170bf6458f19872fab217afa6e6c3a3e4b1d761f87b50d7fe8af3fe9c56cd6
+hmac: 0deb73c65e2e2a022dd64752a173ac000242afa3648395b9e34f3b75ae8a2721
 
 ...
