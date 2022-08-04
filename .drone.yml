@@ -4,16 +4,12 @@ type: docker
 name: default
 
 steps:
-- name: test
-  image: node:lts-alpine
-  commands:
-    - npm install
-    - npm run test:unit
-      
 - name: build
   image: node:lts-alpine
+  pull: always
   commands:
-    - npm run build
+    - yarn install
+    - yarn build
 
 - name: publish_linux-amd64
   when:
@@ -28,8 +24,14 @@ steps:
       from_secret: docker_hub_username
     password:
       from_secret: docker_hub_password
+
+trigger:
+  ref:
+  - refs/heads/master
+  - refs/pull/*/head
+
 ---
 kind: signature
-hmac: c4170bf6458f19872fab217afa6e6c3a3e4b1d761f87b50d7fe8af3fe9c56cd6
+hmac: 3845c907e92151c31ed5c1c32b1409db735230e797f002b2948024432a97d7ef
 
 ...

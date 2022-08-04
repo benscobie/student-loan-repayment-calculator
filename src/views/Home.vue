@@ -6,13 +6,12 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue } from 'vue-class-component';
-import Calculator from '@/components/Calculator.vue'; // @ is an alias to /src
+import { defineComponent } from 'vue'
+import Calculator from '../components/Calculator.vue';
 
-@Options({
+export default defineComponent({
   components: {
-    Calculator,
+    Calculator
   },
 })
-export default class Home extends Vue {}
 </script>

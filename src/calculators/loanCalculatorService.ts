@@ -1,10 +1,10 @@
-import Loan from '@/calculators/loan';
-import LoanCalculationResult from '@/calculators/loanCalculationResult';
+import Loan from '../calculators/loan';
+import { LoanCalculationResultInterface } from '../calculators/loanCalculationResult';
 import loanBreakdown from './loanBreakdown';
-import LoanCalculatorOptions from '@/calculators/loanCalculatorOptions';
+import LoanCalculatorOptions from '../calculators/loanCalculatorOptions';
 
 export default class LoanCalculatorService {
-  static calculate(options: LoanCalculatorOptions): LoanCalculationResult {
+  static calculate(options: LoanCalculatorOptions): LoanCalculationResultInterface {
     if (options.loanDescriptions.length === 0) {
       throw new Error('No loans');
     }
@@ -64,6 +64,9 @@ export default class LoanCalculatorService {
       }
     }
 
-    return new LoanCalculationResult(numPeriods, loanBreakdowns);
+    return {
+      loanBreakdowns: loanBreakdowns,
+      periods: numPeriods
+    }
   }
 }

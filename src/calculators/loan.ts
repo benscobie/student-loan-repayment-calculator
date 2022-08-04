@@ -1,6 +1,6 @@
-import LoanBreakdown from '@/calculators/loanBreakdown';
+import LoanBreakdown from '../calculators/loanBreakdown';
 import Finance from './finance';
-import LoanType from '@/calculators/loanType';
+import LoanType from '../calculators/loanType';
 
 export default class Loan {
   balance: number;

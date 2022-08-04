@@ -5,25 +5,26 @@
   >
 </template>
 
-<script>
-import useCurrencyInput from 'vue-currency-input'
+<script lang="ts">
+import { defineComponent } from "vue";
+import { CurrencyDisplay, useCurrencyInput, ValueScaling } from "vue-currency-input";
 
-export default {
+export default defineComponent({
   name: 'CurrencyInput',
   props: {
     modelValue: Number, // Vue 2: value
   },
-  setup(props) {
+  setup() {
     const { formattedValue, inputRef } = useCurrencyInput({
       currency: 'GBP',
-      currencyDisplay: 'hidden',
+      currencyDisplay: CurrencyDisplay.hidden,
       precision: 0,
       hideGroupingSeparatorOnFocus: false,
       valueRange: { min: 0, max: 10000000 },
-      exportValueAsInteger: true,
+      valueScaling: ValueScaling.precision,
     })
 
     return { inputRef, formattedValue }
   },
-}
+})
 </script>

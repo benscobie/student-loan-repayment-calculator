@@ -125,73 +125,75 @@
 /* eslint-disable no-bitwise */
 /* eslint-disable class-methods-use-this */
 
-import { Options, Vue } from 'vue-class-component';
-import LoanCalculatorService from '@/calculators/loanCalculatorService';
-import LoanDescription from '@/calculators/loanDescription';
-import LoanType from '@/calculators/loanType';
-import LoanBreakdownChart from '@/components/LoanBreakdownChart.vue';
-import LoanBreakdownTable from '@/components/LoanBreakdownTable.vue';
-import CurrencyInput from '@/components/CurrencyInput.vue'
-import LoanCalculationResult from '@/calculators/loanCalculationResult';
-import LoanBreakdown from '@/calculators/loanBreakdown';
+import { defineComponent } from 'vue'
+import LoanCalculatorService from '../calculators/loanCalculatorService';
+import LoanDescription from '../calculators/loanDescription';
+import LoanType from '../calculators/loanType';
+import LoanBreakdownChart from './LoanBreakdownChart.vue';
+import LoanBreakdownTable from './LoanBreakdownTable.vue';
+import CurrencyInput from './CurrencyInput.vue'
+import LoanBreakdown from '../calculators/loanBreakdown';
+import { LoanCalculationResultInterface } from '../calculators/loanCalculationResult';
 
 enum PlanFlags {
     Type1 = 1 << 0,
     Type2 = 1 << 1,
 }
 
-@Options({
-  components: { LoanBreakdownChart, LoanBreakdownTable, CurrencyInput },
+export default defineComponent({
+  components: {
+    LoanBreakdownChart,
+    LoanBreakdownTable,
+    CurrencyInput
+  },
+  data() {
+    return {
+      selectedPlanType: 1,
+      calculatorResult: {
+        loanBreakdowns: [],
+        periods: 0
+      } as LoanCalculationResultInterface,
+      grossSalary: 50000,
+      type1BalanceRemaining: 7000,
+      type1InterestRate: 1.5,
+      type1RepaymentThreshold: 19390,
+      type2BalanceRemaining: 5000,
+      type2InterestRate: 5.34,
+      type2RepaymentThreshold: 26575,
+      PlanFlags: PlanFlags
+    }
+  },
+  methods: {
+    calculate() {
+      const plans: LoanDescription[] = [];
+
+      if (this.planType & PlanFlags.Type1) {
+        plans.push(new LoanDescription(this.type1BalanceRemaining, this.type1InterestRate, this.type1RepaymentThreshold, LoanType.Type1));
+      }
+
+      if (this.planType & PlanFlags.Type2) {
+        plans.push(new LoanDescription(this.type2BalanceRemaining, this.type2InterestRate, this.type2RepaymentThreshold, LoanType.Type2));
+      }
+
+      this.calculatorResult = LoanCalculatorService.calculate({ grossSalary: this.grossSalary, loanDescriptions: plans, yearlySalaryIncrease: 0 });
+    }
+  },
+  computed: {
+    planType(): PlanFlags {
+      if (this.selectedPlanType === 1) {
+        return PlanFlags.Type1;
+      } if (this.selectedPlanType === 2) {
+        return PlanFlags.Type2;
+      }
+
+      return PlanFlags.Type1 | PlanFlags.Type2;
+    }
+  }
+  
 })
-export default class Calculator extends Vue {
-  selectedPlanType = 1;
-
-  calculatorResult: LoanCalculationResult = new LoanCalculationResult(0, new Array<LoanBreakdown>());
-
-  get planType(): PlanFlags {
-    if (this.selectedPlanType === 1) {
-      return PlanFlags.Type1;
-    } if (this.selectedPlanType === 2) {
-      return PlanFlags.Type2;
-    }
-
-    return PlanFlags.Type1 | PlanFlags.Type2;
-  }
-
-  // TODO Move to a loan definitions class
-  grossSalary = 50000;
-
-  type1BalanceRemaining = 7000;
-
-  type1InterestRate = 1.5;
-
-  type1RepaymentThreshold = 19390;
-
-  type2BalanceRemaining = 5000;
-
-  type2InterestRate = 5.34;
-
-  type2RepaymentThreshold = 26575;
-
-  PlanFlags = PlanFlags;
-
-  calculate() {
-    const plans: LoanDescription[] = [];
-
-    if (this.planType & PlanFlags.Type1) {
-      plans.push(new LoanDescription(this.type1BalanceRemaining, this.type1InterestRate, this.type1RepaymentThreshold, LoanType.Type1));
-    }
-
-    if (this.planType & PlanFlags.Type2) {
-      plans.push(new LoanDescription(this.type2BalanceRemaining, this.type2InterestRate, this.type2RepaymentThreshold, LoanType.Type2));
-    }
-
-    this.calculatorResult = LoanCalculatorService.calculate({ grossSalary: this.grossSalary, loanDescriptions: plans, yearlySalaryIncrease: 0 });
-  }
-}
 </script>
 
-<style scoped lang="scss">
+<style scoped>
   .w-40 {
     width: 40%;
   }

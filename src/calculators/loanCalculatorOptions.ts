@@ -1,4 +1,4 @@
-import LoanDescription from '@/calculators/loanDescription';
+import LoanDescription from '../calculators/loanDescription';
 
 export default interface LoanCalculatorOptions {
   loanDescriptions: Array<LoanDescription>;

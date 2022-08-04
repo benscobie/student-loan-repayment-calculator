@@ -1,6 +1,12 @@
-import LoanBreakdown from '@/calculators/loanBreakdown';
+import LoanBreakdown from '../calculators/loanBreakdown';
 
-export default class LoanCalculationResult {
+export interface LoanCalculationResultInterface {
+  loanBreakdowns: Array<LoanBreakdown>;
+
+  periods: number;
+}
+
+export class LoanCalculationResult implements LoanCalculationResultInterface {
   constructor(periods: number,
     loanBreakdowns: Array<LoanBreakdown>) {
     this.loanBreakdowns = loanBreakdowns;
@@ -11,3 +17,4 @@ export default class LoanCalculationResult {
 
   periods: number;
 }
+
