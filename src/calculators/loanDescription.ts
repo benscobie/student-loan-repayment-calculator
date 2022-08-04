@@ -1,4 +1,4 @@
-import LoanType from '@/calculators/loanType';
+import LoanType from '../calculators/loanType';
 
 export default class LoanDescription {
   constructor(balance: number,

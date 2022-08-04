@@ -4,16 +4,11 @@ type: docker
 name: default
 
 steps:
-- name: test
-  image: node:lts-alpine
-  commands:
-    - npm install
-    - npm run test:unit
-      
 - name: build
   image: node:lts-alpine
   commands:
-    - npm run build
+    - yarn install
+    - yarn build
 
 - name: publish_linux-amd64
   when:

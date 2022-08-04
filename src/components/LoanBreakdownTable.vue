@@ -31,38 +31,40 @@
   </table>
 </template>
 <script lang="ts">
+import { defineComponent } from 'vue'
+import LoanBreakdown from '../calculators/loanBreakdown';
+import { LoanCalculationResult } from '../calculators/loanCalculationResult';
+import LoanType from '../calculators/loanType';
 
-import { Options, Vue } from 'vue-class-component';
-import LoanBreakdown from '@/calculators/loanBreakdown';
-import LoanCalculationResult from '@/calculators/loanCalculationResult';
-import LoanType from '@/calculators/loanType';
-
-@Options({
+export default defineComponent({
   props: {
-    calculatorResult: LoanCalculationResult,
+    calculatorResult: {
+      type: LoanCalculationResult
+    }
   },
+  computed: {
+    loanOneBreakdown(): LoanBreakdown {
+      const loanBreakdowns = this.calculatorResult!.loanBreakdowns.filter(({ loanType }) => loanType === LoanType.Type1);
+
+      if (loanBreakdowns.length === 0) {
+        
+        return new LoanBreakdown(LoanType.Type1, 0, 0, 0, 0, 0, 0, 0)
+      }
+
+      return loanBreakdowns.slice(-1)[0];
+    },
+    loanTwoBreakdown(): LoanBreakdown {
+      const loanBreakdowns = this.calculatorResult!.loanBreakdowns.filter(({ loanType }) => loanType === LoanType.Type2);
+
+      if (loanBreakdowns.length === 0) {
+        return new LoanBreakdown(LoanType.Type2, 0, 0, 0, 0, 0, 0, 0)
+      }
+
+      return loanBreakdowns.slice(-1)[0];
+    }
+  },
+  methods: {
+    formatMoney: (value: number) => `£${value.toFixed(2)}`
+  }
 })
-export default class LoanBreakdownTable extends Vue {
-  readonly calculatorResult!: LoanCalculationResult
-
-  get loanOneBreakdown(): LoanBreakdown {
-    const loanBreakdowns = this.calculatorResult.loanBreakdowns.filter(({ loanType }) => loanType === LoanType.Type1);
-
-    if (loanBreakdowns.length === 0) {
-      return new LoanBreakdown(LoanType.Type1, 0, 0, 0, 0, 0, 0, 0)
-    }
-
-    return loanBreakdowns.slice(-1)[0];
-  }
-
-  get loanTwoBreakdown(): LoanBreakdown {
-    const loanBreakdowns = this.calculatorResult.loanBreakdowns.filter(({ loanType }) => loanType === LoanType.Type2);
-
-    if (loanBreakdowns.length === 0) {
-      return new LoanBreakdown(LoanType.Type2, 0, 0, 0, 0, 0, 0, 0)
-    }
-
-    return loanBreakdowns.slice(-1)[0];
-  }
-}
 </script>
