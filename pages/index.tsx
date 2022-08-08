@@ -5,15 +5,21 @@ import Button from "../components/button";
 import Input from "../components/input";
 import LoanInput from "../components/loan-input";
 import Loan from "../models/loan";
-import LoanType from "../models/loanType";
+import LoanType, { LoanTypeToDescription } from "../models/loanType";
+import { Plus } from "react-bootstrap-icons";
+import { Results } from "../models/api/results";
+import BalanceGraph from "../components/balanceGraph";
 
 const Home: NextPage = () => {
   const [loanData, setLoanData] = React.useState<Loan[]>([]);
   const [birthDate, setBirthDate] = React.useState<Date>();
-  const [annualSalaryBeforeTax, setAnnualSalaryBeforeTax] = React.useState("");
+  const [annualSalaryBeforeTax, setAnnualSalaryBeforeTax] =
+    React.useState<number>();
   const [editingLoan, setEditingLoan] = React.useState<Loan | null>({
     loanType: LoanType.Unselected,
   });
+
+  const [calculationResults, setCalculationResults] = React.useState<Results>();
 
   const isBirthDateRequired = () => {
     return loanData.some((loan) => {
@@ -46,26 +52,66 @@ const Home: NextPage = () => {
   };
 
   const updateLoan = (loan: Loan) => {
-    setLoanData((current) =>
-      current.map((obj) => {
-        if (obj.loanType == loan.loanType) {
-          setEditingLoan(null);
-          return { ...loan };
-        }
+    var loanExists = loanData.some((x) => x.loanType == loan.loanType);
 
-        return obj;
-      })
-    );
+    if (loanExists) {
+      setLoanData((current) =>
+        current.map((obj) => {
+          if (obj.loanType == loan.loanType) {
+            setEditingLoan(null);
+            return loan;
+          }
 
-    if (editingLoan != null) {
-      setLoanData((current) => [...current, loan]);
+          return obj;
+        })
+      );
+    } else {
+      if (editingLoan != null) {
+        setLoanData((current) => [...current, loan]);
+        setEditingLoan(null);
+      }
     }
-
-    setEditingLoan(null);
   };
 
   const addAnotherLoan = () => {
     setEditingLoan({ loanType: LoanType.Unselected });
+  };
+
+  const removeLoan = (index: number) => {
+    let filteredArray = loanData.filter((item, i) => index !== i);
+    setLoanData(filteredArray);
+  };
+
+  const editLoan = (index: number) => {
+    setEditingLoan(loanData[index]);
+  };
+
+  const calculate = async () => {
+    const response = await fetch(
+      process.env.NEXT_PUBLIC_API_URL + "/ukstudentloans/calculate",
+      {
+        method: "POST",
+        body: JSON.stringify({
+          annualSalaryBeforeTax: annualSalaryBeforeTax,
+          birthDate: birthDate,
+          loans: loanData.map((loan) => ({
+            loanType: loan.loanType,
+            balanceRemaining: loan.balanceRemaining,
+            firstRepaymentDate: loan.firstRepaymentDate,
+            academicYearLoanTakenOut: loan.academicYearLoanTakenOut,
+            studyingPartTime: loan.studyingPartTime,
+            courseStartDate: loan.courseStartDate,
+            courseEndDate: loan.courseEndDate,
+          })),
+        }),
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+        },
+      }
+    );
+
+    const data = (await response.json()) as Results;
+    setCalculationResults(data);
   };
 
   return (
@@ -80,9 +126,17 @@ const Home: NextPage = () => {
 
       <h1 className="text-2xl">Your Plans</h1>
 
-      {loanData.map((element, index) => {
-        return index;
-      })}
+      {loanData &&
+        loanData.map((element, index) => (
+          <div key={element.loanType?.toString()}>
+            <h2>
+              {LoanTypeToDescription(element.loanType)} - £
+              {element.balanceRemaining}
+            </h2>
+            <a onClick={() => editLoan(index)}>Edit</a>
+            <a onClick={() => removeLoan(index)}>Remove</a>
+          </div>
+        ))}
 
       {editingLoan != null && (
         <LoanInput
@@ -94,7 +148,7 @@ const Home: NextPage = () => {
 
       {editingLoan == null && getAvailableLoanTypes().length > 0 && (
         <Button id="addAnotherLoan" style="primary" onClick={addAnotherLoan}>
-          Add another loan
+          Add another loan <Plus className="inline" size={24} />
         </Button>
       )}
 
@@ -104,7 +158,7 @@ const Home: NextPage = () => {
         id="annualSalaryBeforeTax"
         type="number"
         label="Annual Salary Before Tax"
-        onChange={(e) => setAnnualSalaryBeforeTax(e.target.value)}
+        onChange={(e) => setAnnualSalaryBeforeTax(parseInt(e.target.value))}
       />
 
       {isBirthDateRequired() && (
@@ -114,6 +168,23 @@ const Home: NextPage = () => {
           label="Birth Date"
           onChange={(e) => setBirthDate(new Date(e.target.value))}
         />
+      )}
+
+      <Button
+        id="calculate"
+        wrapperClass="mt-2"
+        style="primary"
+        disabled={editingLoan != null || loanData.length === 0}
+        onClick={calculate}
+      >
+        Calculate
+      </Button>
+
+      {calculationResults != null && (
+        <>
+          <h1>Graph showing balance over time</h1>
+          <BalanceGraph results={calculationResults} />
+        </>
       )}
     </div>
   );

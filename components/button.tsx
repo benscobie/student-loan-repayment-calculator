@@ -1,11 +1,12 @@
 import { useRef } from "react";
 
-interface ButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'style'> {
-    id: string,
-    disabled?: boolean,
-    style: string,
-    wrapperClass?: string,
-    children?: React.ReactNode;
+interface ButtonProps
+  extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "style"> {
+  id: string;
+  disabled?: boolean;
+  style: string;
+  wrapperClass?: string;
+  children?: React.ReactNode;
 }
 
 const Input = (props: ButtonProps) => {

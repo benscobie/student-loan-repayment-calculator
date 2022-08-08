@@ -19,6 +19,9 @@ const LoanInput: NextPage<LoanInputProps> = ({
   availableLoanTypes,
 }) => {
   const [loanType, setLoanType] = React.useState(loan.loanType);
+  const [balanceRemaining, setBalanceRemaining] = React.useState(
+    loan.balanceRemaining
+  );
   const [academicYearLoanTakenOut, setAcademicYearLoanTakenOut] =
     React.useState(loan.academicYearLoanTakenOut);
   const [courseStartDate, setCourseStartDate] = React.useState(
@@ -36,6 +39,7 @@ const LoanInput: NextPage<LoanInputProps> = ({
     e.preventDefault();
     onChange({
       loanType,
+      balanceRemaining,
       academicYearLoanTakenOut,
       courseStartDate,
       courseEndDate,
@@ -62,7 +66,11 @@ const LoanInput: NextPage<LoanInputProps> = ({
   const courseEndDateRequired = loanType == LoanType.Type2;
 
   const formValid = () => {
-    if (loanType == LoanType.Unselected || loanType == null) {
+    if (loanType == null || loanType == LoanType.Unselected) {
+      return false;
+    }
+
+    if (balanceRemaining == null || balanceRemaining <= 0) {
       return false;
     }
 
@@ -93,6 +101,7 @@ const LoanInput: NextPage<LoanInputProps> = ({
       <Select
         id="loanType"
         label="Loan type"
+        value={loanType}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
           setLoanType(parseInt(e.target.value))
         }
@@ -116,12 +125,23 @@ const LoanInput: NextPage<LoanInputProps> = ({
         )}
       </Select>
 
+      <Input
+        id="balanceRemaining"
+        type="number"
+        label="Balance Remaining"
+        value={balanceRemaining}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+          setBalanceRemaining(parseInt(e.target.value))
+        }
+      />
+
       {loanType == LoanType.Type2 && (
         <>
           <Input
             id="courseStartDate"
             type="date"
             label="Course Start Date"
+            value={courseStartDate?.toISOString().split("T")[0]}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setCourseStartDate(new Date(e.target.value))
             }
@@ -131,6 +151,7 @@ const LoanInput: NextPage<LoanInputProps> = ({
             id="courseEndDate"
             type="date"
             label="Course End Date"
+            value={courseEndDate?.toISOString().split("T")[0]}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setCourseEndDate(new Date(e.target.value))
             }
@@ -139,6 +160,7 @@ const LoanInput: NextPage<LoanInputProps> = ({
           <Checkbox
             id="studyingPartTime"
             label="Studying part-time"
+            checked={studyingPartTime}
             onChange={(e) => setSudyingPartTime(e.target.checked)}
           />
         </>
@@ -149,6 +171,7 @@ const LoanInput: NextPage<LoanInputProps> = ({
           <Select
             id="academicYearLoanTakenOut"
             label="Academic Year Loan Taken Out"
+            value={academicYearLoanTakenOut}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setAcademicYearLoanTakenOut(parseInt(e.target.value))
             }
@@ -175,6 +198,7 @@ const LoanInput: NextPage<LoanInputProps> = ({
           id="firstRepaymentDate"
           type="date"
           label="First repayment date"
+          value={firstRepaymentDate?.toISOString().split("T")[0]}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             setFirstRepaymentDate(new Date(e.target.value))
           }
