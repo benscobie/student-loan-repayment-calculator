@@ -9,9 +9,11 @@ import LoanType from "../models/loanType";
 
 const Home: NextPage = () => {
   const [loanData, setLoanData] = React.useState<Loan[]>([]);
-  const [birthDate, setBirthDate] = React.useState<"">();
+  const [birthDate, setBirthDate] = React.useState<Date>();
   const [annualSalaryBeforeTax, setAnnualSalaryBeforeTax] = React.useState("");
-  const [editingLoan, setEditingLoan] = React.useState<Loan | null>({ loanType: LoanType.Unselected });
+  const [editingLoan, setEditingLoan] = React.useState<Loan | null>({
+    loanType: LoanType.Unselected,
+  });
 
   const isBirthDateRequired = () => {
     return loanData.some((loan) => {
@@ -79,21 +81,21 @@ const Home: NextPage = () => {
       <h1 className="text-2xl">Your Plans</h1>
 
       {loanData.map((element, index) => {
-        return (
-          index
-        );
+        return index;
       })}
 
-      {editingLoan != null &&
+      {editingLoan != null && (
         <LoanInput
-            loan={editingLoan}
-            onChange={updateLoan}
-            availableLoanTypes={getAvailableLoanTypes()}
-          />
-      }
+          loan={editingLoan}
+          onChange={updateLoan}
+          availableLoanTypes={getAvailableLoanTypes()}
+        />
+      )}
 
       {editingLoan == null && getAvailableLoanTypes().length > 0 && (
-        <Button style="primary" onClick={addAnotherLoan}>Add another loan</Button>
+        <Button id="addAnotherLoan" style="primary" onClick={addAnotherLoan}>
+          Add another loan
+        </Button>
       )}
 
       <h2 className="mt-4 text-2xl">Your Details</h2>
@@ -110,7 +112,7 @@ const Home: NextPage = () => {
           id="birthDate"
           type="date"
           label="Birth Date"
-          onChange={(e) => setBirthDate(e.target.value)}
+          onChange={(e) => setBirthDate(new Date(e.target.value))}
         />
       )}
     </div>

@@ -1,6 +1,17 @@
 import { useRef } from "react";
 
-const Input = (props) => {
+interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement | HTMLInputElement> {
+  id: string,
+  placeholder?: string,
+  label: string,
+  error?: boolean,
+  errorText?: string,
+  required?: boolean,
+  wrapperClass?: string,
+  children?: React.ReactNode;
+}
+
+const Input = (props: SelectProps) => {
   const {
     id,
     placeholder = "",
@@ -13,7 +24,7 @@ const Input = (props) => {
     ...rest
   } = props;
 
-  const inputRef = useRef();
+  const inputRef = useRef(null);
 
   return (
     <div className={wrapperClass}>

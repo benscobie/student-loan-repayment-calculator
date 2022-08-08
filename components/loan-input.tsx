@@ -1,10 +1,17 @@
 import { NextPage } from "next";
 import React from "react";
+import Loan from "../models/loan";
 import LoanType from "../models/loanType";
 import Button from "./button";
+import Checkbox from "./checkbox";
 import Input from "./input";
-import LoanInputProps from "./LoanInputProps";
 import Select from "./select";
+
+interface LoanInputProps {
+  loan: Loan;
+  onChange: Function;
+  availableLoanTypes: LoanType[];
+}
 
 const LoanInput: NextPage<LoanInputProps> = ({
   loan,
@@ -25,18 +32,16 @@ const LoanInput: NextPage<LoanInputProps> = ({
     loan.studyingPartTime
   );
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onChange(
-      {
-        loanType,
-        academicYearLoanTakenOut,
-        courseStartDate,
-        courseEndDate,
-        firstRepaymentDate,
-        studyingPartTime,
-      }
-    );
+    onChange({
+      loanType,
+      academicYearLoanTakenOut,
+      courseStartDate,
+      courseEndDate,
+      firstRepaymentDate,
+      studyingPartTime,
+    });
   };
 
   const loanTypeIsAvailable = (type: LoanType) => {
@@ -88,7 +93,9 @@ const LoanInput: NextPage<LoanInputProps> = ({
       <Select
         id="loanType"
         label="Loan type"
-        onChange={(e) => setLoanType(e.target.value)}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+          setLoanType(parseInt(e.target.value))
+        }
       >
         <option value={LoanType.Unselected}>--Please choose a plan--</option>
 
@@ -115,23 +122,25 @@ const LoanInput: NextPage<LoanInputProps> = ({
             id="courseStartDate"
             type="date"
             label="Course Start Date"
-            onChange={(e) => setCourseStartDate(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setCourseStartDate(new Date(e.target.value))
+            }
           />
 
           <Input
             id="courseEndDate"
             type="date"
             label="Course End Date"
-            onChange={(e) => setCourseEndDate(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setCourseEndDate(new Date(e.target.value))
+            }
           />
 
-          <input
-            type="checkbox"
+          <Checkbox
             id="studyingPartTime"
-            name="studyingPartTime"
+            label="Studying part-time"
             onChange={(e) => setSudyingPartTime(e.target.checked)}
           />
-          <label htmlFor="studyingPartTime">Studying part-time</label>
         </>
       )}
 
@@ -140,7 +149,9 @@ const LoanInput: NextPage<LoanInputProps> = ({
           <Select
             id="academicYearLoanTakenOut"
             label="Academic Year Loan Taken Out"
-            onChange={(e) => setAcademicYearLoanTakenOut(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setAcademicYearLoanTakenOut(parseInt(e.target.value))
+            }
           >
             <option value="">--Please choose an option--</option>
             {loanType == LoanType.Type1 && (
@@ -164,11 +175,14 @@ const LoanInput: NextPage<LoanInputProps> = ({
           id="firstRepaymentDate"
           type="date"
           label="First repayment date"
-          onChange={(e) => setFirstRepaymentDate(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setFirstRepaymentDate(new Date(e.target.value))
+          }
         />
       )}
 
       <Button
+        id="submit"
         style="primary"
         disabled={!formValid()}
         wrapperClass="mt-2"
