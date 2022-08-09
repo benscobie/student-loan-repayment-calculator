@@ -2,10 +2,10 @@ import { NextPage } from "next";
 import React from "react";
 import Loan from "../models/loan";
 import LoanType from "../models/loanType";
-import Button from "./button";
-import Checkbox from "./checkbox";
-import Input from "./input";
-import Select from "./select";
+import Button from "./ui/atoms/button";
+import Checkbox from "./ui/atoms/checkbox";
+import Input from "./ui/atoms/input";
+import Select from "./ui/atoms/select";
 
 interface LoanInputProps {
   loan: Loan;
@@ -103,7 +103,7 @@ const LoanInput: NextPage<LoanInputProps> = ({
         label="Loan type"
         value={loanType}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-          setLoanType(parseInt(e.target.value))
+          setLoanType(LoanType[e.target.value as keyof typeof LoanType])
         }
       >
         <option value={LoanType.Unselected}>--Please choose a plan--</option>

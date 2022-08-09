@@ -1,14 +1,15 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import React from "react";
-import Button from "../components/button";
-import Input from "../components/input";
+import Button from "../components/ui/atoms/button";
+import Input from "../components/ui/atoms/input";
 import LoanInput from "../components/loan-input";
 import Loan from "../models/loan";
 import LoanType, { LoanTypeToDescription } from "../models/loanType";
 import { Plus } from "react-bootstrap-icons";
 import { Results } from "../models/api/results";
-import BalanceGraph from "../components/balanceGraph";
+import BalanceGraph from "../components/ui/molecules/balanceGraph";
+import TotalsGraph from "../components/ui/molecules/totalsGraph";
 
 const Home: NextPage = () => {
   const [loanData, setLoanData] = React.useState<Loan[]>([]);
@@ -99,7 +100,7 @@ const Home: NextPage = () => {
             balanceRemaining: loan.balanceRemaining,
             firstRepaymentDate: loan.firstRepaymentDate,
             academicYearLoanTakenOut: loan.academicYearLoanTakenOut,
-            studyingPartTime: loan.studyingPartTime,
+            studyingPartTime: loan.studyingPartTime ?? false,
             courseStartDate: loan.courseStartDate,
             courseEndDate: loan.courseEndDate,
           })),
@@ -110,8 +111,10 @@ const Home: NextPage = () => {
       }
     );
 
-    const data = (await response.json()) as Results;
-    setCalculationResults(data);
+    if (response.ok) {
+      const data = (await response.json()) as Results;
+      setCalculationResults(data);
+    }
   };
 
   return (
@@ -182,8 +185,16 @@ const Home: NextPage = () => {
 
       {calculationResults != null && (
         <>
-          <h1>Graph showing balance over time</h1>
-          <BalanceGraph results={calculationResults} />
+          <div className="columns-1 md:columns-2">
+            <BalanceGraph
+              results={calculationResults}
+              loanTypes={loanData.map((x) => x.loanType!)}
+            />
+            <TotalsGraph
+              results={calculationResults}
+              loanTypes={loanData.map((x) => x.loanType!)}
+            />
+          </div>
         </>
       )}
     </div>

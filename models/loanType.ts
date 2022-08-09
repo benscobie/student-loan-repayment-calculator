@@ -1,9 +1,9 @@
 enum LoanType {
-    Unselected = 0,
-    Type1 = 1,
-    Type2 = 2,
-    Type4 = 3,
-    Postgraduate = 4,
+    Unselected = "Unselected",
+    Type1 = "Type1",
+    Type2 = "Type2",
+    Type4 = "Type4",
+    Postgraduate = "Postgraduate",
   }
 
   export function LoanTypeToDescription(type?: LoanType): string {
