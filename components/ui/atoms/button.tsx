@@ -16,6 +16,7 @@ const Input = (props: ButtonProps) => {
     disabled = false,
     style = "success",
     wrapperClass = "",
+    className,
     children,
     ...rest
   } = props;
@@ -23,17 +24,27 @@ const Input = (props: ButtonProps) => {
   const inputRef = useRef(null);
 
   const getStyle = () => {
-    var classNames = [];
+    var classNames = ["text-white rounded-lg text-sm px-5 py-2.5"];
 
     if (style == "primary") {
-      classNames.push("text-white rounded-lg text-sm px-5 py-2.5 mr-2 mb-2");
+      classNames.push("bg-green-700");
 
       if (!disabled) {
         classNames.push(
-          "bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 focus:outline-none"
+          "hover:bg-green-800 focus:ring-4 focus:ring-green-300 focus:outline-none"
         );
       } else {
-        classNames.push("bg-green-400 cursor-not-allowed");
+        classNames.push("opacity-50 cursor-not-allowed");
+      }
+    } else if (style == "cancel") {
+      classNames.push("bg-slate-600");
+
+      if (!disabled) {
+        classNames.push(
+          "hover:bg-slate-700 focus:ring-4 focus:ring-slate-300 focus:outline-none"
+        );
+      } else {
+        classNames.push("opacity-50 cursor-not-allowed");
       }
     }
 
@@ -45,7 +56,7 @@ const Input = (props: ButtonProps) => {
       <button
         ref={inputRef}
         type={type}
-        className={getStyle()}
+        className={`${getStyle()} ${props.className}`}
         id={id}
         disabled={disabled}
         {...rest}

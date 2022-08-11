@@ -9,9 +9,16 @@ import {
   Title,
   Tooltip,
   Legend,
+  Scale,
+  Tick,
+  CoreScaleOptions,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 import LoanType, { LoanTypeToDescription } from "../../../models/loanType";
+import {
+  getLabelsForGroupedDataCallback,
+  groupDataEveryNthPeriod,
+} from "./graphUtils";
 
 ChartJS.register(
   CategoryScale,
@@ -23,41 +30,41 @@ ChartJS.register(
   Legend
 );
 
-export const options = {
-  responsive: true,
-  scales: {
-    x: {
-      ticks: {
-        callback(val: number, index: number): string {
-          var date = new Date(this.getLabelForValue(val));
-
-          if (date.getMonth() == 0) {
-            return date.getFullYear().toString();
-          }
-
-          return "";
-        },
-      },
-    },
-  },
-  plugins: {
-    legend: {
-      position: "top" as const,
-    },
-    title: {
-      display: false,
-    },
-  },
-};
-
 interface BalanceGraphProps {
   results: Results;
   loanTypes: LoanType[];
 }
 
 const BalanceGraph = (props: BalanceGraphProps) => {
-  const periods = props.results.results.map((x) => x.period);
-  const labels = props.results.results.map((x) => x.periodDate);
+  const options = {
+    responsive: true,
+    scales: {
+      x: {
+        ticks: {
+          callback(
+            this: Scale<CoreScaleOptions>,
+            tickValue: string | number,
+            index: number,
+            ticks: Tick[]
+          ): string {
+            return getLabelsForGroupedDataCallback(
+              props.results.results,
+              this.getLabelForValue(index)
+            );
+          },
+          autoSkip: false,
+        },
+      },
+    },
+    plugins: {
+      legend: {
+        position: "top" as const,
+      },
+      title: {
+        display: false,
+      },
+    },
+  };
 
   const colors = [
     "rgb(255, 99, 132)",
@@ -72,20 +79,19 @@ const BalanceGraph = (props: BalanceGraphProps) => {
     "rgb(136, 118, 234)",
   ];
 
+  const groupedData = groupDataEveryNthPeriod(props.results.results);
+
   const dataSetsPerLoanType = props.loanTypes.map((loanType, index) => ({
     label: LoanTypeToDescription(loanType),
-    data: periods.map(
-      (period) =>
-        props.results.results
-          .find((r) => r.period == period)
-          ?.projections.find((p) => p.loanType == loanType)?.debtRemaining
+    data: groupedData.data.map(
+      (x) => x.projections.find((p) => p.loanType == loanType)?.debtRemaining
     ),
     borderColor: colors[index],
     backgroundColor: backgroundColors[index],
   }));
 
   const data = {
-    labels,
+    labels: groupedData.labels,
     datasets: dataSetsPerLoanType,
   };
 

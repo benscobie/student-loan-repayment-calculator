@@ -9,9 +9,16 @@ import {
   Title,
   Tooltip,
   Legend,
+  CoreScaleOptions,
+  Scale,
+  Tick,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 import LoanType, { LoanTypeToDescription } from "../../../models/loanType";
+import {
+  getLabelsForGroupedDataCallback,
+  groupDataEveryNthPeriod,
+} from "./graphUtils";
 
 ChartJS.register(
   CategoryScale,
@@ -23,67 +30,61 @@ ChartJS.register(
   Legend
 );
 
-export const options = {
-  responsive: true,
-  scales: {
-    x: {
-      ticks: {
-        callback(val: number, index: number): string {
-          var date = new Date(this.getLabelForValue(val));
-
-          if (date.getMonth() == 0) {
-            return date.getFullYear().toString();
-          }
-
-          return "";
-        },
-      },
-    },
-  },
-  plugins: {
-    legend: {
-      position: "top" as const,
-    },
-    title: {
-      display: false,
-    },
-  },
-};
-
 interface TotalsGraphProps {
   results: Results;
   loanTypes: LoanType[];
 }
 
 const TotalsGraph = (props: TotalsGraphProps) => {
-  const periods = props.results.results.map((x) => x.period);
-  const labels = props.results.results.map((x) => x.periodDate);
+  const options = {
+    responsive: true,
+    scales: {
+      x: {
+        ticks: {
+          callback(
+            this: Scale<CoreScaleOptions>,
+            tickValue: string | number,
+            index: number,
+            ticks: Tick[]
+          ): string {
+            return getLabelsForGroupedDataCallback(
+              props.results.results,
+              this.getLabelForValue(index)
+            );
+          },
+          autoSkip: false,
+        },
+      },
+    },
+    plugins: {
+      legend: {
+        position: "top" as const,
+      },
+      title: {
+        display: false,
+      },
+    },
+  };
+
+  const groupedData = groupDataEveryNthPeriod(props.results.results);
 
   const dataSetsPerLoanType = [
     {
       label: "Toal Paid",
-      data: periods.map((period) =>
-        props.results.results
-          .find((r) => r.period == period)
-          ?.projections.reduce((sum, current) => sum + current.totalPaid, 0)
-      ),
+      data: groupedData.data.map((x) => x.aggregatedTotalPaid),
       borderColor: "rgb(21, 128, 61)",
       backgroundColor: "rgb(21, 128, 61)",
     },
     {
       label: "Debt Remaining",
-      data: periods.map((period) =>
-        props.results.results
-          .find((r) => r.period == period)
-          ?.projections.reduce((sum, current) => sum + current.debtRemaining, 0)
-      ),
+      data: groupedData.data.map((x) => x.aggregatedDebtRemaining),
       borderColor: "rgb(255, 99, 132)",
       backgroundColor: "rgb(255, 99, 132)",
     },
   ];
 
   const data = {
-    labels,
+    labels: groupedData.labels,
     datasets: dataSetsPerLoanType,
   };
 

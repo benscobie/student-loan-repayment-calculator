@@ -1,21 +1,25 @@
 import { NextPage } from "next";
 import React from "react";
-import Loan from "../models/loan";
-import LoanType from "../models/loanType";
-import Button from "./ui/atoms/button";
-import Checkbox from "./ui/atoms/checkbox";
-import Input from "./ui/atoms/input";
-import Select from "./ui/atoms/select";
+import Loan from "../../../models/loan";
+import LoanType from "../../../models/loanType";
+import Button from "../atoms/button";
+import Checkbox from "../atoms/checkbox";
+import Input from "../atoms/input";
+import Select from "../atoms/select";
 
 interface LoanInputProps {
   loan: Loan;
   onChange: Function;
+  onCancel: Function;
   availableLoanTypes: LoanType[];
+  canCancel: boolean;
 }
 
 const LoanInput: NextPage<LoanInputProps> = ({
   loan,
   onChange,
+  onCancel,
+  canCancel,
   availableLoanTypes,
 }) => {
   const [loanType, setLoanType] = React.useState(loan.loanType);
@@ -205,15 +209,29 @@ const LoanInput: NextPage<LoanInputProps> = ({
         />
       )}
 
-      <Button
-        id="submit"
-        style="primary"
-        disabled={!formValid()}
-        wrapperClass="mt-2"
-        type="submit"
-      >
-        Save
-      </Button>
+      <div className="mt-2">
+        <Button
+          id="submit"
+          style="primary"
+          disabled={!formValid()}
+          wrapperClass="inline"
+          className="mr-2"
+          type="submit"
+        >
+          Save
+        </Button>
+
+        {canCancel && (
+          <Button
+            id="submit"
+            style="cancel"
+            wrapperClass="inline"
+            onClick={() => onCancel()}
+          >
+            Cancel
+          </Button>
+        )}
+      </div>
     </form>
   );
 };

@@ -3,13 +3,14 @@ import Head from "next/head";
 import React from "react";
 import Button from "../components/ui/atoms/button";
 import Input from "../components/ui/atoms/input";
-import LoanInput from "../components/loan-input";
+import LoanInput from "../components/ui/organisms/loan-input";
 import Loan from "../models/loan";
 import LoanType, { LoanTypeToDescription } from "../models/loanType";
 import { Plus } from "react-bootstrap-icons";
 import { Results } from "../models/api/results";
 import BalanceGraph from "../components/ui/molecules/balanceGraph";
 import TotalsGraph from "../components/ui/molecules/totalsGraph";
+import GraphHeader from "../components/ui/molecules/graphHeader";
 
 const Home: NextPage = () => {
   const [loanData, setLoanData] = React.useState<Loan[]>([]);
@@ -72,6 +73,10 @@ const Home: NextPage = () => {
         setEditingLoan(null);
       }
     }
+  };
+
+  const cancelLoanInput = () => {
+    setEditingLoan(null);
   };
 
   const addAnotherLoan = () => {
@@ -143,8 +148,11 @@ const Home: NextPage = () => {
 
       {editingLoan != null && (
         <LoanInput
+          key={editingLoan.loanType}
           loan={editingLoan}
           onChange={updateLoan}
+          onCancel={cancelLoanInput}
+          canCancel={loanData.length > 0}
           availableLoanTypes={getAvailableLoanTypes()}
         />
       )}
@@ -185,15 +193,23 @@ const Home: NextPage = () => {
 
       {calculationResults != null && (
         <>
-          <div className="columns-1 md:columns-2">
-            <BalanceGraph
-              results={calculationResults}
-              loanTypes={loanData.map((x) => x.loanType!)}
-            />
-            <TotalsGraph
-              results={calculationResults}
-              loanTypes={loanData.map((x) => x.loanType!)}
-            />
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+            {loanData.length > 1 && (
+              <div>
+                <GraphHeader text="Debt Per Loan Type" />
+                <BalanceGraph
+                  results={calculationResults}
+                  loanTypes={loanData.map((x) => x.loanType!)}
+                />
+              </div>
+            )}
+            <div>
+              <GraphHeader text="Debt Remaining Over Time" />
+              <TotalsGraph
+                results={calculationResults}
+                loanTypes={loanData.map((x) => x.loanType!)}
+              />
+            </div>
           </div>
         </>
       )}
