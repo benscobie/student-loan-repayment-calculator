@@ -8,32 +8,14 @@ This project is a work in progress and the calculations may not be 100% correct,
 
 An up-to-date live version of this application can be found at the following URL: https://student-loan-repayment-calculator.benscobie.com/
 
-## Project setup
-```
-npm install
+## Getting Started
+
+First, run the development server:
+
+```bash
+npm run dev
+# or
+yarn dev
 ```
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Run your tests
-```
-npm run test
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Run your unit tests
-```
-npm run test:unit
-```
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
