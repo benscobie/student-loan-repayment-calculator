@@ -4,34 +4,36 @@ type: docker
 name: default
 
 steps:
-- name: build
-  image: node:lts-alpine
-  pull: always
-  commands:
-    - yarn install
-    - yarn build
+  - name: build
+    image: node:lts-alpine
+    pull: always
+    commands:
+      - yarn install
+      - yarn build
+    env:
+      - NODE_ENV=production
 
-- name: publish_linux-amd64
-  when:
-    ref:
-    - refs/heads/master
-  image: plugins/docker
-  settings:
-    repo: benscobie/student-loan-repayment-calculator
-    dockerfile: docker/Dockerfile.linux.amd64
-    tags: latest
-    username:
-      from_secret: docker_hub_username
-    password:
-      from_secret: docker_hub_password
+  - name: publish_linux-amd64
+    when:
+      ref:
+        - refs/heads/master
+    image: plugins/docker
+    settings:
+      repo: benscobie/student-loan-repayment-calculator
+      dockerfile: docker/Dockerfile.linux.amd64
+      tags: latest
+      username:
+        from_secret: docker_hub_username
+      password:
+        from_secret: docker_hub_password
 
 trigger:
   ref:
-  - refs/heads/master
-  - refs/pull/*/head
+    - refs/heads/master
+    - refs/pull/*/head
 
 ---
 kind: signature
-hmac: 3845c907e92151c31ed5c1c32b1409db735230e797f002b2948024432a97d7ef
+hmac: 6787b59b581253bbd7446057e8753080afeb470ce557cfa9a9b58add83d6fe72
 
 ...
