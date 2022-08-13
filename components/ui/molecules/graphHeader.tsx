@@ -3,7 +3,7 @@ interface GraphHeaderProps {
 }
 
 const GraphHeader = (props: GraphHeaderProps) => {
-  return <h2 className="text-center">{props.text}</h2>;
+  return <h2 className="text-center text-lg font-semibold">{props.text}</h2>;
 };
 
 export default GraphHeader;
