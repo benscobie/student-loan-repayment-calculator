@@ -14,7 +14,7 @@ import {
   Tick,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
-import LoanType, { LoanTypeToDescription } from "../../../models/loanType";
+import LoanType from "../../../models/loanType";
 import {
   getLabelsForGroupedDataCallback,
   groupDataEveryNthPeriod,

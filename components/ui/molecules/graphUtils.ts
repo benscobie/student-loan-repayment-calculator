@@ -1,4 +1,5 @@
 import Result from "../../../models/api/result";
+import { DateTime } from "luxon";
 
 export function getMonthGrouping(results: Result[]) {
     const periods = results.map((x) => x.period);
@@ -23,7 +24,7 @@ export function groupDataEveryNthPeriod(results: Result[]) {
 
       if (
         period == 1 ||
-        (new Date(periodResults!.periodDate).getMonth() + 1) %
+        (periodResults!.periodDate.month) %
           getMonthGrouping(results) ==
           0
       ) {
@@ -36,10 +37,14 @@ export function groupDataEveryNthPeriod(results: Result[]) {
   };
 
   export function getLabelsForGroupedDataCallback(results: Result[], label: string) {
-    var date = new Date(label);
+    var date = DateTime.fromISO(label);
 
-    if (date.getMonth() + 1 <= getMonthGrouping(results)) {
-        return date.getFullYear().toString();
+    if (results.length <= 12) {
+      return date.monthShort + " " + date.year.toString();
+    }
+
+    if (date.month <= getMonthGrouping(results)) {
+        return date.year.toString();
     }
 
     return "";

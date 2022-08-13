@@ -11,10 +11,12 @@ import { Results } from "../models/api/results";
 import BalanceGraph from "../components/ui/molecules/balanceGraph";
 import TotalsGraph from "../components/ui/molecules/totalsGraph";
 import GraphHeader from "../components/ui/molecules/graphHeader";
+import { DateTime } from "luxon";
+import getAxios from "../utils/useAxios";
 
 const Home: NextPage = () => {
   const [loanData, setLoanData] = React.useState<Loan[]>([]);
-  const [birthDate, setBirthDate] = React.useState<Date>();
+  const [birthDate, setBirthDate] = React.useState<DateTime>();
   const [annualSalaryBeforeTax, setAnnualSalaryBeforeTax] =
     React.useState<number>();
   const [editingLoan, setEditingLoan] = React.useState<Loan | null>({
@@ -104,33 +106,30 @@ const Home: NextPage = () => {
   };
 
   const calculate = async () => {
-    const response = await fetch(
+    const response = await getAxios().post<Results>(
       process.env.NEXT_PUBLIC_API_URL + "/ukstudentloans/calculate",
       {
-        method: "POST",
-        body: JSON.stringify({
-          annualSalaryBeforeTax: annualSalaryBeforeTax,
-          birthDate: birthDate,
-          loans: loanData.map((loan) => ({
-            loanType: loan.loanType,
-            balanceRemaining: loan.balanceRemaining,
-            firstRepaymentDate: loan.firstRepaymentDate,
-            academicYearLoanTakenOut: loan.academicYearLoanTakenOut,
-            studyingPartTime: loan.studyingPartTime ?? false,
-            courseStartDate: loan.courseStartDate,
-            courseEndDate: loan.courseEndDate,
-          })),
-        }),
+        annualSalaryBeforeTax: annualSalaryBeforeTax,
+        birthDate: birthDate,
+        loans: loanData.map((loan) => ({
+          loanType: loan.loanType,
+          balanceRemaining: loan.balanceRemaining,
+          firstRepaymentDate: loan.firstRepaymentDate,
+          academicYearLoanTakenOut: loan.academicYearLoanTakenOut,
+          studyingPartTime: loan.studyingPartTime ?? false,
+          courseStartDate: loan.courseStartDate,
+          courseEndDate: loan.courseEndDate,
+        })),
+      },
+      {
         headers: {
-          "Content-type": "application/json; charset=UTF-8",
+          "Content-Type": "application/json",
+          Accept: "application/json",
         },
       }
     );
 
-    if (response.ok) {
-      const data = (await response.json()) as Results;
-      setCalculationResults(data);
-    }
+    setCalculationResults(response.data);
   };
 
   return (
@@ -193,6 +192,7 @@ const Home: NextPage = () => {
         id="annualSalaryBeforeTax"
         type="number"
         label="Annual Salary Before Tax"
+        value={annualSalaryBeforeTax || ""}
         onChange={(e) =>
           setAnnualSalaryBeforeTax(
             e.target.value.length == 0 ? undefined : parseInt(e.target.value)
@@ -207,7 +207,8 @@ const Home: NextPage = () => {
           label="Birth Date"
           wrapperClass="mt-2"
           tooltip="Your birth date is used to calculate when the loan can be written off."
-          onChange={(e) => setBirthDate(new Date(e.target.value))}
+          value={birthDate?.toISODate() || ""}
+          onChange={(e) => setBirthDate(DateTime.fromISO(e.target.value))}
         />
       )}
 
