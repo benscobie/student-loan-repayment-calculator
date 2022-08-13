@@ -8,11 +8,10 @@ import Loan from "../models/loan";
 import LoanType, { LoanTypeToDescription } from "../models/loanType";
 import { PencilFill, Plus, TrashFill } from "react-bootstrap-icons";
 import { Results } from "../models/api/results";
-import BalanceGraph from "../components/ui/molecules/balanceGraph";
-import TotalsGraph from "../components/ui/molecules/totalsGraph";
-import GraphHeader from "../components/ui/molecules/graphHeader";
 import { DateTime } from "luxon";
 import getAxios from "../utils/useAxios";
+import LoanBreakdown from "../components/ui/organisms/loan-breakdown";
+import currencyFormatter from "../utils/currencyFormatter";
 
 const Home: NextPage = () => {
   const [loanData, setLoanData] = React.useState<Loan[]>([]);
@@ -148,8 +147,8 @@ const Home: NextPage = () => {
         loanData.map((element, index) => (
           <div key={element.loanType?.toString()}>
             <h2>
-              {LoanTypeToDescription(element.loanType)} - £
-              {element.balanceRemaining}
+              {LoanTypeToDescription(element.loanType)} -{" "}
+              {currencyFormatter().format(element.balanceRemaining ?? 0)}
               <PencilFill
                 className="inline ml-2 cursor-pointer"
                 size={16}
@@ -223,27 +222,13 @@ const Home: NextPage = () => {
       </Button>
 
       {calculationResults != null && (
-        <>
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-            {(calculationResults.results.find((x) => x.period == 1)?.projections
-              .length ?? 0) > 1 && (
-              <div>
-                <GraphHeader text="Debt Per Loan Type" />
-                <BalanceGraph
-                  results={calculationResults}
-                  loanTypes={loanData.map((x) => x.loanType!)}
-                />
-              </div>
-            )}
-            <div>
-              <GraphHeader text="Debt Remaining Over Time" />
-              <TotalsGraph
-                results={calculationResults}
-                loanTypes={loanData.map((x) => x.loanType!)}
-              />
-            </div>
-          </div>
-        </>
+        <div className="mt-5">
+          <h1 className="text-2xl mb-1">Your Results</h1>
+          <LoanBreakdown
+            results={calculationResults}
+            loanTypes={loanData.map((x) => x.loanType!)}
+          />
+        </div>
       )}
     </div>
   );
