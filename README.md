@@ -2,7 +2,7 @@
 
 # Student Loan Repayment Calculator
 
-A UK student loan repayment calculator. It supports both type 1 and type 2 plans and even a combination of the two.
+A UK student loan repayment calculator which supports multiple plans.
 
 This project is a work in progress and the calculations may not be 100% correct, this calculator does not constitute financial advice.
 
@@ -13,8 +13,6 @@ An up-to-date live version of this application can be found at the following URL
 First, run the development server:
 
 ```bash
-npm run dev
-# or
 yarn dev
 ```
 

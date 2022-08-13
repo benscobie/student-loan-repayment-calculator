@@ -134,6 +134,7 @@ const LoanInput: NextPage<LoanInputProps> = ({
         type="number"
         label="Balance Remaining"
         value={balanceRemaining}
+        wrapperClass="mt-1"
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
           setBalanceRemaining(parseInt(e.target.value))
         }
@@ -146,6 +147,7 @@ const LoanInput: NextPage<LoanInputProps> = ({
             type="date"
             label="Course Start Date"
             value={courseStartDate?.toISOString().split("T")[0]}
+            wrapperClass="mt-1"
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setCourseStartDate(new Date(e.target.value))
             }
@@ -156,16 +158,10 @@ const LoanInput: NextPage<LoanInputProps> = ({
             type="date"
             label="Course End Date"
             value={courseEndDate?.toISOString().split("T")[0]}
+            wrapperClass="mt-1"
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setCourseEndDate(new Date(e.target.value))
             }
-          />
-
-          <Checkbox
-            id="studyingPartTime"
-            label="Studying part-time"
-            checked={studyingPartTime}
-            onChange={(e) => setSudyingPartTime(e.target.checked)}
           />
         </>
       )}
@@ -176,6 +172,7 @@ const LoanInput: NextPage<LoanInputProps> = ({
             id="academicYearLoanTakenOut"
             label="Academic Year Loan Taken Out"
             value={academicYearLoanTakenOut}
+            wrapperClass="mt-1"
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setAcademicYearLoanTakenOut(parseInt(e.target.value))
             }
@@ -202,10 +199,22 @@ const LoanInput: NextPage<LoanInputProps> = ({
           id="firstRepaymentDate"
           type="date"
           label="First repayment date"
+          tooltip="Your first repayment date is used to calculate when the loan can be written off."
+          wrapperClass="mt-1"
           value={firstRepaymentDate?.toISOString().split("T")[0]}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             setFirstRepaymentDate(new Date(e.target.value))
           }
+        />
+      )}
+
+      {loanType == LoanType.Type2 && (
+        <Checkbox
+          id="studyingPartTime"
+          label="Studying part-time"
+          checked={studyingPartTime}
+          wrapperClass="mt-1"
+          onChange={(e) => setSudyingPartTime(e.target.checked)}
         />
       )}
 

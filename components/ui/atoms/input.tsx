@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import Tooltip from "./tooltip";
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   id: string;
@@ -9,6 +10,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   errorText?: string;
   required?: boolean;
   wrapperClass?: string;
+  tooltip?: string;
   children?: React.ReactNode;
 }
 
@@ -22,6 +24,7 @@ const Input = (props: InputProps) => {
     errorText = "",
     required = false,
     wrapperClass = "",
+    tooltip = "",
     ...rest
   } = props;
 
@@ -29,9 +32,12 @@ const Input = (props: InputProps) => {
 
   return (
     <div className={wrapperClass}>
-      <label htmlFor={id} className="block mb-1">
-        {label} {required && <span className="text-red">*</span>}
-      </label>
+      <div className="block mb-1">
+        <label htmlFor={id}>
+          {label} {required && <span className="text-red">*</span>}
+        </label>
+        {tooltip && <Tooltip>{tooltip}</Tooltip>}
+      </div>
       <input
         ref={inputRef}
         type={type}
