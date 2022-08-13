@@ -6,7 +6,7 @@ import Input from "../components/ui/atoms/input";
 import LoanInput from "../components/ui/organisms/loan-input";
 import Loan from "../models/loan";
 import LoanType, { LoanTypeToDescription } from "../models/loanType";
-import { Plus } from "react-bootstrap-icons";
+import { PencilFill, Plus, TrashFill } from "react-bootstrap-icons";
 import { Results } from "../models/api/results";
 import BalanceGraph from "../components/ui/molecules/balanceGraph";
 import TotalsGraph from "../components/ui/molecules/totalsGraph";
@@ -92,6 +92,17 @@ const Home: NextPage = () => {
     setEditingLoan(loanData[index]);
   };
 
+  const canCalculate = () => {
+    return (
+      editingLoan == null &&
+      loanData.length > 0 &&
+      (!isBirthDateRequired() ||
+        (isBirthDateRequired() && birthDate != null)) &&
+      annualSalaryBeforeTax != null &&
+      annualSalaryBeforeTax > 0
+    );
+  };
+
   const calculate = async () => {
     const response = await fetch(
       process.env.NEXT_PUBLIC_API_URL + "/ukstudentloans/calculate",
@@ -132,7 +143,7 @@ const Home: NextPage = () => {
         />
       </Head>
 
-      <h1 className="text-2xl">Your Plans</h1>
+      <h1 className="text-2xl mb-1">Your Plans</h1>
 
       {loanData &&
         loanData.map((element, index) => (
@@ -140,9 +151,17 @@ const Home: NextPage = () => {
             <h2>
               {LoanTypeToDescription(element.loanType)} - £
               {element.balanceRemaining}
+              <PencilFill
+                className="inline ml-2 cursor-pointer"
+                size={16}
+                onClick={() => editLoan(index)}
+              />
+              <TrashFill
+                className="inline ml-2 cursor-pointer"
+                size={16}
+                onClick={() => removeLoan(index)}
+              />
             </h2>
-            <a onClick={() => editLoan(index)}>Edit</a>
-            <a onClick={() => removeLoan(index)}>Remove</a>
           </div>
         ))}
 
@@ -158,18 +177,27 @@ const Home: NextPage = () => {
       )}
 
       {editingLoan == null && getAvailableLoanTypes().length > 0 && (
-        <Button id="addAnotherLoan" style="primary" onClick={addAnotherLoan}>
+        <Button
+          id="addAnotherLoan"
+          style="primary"
+          onClick={addAnotherLoan}
+          className="mt-2"
+        >
           Add another loan <Plus className="inline" size={24} />
         </Button>
       )}
 
-      <h2 className="mt-4 text-2xl">Your Details</h2>
+      <h2 className="mt-2 mb-1 text-2xl">Your Details</h2>
 
       <Input
         id="annualSalaryBeforeTax"
         type="number"
         label="Annual Salary Before Tax"
-        onChange={(e) => setAnnualSalaryBeforeTax(parseInt(e.target.value))}
+        onChange={(e) =>
+          setAnnualSalaryBeforeTax(
+            e.target.value.length == 0 ? undefined : parseInt(e.target.value)
+          )
+        }
       />
 
       {isBirthDateRequired() && (
@@ -177,6 +205,8 @@ const Home: NextPage = () => {
           id="birthDate"
           type="date"
           label="Birth Date"
+          wrapperClass="mt-2"
+          tooltip="Your birth date is used to calculate when the loan can be written off."
           onChange={(e) => setBirthDate(new Date(e.target.value))}
         />
       )}
@@ -185,7 +215,7 @@ const Home: NextPage = () => {
         id="calculate"
         wrapperClass="mt-2"
         style="primary"
-        disabled={editingLoan != null || loanData.length === 0}
+        disabled={!canCalculate()}
         onClick={calculate}
       >
         Calculate
@@ -194,7 +224,8 @@ const Home: NextPage = () => {
       {calculationResults != null && (
         <>
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-            {loanData.length > 1 && (
+            {(calculationResults.results.find((x) => x.period == 1)?.projections
+              .length ?? 0) > 1 && (
               <div>
                 <GraphHeader text="Debt Per Loan Type" />
                 <BalanceGraph

@@ -38,7 +38,7 @@ export function groupDataEveryNthPeriod(results: Result[]) {
   export function getLabelsForGroupedDataCallback(results: Result[], label: string) {
     var date = new Date(label);
 
-    if (date.getMonth() <= getMonthGrouping(results)) {
+    if (date.getMonth() + 1 <= getMonthGrouping(results)) {
         return date.getFullYear().toString();
     }
 
