@@ -1,8 +1,9 @@
+import { DateTime } from "luxon";
 import Projection from "./projection";
 
 export default interface Result {
     period: number;
-    periodDate: Date;
+    periodDate: DateTime;
     salary: number;
     projections: Projection[];
     aggregatedDebtRemaining: number;
