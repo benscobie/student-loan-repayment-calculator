@@ -251,7 +251,7 @@ const Home: NextPage = () => {
       </div>
 
       {calculationResults != null && (
-        <div className="mt-5">
+        <div className="mt-2">
           <h1 className="text-2xl mb-1">Your Results</h1>
           <LoanBreakdown
             results={calculationResults}
