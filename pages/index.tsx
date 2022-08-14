@@ -7,11 +7,12 @@ import LoanInput from "../components/ui/organisms/loan-input";
 import Loan from "../models/loan";
 import LoanType, { LoanTypeToDescription } from "../models/loanType";
 import { PencilFill, Plus, TrashFill } from "react-bootstrap-icons";
-import { Results } from "../models/api/results";
+import { Results } from "../api/models/results";
 import { DateTime } from "luxon";
 import getAxios from "../utils/useAxios";
 import LoanBreakdown from "../components/ui/organisms/loan-breakdown";
 import currencyFormatter from "../utils/currencyFormatter";
+import AssumptionsInput from "../components/ui/organisms/assumptions-input";
 
 const Home: NextPage = () => {
   const [loanData, setLoanData] = React.useState<Loan[]>([]);
@@ -21,8 +22,18 @@ const Home: NextPage = () => {
   const [editingLoan, setEditingLoan] = React.useState<Loan | null>({
     loanType: LoanType.Unselected,
   });
+  const [salaryGrowth, setSalaryGrowth] = React.useState(0);
+  const [annualEarningsGrowth, setAnnualEarningsGrowth] = React.useState(0);
 
   const [calculationResults, setCalculationResults] = React.useState<Results>();
+
+  const onSalaryGrowthChange = (value: number) => {
+    setSalaryGrowth(value);
+  };
+
+  const onAnnualEarningsGrowthChange = (value: number) => {
+    setAnnualEarningsGrowth(value);
+  };
 
   const isBirthDateRequired = () => {
     return loanData.some((loan) => {
@@ -110,6 +121,8 @@ const Home: NextPage = () => {
       {
         annualSalaryBeforeTax: annualSalaryBeforeTax,
         birthDate: birthDate,
+        salaryGrowth: salaryGrowth,
+        annualEarningsGrowth: annualEarningsGrowth,
         loans: loanData.map((loan) => ({
           loanType: loan.loanType,
           balanceRemaining: loan.balanceRemaining,
@@ -185,41 +198,57 @@ const Home: NextPage = () => {
         </Button>
       )}
 
-      <h2 className="mt-2 mb-1 text-2xl">Your Details</h2>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div>
+          <h2 className="mt-2 mb-1 text-2xl">Your Details</h2>
+          <Input
+            id="annualSalaryBeforeTax"
+            type="number"
+            label="Annual salary before tax"
+            value={annualSalaryBeforeTax || ""}
+            onChange={(e) =>
+              setAnnualSalaryBeforeTax(
+                e.target.value.length == 0
+                  ? undefined
+                  : parseInt(e.target.value)
+              )
+            }
+          />
 
-      <Input
-        id="annualSalaryBeforeTax"
-        type="number"
-        label="Annual Salary Before Tax"
-        value={annualSalaryBeforeTax || ""}
-        onChange={(e) =>
-          setAnnualSalaryBeforeTax(
-            e.target.value.length == 0 ? undefined : parseInt(e.target.value)
-          )
-        }
-      />
+          {isBirthDateRequired() && (
+            <Input
+              id="birthDate"
+              type="date"
+              label="Birth Date"
+              wrapperClass="mt-2"
+              tooltip="Your birth date is used to calculate when the loan can be written off."
+              value={birthDate?.toISODate() || ""}
+              onChange={(e) => setBirthDate(DateTime.fromISO(e.target.value))}
+            />
+          )}
+        </div>
+        <div>
+          <h2 className="mt-2 mb-1 text-2xl">Assumptions</h2>
+          <AssumptionsInput
+            onSalaryGrowthChange={onSalaryGrowthChange}
+            onAnnualEarningsGrowthChange={onAnnualEarningsGrowthChange}
+            salaryGrowth={salaryGrowth}
+            annualEarningsGrowth={annualEarningsGrowth}
+          />
+        </div>
+      </div>
 
-      {isBirthDateRequired() && (
-        <Input
-          id="birthDate"
-          type="date"
-          label="Birth Date"
+      <div>
+        <Button
+          id="calculate"
           wrapperClass="mt-2"
-          tooltip="Your birth date is used to calculate when the loan can be written off."
-          value={birthDate?.toISODate() || ""}
-          onChange={(e) => setBirthDate(DateTime.fromISO(e.target.value))}
-        />
-      )}
-
-      <Button
-        id="calculate"
-        wrapperClass="mt-2"
-        style="primary"
-        disabled={!canCalculate()}
-        onClick={calculate}
-      >
-        Calculate
-      </Button>
+          style="primary"
+          disabled={!canCalculate()}
+          onClick={calculate}
+        >
+          Calculate
+        </Button>
+      </div>
 
       {calculationResults != null && (
         <div className="mt-5">

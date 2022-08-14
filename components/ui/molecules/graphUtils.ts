@@ -1,4 +1,4 @@
-import Result from "../../../models/api/result";
+import Result from "../../../api/models/result";
 import { DateTime } from "luxon";
 
 export function getMonthGrouping(results: Result[]) {
