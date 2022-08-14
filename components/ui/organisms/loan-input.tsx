@@ -1,6 +1,6 @@
 import { DateTime } from "luxon";
 import { NextPage } from "next";
-import React from "react";
+import React, { useEffect } from "react";
 import Loan from "../../../models/loan";
 import LoanType from "../../../models/loanType";
 import Button from "../atoms/button";
@@ -133,7 +133,7 @@ const LoanInput: NextPage<LoanInputProps> = ({
       <Input
         id="balanceRemaining"
         type="number"
-        label="Balance Remaining"
+        label="Balance remaining"
         value={balanceRemaining || ""}
         wrapperClass="mt-1"
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
@@ -146,7 +146,7 @@ const LoanInput: NextPage<LoanInputProps> = ({
           <Input
             id="courseStartDate"
             type="date"
-            label="Course Start Date"
+            label="Course start date"
             value={courseStartDate?.toISODate() || ""}
             wrapperClass="mt-1"
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
@@ -157,7 +157,7 @@ const LoanInput: NextPage<LoanInputProps> = ({
           <Input
             id="courseEndDate"
             type="date"
-            label="Course End Date"
+            label="Course end date"
             value={courseEndDate?.toISODate() || ""}
             wrapperClass="mt-1"
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>

@@ -5,7 +5,7 @@ import LoanType from "../../../models/loanType";
 import BalanceGraph from "../molecules/balanceGraph";
 import GraphHeader from "../molecules/graphHeader";
 import TotalsGraph from "../molecules/totalsGraph";
-import { Results } from "../../../models/api/results";
+import { Results } from "../../../api/models/results";
 import Highlight from "../atoms/highlight";
 import currencyFormatter from "../../../utils/currencyFormatter";
 
