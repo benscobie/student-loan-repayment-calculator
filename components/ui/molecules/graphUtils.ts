@@ -23,8 +23,8 @@ export function groupDataEveryNthPeriod(results: Result[]) {
       );
 
       if (
-        period == 1 ||
-        (periodResults!.periodDate.month) %
+        period == 1 || period == results.length ||
+        periodResults!.periodDate.month %
           getMonthGrouping(results) ==
           0
       ) {
