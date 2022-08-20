@@ -1,13 +1,14 @@
 import { useRef } from "react";
 
-interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement | HTMLInputElement> {
-  id: string,
-  placeholder?: string,
-  label: string,
-  error?: boolean,
-  errorText?: string,
-  required?: boolean,
-  wrapperClass?: string,
+interface SelectProps
+  extends React.SelectHTMLAttributes<HTMLSelectElement | HTMLInputElement> {
+  id: string;
+  placeholder?: string;
+  label: string;
+  error?: boolean;
+  errorText?: string;
+  required?: boolean;
+  wrapperClass?: string;
   children?: React.ReactNode;
 }
 
@@ -34,16 +35,16 @@ const Input = (props: SelectProps) => {
       <select
         id="loanType"
         ref={inputRef}
-        className={`border transition duration-150 ease-in-out bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 w-full p-2.5 font-light block text-sm rounded-md ${
-          error
-            ? "focus-within:border-red border-red"
-            : "focus-within:border-primary border-gray-gray4"
+        className={`border bg-gray-50 text-gray-900 focus:ring-blue-500 focus:border-blue-500 w-full p-2.5 font-light block text-sm rounded-md ${
+          error ? "border-red-600" : "border-gray-300"
         }`}
         {...rest}
       >
         {children}
       </select>
-      {errorText && <p className="text-xs pl-2 text-red mb-4">{errorText}</p>}
+      {errorText && (
+        <p className="text-xs pl-2 text-red-600 mt-1">{errorText}</p>
+      )}
     </div>
   );
 };

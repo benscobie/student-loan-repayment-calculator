@@ -6,6 +6,7 @@ import LoanType from "../../../models/loanType";
 import Button from "../atoms/button";
 import Checkbox from "../atoms/checkbox";
 import Input from "../atoms/input";
+import InputGroup from "../atoms/input-group";
 import Select from "../atoms/select";
 
 interface LoanInputProps {
@@ -130,12 +131,13 @@ const LoanInput: NextPage<LoanInputProps> = ({
         )}
       </Select>
 
-      <Input
+      <InputGroup
         id="balanceRemaining"
         type="number"
         label="Balance remaining"
         value={balanceRemaining || ""}
         wrapperClass="mt-1"
+        symbol="£"
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
           setBalanceRemaining(parseInt(e.target.value))
         }

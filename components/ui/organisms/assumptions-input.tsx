@@ -2,6 +2,7 @@ import { NextPage } from "next";
 import React, { useEffect } from "react";
 import { useAssumptions } from "../../../api/data/assumptions";
 import Input from "../atoms/input";
+import InputGroup from "../atoms/input-group";
 
 interface AssumptionsInputProps {
   salaryGrowth: number;
@@ -38,13 +39,14 @@ const AssumptionsInput: NextPage<AssumptionsInputProps> = ({
 
   return (
     <div>
-      <Input
+      <InputGroup
         id="salaryGrowth"
         type="number"
         label="Annual salary growth"
         min="-100"
         max="100"
         step="0.1"
+        symbol="%"
         disabled={isLoading}
         defaultValue={assumptions != null ? assumptions.salaryGrowth * 100 : ""}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
@@ -52,7 +54,7 @@ const AssumptionsInput: NextPage<AssumptionsInputProps> = ({
         }
       />
 
-      <Input
+      <InputGroup
         id="annualEarningsGrowth"
         type="number"
         label="UK average annual earnings growth"
@@ -61,6 +63,7 @@ const AssumptionsInput: NextPage<AssumptionsInputProps> = ({
         min="-100"
         max="100"
         step="0.1"
+        symbol="%"
         disabled={isLoading}
         defaultValue={
           assumptions != null ? assumptions.annualEarningsGrowth * 100 : ""
