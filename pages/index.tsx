@@ -13,6 +13,7 @@ import getAxios from "../utils/useAxios";
 import LoanBreakdown from "../components/ui/organisms/loan-breakdown";
 import currencyFormatter from "../utils/currencyFormatter";
 import AssumptionsInput from "../components/ui/organisms/assumptions-input";
+import InputGroup from "../components/ui/atoms/input-group";
 
 const Home: NextPage = () => {
   const [loanData, setLoanData] = React.useState<Loan[]>([]);
@@ -201,11 +202,12 @@ const Home: NextPage = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div>
           <h2 className="mt-2 mb-1 text-2xl">Your Details</h2>
-          <Input
+          <InputGroup
             id="annualSalaryBeforeTax"
             type="number"
             label="Annual salary before tax"
             value={annualSalaryBeforeTax || ""}
+            symbol="£"
             onChange={(e) =>
               setAnnualSalaryBeforeTax(
                 e.target.value.length == 0

@@ -30,18 +30,18 @@ const Checkbox = (props: CheckboxProps) => {
       <input
         ref={inputRef}
         type="checkbox"
-        className={`border transition duration-150 ease-in-out bg-gray-50 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 p-2.5 font-light text-sm w-4 h-4 rounded-md ${
-          error
-            ? "focus-within:border-red border-red"
-            : "focus-within:border-primary border-gray-gray4"
+        className={`border bg-gray-50 text-gray-900 focus:ring-blue-500 focus:border-blue-500 p-2.5 font-light text-sm w-4 h-4 rounded-md ${
+          error ? "border-red-600" : "border-gray-300"
         }`}
         id={id}
         {...rest}
       />
       <label htmlFor={id} className="ml-2 mb-1">
-        {label} {required && <span className="text-red">*</span>}
+        {label} {required && <span className="text-red-600">*</span>}
       </label>
-      {errorText && <p className="text-xs pl-2 text-red mb-4">{errorText}</p>}
+      {errorText && (
+        <p className="text-xs pl-2 text-red-600 mt-1">{errorText}</p>
+      )}
     </div>
   );
 };

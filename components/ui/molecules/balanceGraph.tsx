@@ -19,6 +19,8 @@ import {
   getLabelsForGroupedDataCallback,
   groupDataEveryNthPeriod,
 } from "./graphUtils";
+import currencyFormatter from "../../../utils/currencyFormatter";
+import { DateTime } from "luxon";
 
 ChartJS.register(
   CategoryScale,
@@ -62,6 +64,27 @@ const BalanceGraph = (props: BalanceGraphProps) => {
       },
       title: {
         display: false,
+      },
+      tooltip: {
+        callbacks: {
+          label: function (context: any) {
+            let label = context.dataset.label || "";
+
+            if (label) {
+              label += ": ";
+            }
+
+            if (context.parsed.y !== null) {
+              label += currencyFormatter().format(context.parsed.y);
+            }
+
+            return label;
+          },
+          title: function (context: any) {
+            var date = DateTime.fromISO(context[0].label);
+            return date.toLocaleString();
+          },
+        },
       },
     },
   };

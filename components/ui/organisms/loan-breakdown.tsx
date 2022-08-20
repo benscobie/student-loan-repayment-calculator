@@ -61,6 +61,7 @@ const LoanBreakdownProps: NextPage<LoanBreakdownProps> = ({
           )}
           , with your last payment date being in{" "}
           <Highlight>{results.debtClearedDate.toFormat("LLLL yyyy")}</Highlight>
+          .
         </p>
         <p className="mt-2">
           You will have a paid{" "}
