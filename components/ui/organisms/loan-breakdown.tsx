@@ -19,10 +19,12 @@ const LoanBreakdownProps: NextPage<LoanBreakdownProps> = ({
   loanTypes,
 }) => {
   const paidOffDiff = () => {
-    const now = DateTime.local();
     const paidOff = results.debtClearedDate;
 
-    return paidOff.diff(now, ["years", "months"]);
+    var now = DateTime.local();
+    var rezoned = now.setZone(paidOff.zone, { keepLocalTime: true });
+
+    return paidOff.diff(rezoned, ["years", "months"]);
   };
 
   const formattedYearText = () => {
