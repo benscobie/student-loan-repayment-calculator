@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { forwardRef, useRef } from "react";
 import Tooltip from "./tooltip";
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -15,7 +15,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   children?: React.ReactNode;
 }
 
-const InputGroup = (props: InputProps) => {
+const InputGroup = forwardRef<HTMLInputElement, InputProps>(function InputGroup(props: InputProps, ref) {
   const {
     id,
     placeholder = "",
@@ -30,8 +30,6 @@ const InputGroup = (props: InputProps) => {
     ...rest
   } = props;
 
-  const inputRef = useRef(null);
-
   return (
     <div className={wrapperClass}>
       <div className="block mb-1">
@@ -45,7 +43,7 @@ const InputGroup = (props: InputProps) => {
           <span className="text-gray-500 sm:text-sm">{symbol}</span>
         </div>
         <input
-          ref={inputRef}
+          ref={ref}
           type={type}
           className={`pl-7 border bg-gray-50 text-gray-900 focus:ring-blue-500 focus:border-blue-500 w-full p-2.5 font-light block text-sm rounded-md ${
             error ? "border-red-600" : "border-gray-300"
@@ -60,6 +58,6 @@ const InputGroup = (props: InputProps) => {
       )}
     </div>
   );
-};
+});
 
 export default InputGroup;

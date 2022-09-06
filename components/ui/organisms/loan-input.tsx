@@ -1,6 +1,6 @@
 import { DateTime } from "luxon";
 import { NextPage } from "next";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import Loan from "../../../models/loan";
 import LoanType from "../../../models/loanType";
 import Button from "../atoms/button";
@@ -54,9 +54,18 @@ const LoanInput: NextPage<LoanInputProps> = ({
     });
   };
 
+  const balanceRemainingRef = useRef<HTMLInputElement>(null);
+
   const loanTypeIsAvailable = (type: LoanType) => {
     return availableLoanTypes.includes(type) || loan.loanType == type;
   };
+
+  const onLoanTypeChange = (type: string) => {
+    setLoanType(LoanType[type as keyof typeof LoanType])
+    if (balanceRemainingRef.current) {
+      balanceRemainingRef.current.focus();
+    }
+  }
 
   const firstRepaymentDateRequired =
     (loanType == LoanType.Type1 && academicYearLoanTakenOut == 2006) ||
@@ -109,7 +118,7 @@ const LoanInput: NextPage<LoanInputProps> = ({
         label="Loan type"
         value={loanType || LoanType.Unselected}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-          setLoanType(LoanType[e.target.value as keyof typeof LoanType])
+          onLoanTypeChange(e.target.value)
         }
       >
         <option value={LoanType.Unselected}>--Please choose a plan--</option>
@@ -133,6 +142,7 @@ const LoanInput: NextPage<LoanInputProps> = ({
 
       <InputGroup
         id="balanceRemaining"
+        ref={balanceRemainingRef}
         type="number"
         label="Balance remaining"
         value={balanceRemaining || ""}
