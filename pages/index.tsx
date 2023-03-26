@@ -14,8 +14,13 @@ import LoanBreakdown from "../components/ui/organisms/loan-breakdown";
 import currencyFormatter from "../utils/currencyFormatter";
 import AssumptionsInput from "../components/ui/organisms/assumptions-input";
 import InputGroup from "../components/ui/atoms/input-group";
+import Assumptions from "../api/models/assumptions";
 
-const Home: NextPage = () => {
+interface HomeProps {
+  assumptions: Assumptions;
+}
+
+const Home: NextPage<HomeProps> = ({ assumptions }) => {
   const [loanData, setLoanData] = React.useState<Loan[]>([]);
   const [birthDate, setBirthDate] = React.useState<DateTime>();
   const [annualSalaryBeforeTax, setAnnualSalaryBeforeTax] =
@@ -23,8 +28,12 @@ const Home: NextPage = () => {
   const [editingLoan, setEditingLoan] = React.useState<Loan | null>({
     loanType: LoanType.Unselected,
   });
-  const [salaryGrowth, setSalaryGrowth] = React.useState(0);
-  const [annualEarningsGrowth, setAnnualEarningsGrowth] = React.useState(0);
+  const [salaryGrowth, setSalaryGrowth] = React.useState(
+    assumptions.salaryGrowth
+  );
+  const [annualEarningsGrowth, setAnnualEarningsGrowth] = React.useState(
+    assumptions.annualEarningsGrowth
+  );
 
   const [calculationResults, setCalculationResults] = React.useState<Results>();
 
@@ -165,15 +174,32 @@ const Home: NextPage = () => {
           </ul>
           <div className="p-2 bg-yellow-200 rounded-md text-yellow-800 mt-2">
             <InfoCircle size={16} className="inline"></InfoCircle>
-            <span className="ml-2">Please note that this calculator does not constitute financial advice.</span>
+            <span className="ml-2">
+              Please note that this calculator does not constitute financial
+              advice.
+            </span>
           </div>
 
           <h3 className="text-xl mt-2 mb-1">How much do I repay?</h3>
-          <p className="py-1">For plans 1, 2 and 4 your repayments equal 9% of your pre-tax earnings above the threshold. When you have more than one type the payment is split according to the repayment thresholds.</p>
-          <p className="py-1">For the postgraduate loan your repayments equal 6% of your pre-tax earnings above the threshold.</p>
+          <p className="py-1">
+            For plans 1, 2 and 4 your repayments equal 9% of your pre-tax
+            earnings above the threshold. When you have more than one type the
+            payment is split according to the repayment thresholds.
+          </p>
+          <p className="py-1">
+            For the postgraduate loan your repayments equal 6% of your pre-tax
+            earnings above the threshold.
+          </p>
 
           <h3 className="text-xl mt-2 b-1">Should I pay it off?</h3>
-          <p className="py-1">MoneySavingExpert extrordinaire Martin Lewis has a good article on figuring out whether it&apos;s worth paying off your loan early. You can find the article here: <a href="https://www.moneysavingexpert.com/students/student-loans-repay/">https://www.moneysavingexpert.com/students/student-loans-repay/</a></p>
+          <p className="py-1">
+            MoneySavingExpert extrordinaire Martin Lewis has a good article on
+            figuring out whether it&apos;s worth paying off your loan early. You
+            can find the article here:{" "}
+            <a href="https://www.moneysavingexpert.com/students/student-loans-repay/">
+              https://www.moneysavingexpert.com/students/student-loans-repay/
+            </a>
+          </p>
         </div>
         <div>
           <h2 className="text-2xl mb-1">Your Plans</h2>
@@ -245,7 +271,9 @@ const Home: NextPage = () => {
                   wrapperClass="mt-2"
                   tooltip="Your birth date is used to calculate when the loan can be written off."
                   value={birthDate?.toISODate() || ""}
-                  onChange={(e) => setBirthDate(DateTime.fromISO(e.target.value))}
+                  onChange={(e) =>
+                    setBirthDate(DateTime.fromISO(e.target.value))
+                  }
                 />
               )}
             </div>
@@ -273,7 +301,7 @@ const Home: NextPage = () => {
           </div>
         </div>
       </div>
-      
+
       {calculationResults != null && (
         <div className="mt-2">
           <h1 className="text-2xl mb-1">Your Results</h1>
@@ -286,5 +314,16 @@ const Home: NextPage = () => {
     </div>
   );
 };
+
+export async function getServerSideProps() {
+  const res = await fetch(process.env.API_URL + `/ukstudentloans/assumptions`);
+  const assumptions = await res.json();
+
+  return {
+    props: {
+      assumptions,
+    },
+  };
+}
 
 export default Home;
