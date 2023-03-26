@@ -1,7 +1,5 @@
 import { NextPage } from "next";
-import React, { useEffect } from "react";
-import { useAssumptions } from "../../../api/data/assumptions";
-import Input from "../atoms/input";
+import { ChangeEvent } from "react";
 import InputGroup from "../atoms/input-group";
 
 interface AssumptionsInputProps {
@@ -12,11 +10,11 @@ interface AssumptionsInputProps {
 }
 
 const AssumptionsInput: NextPage<AssumptionsInputProps> = ({
+  salaryGrowth,
+  annualEarningsGrowth,
   onSalaryGrowthChange,
   onAnnualEarningsGrowthChange,
 }) => {
-  const { assumptions, isLoading, isError } = useAssumptions();
-
   const handleSalaryGrowthChange = (value: string) => {
     const salaryGrowth = parseFloat(value) / 100;
 
@@ -29,14 +27,6 @@ const AssumptionsInput: NextPage<AssumptionsInputProps> = ({
     onAnnualEarningsGrowthChange(annualEarningsGrowth);
   };
 
-  // This feels like this isn't the correct way of achieving this
-  useEffect(() => {
-    if (assumptions != null) {
-      onSalaryGrowthChange(assumptions.salaryGrowth);
-      onAnnualEarningsGrowthChange(assumptions.annualEarningsGrowth);
-    }
-  }, []);
-
   return (
     <div>
       <InputGroup
@@ -47,9 +37,8 @@ const AssumptionsInput: NextPage<AssumptionsInputProps> = ({
         max="100"
         step="0.1"
         symbol="%"
-        disabled={isLoading}
-        defaultValue={assumptions != null ? assumptions.salaryGrowth * 100 : ""}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+        defaultValue={salaryGrowth * 100}
+        onChange={(e: ChangeEvent<HTMLInputElement>) =>
           handleSalaryGrowthChange(e.target.value)
         }
       />
@@ -64,11 +53,8 @@ const AssumptionsInput: NextPage<AssumptionsInputProps> = ({
         max="100"
         step="0.1"
         symbol="%"
-        disabled={isLoading}
-        defaultValue={
-          assumptions != null ? assumptions.annualEarningsGrowth * 100 : ""
-        }
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+        defaultValue={annualEarningsGrowth * 100}
+        onChange={(e: ChangeEvent<HTMLInputElement>) =>
           handleAnnualEarningsGrowth(e.target.value)
         }
       />
