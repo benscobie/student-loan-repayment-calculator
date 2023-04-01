@@ -6,7 +6,7 @@ import Input from "../components/ui/atoms/input";
 import LoanInput from "../components/ui/organisms/loan-input";
 import Loan from "../models/loan";
 import LoanType, { LoanTypeToDescription } from "../models/loanType";
-import { InfoCircle, PencilFill, Plus, TrashFill } from "react-bootstrap-icons";
+import { InfoCircle, PencilFill, TrashFill } from "react-bootstrap-icons";
 import { Results } from "../api/models/results";
 import { DateTime } from "luxon";
 import getAxios from "../utils/useAxios";
@@ -106,8 +106,12 @@ const Home: NextPage<HomeProps> = ({ assumptions }) => {
   };
 
   const removeLoan = (index: number) => {
-    let filteredArray = loanData.filter((item, i) => index !== i);
+    let filteredArray = loanData.filter((_, i) => index !== i);
     setLoanData(filteredArray);
+
+    if (filteredArray.length == 0) {
+      addAnotherLoan();
+    }
   };
 
   const editLoan = (index: number) => {
@@ -166,7 +170,7 @@ const Home: NextPage<HomeProps> = ({ assumptions }) => {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="mb-3">
-          <h2 className="text-2xl mb-1">UK Student Loan Repayent Calculator</h2>
+          <h2 className="text-2xl mb-2">UK Student Loan Repayent Calculator</h2>
           <p>This calculator can be used to find out:</p>
           <ul className="list-disc list-inside ml-2 my-1">
             <li>How long it could take to repay your student loan</li>
@@ -180,7 +184,7 @@ const Home: NextPage<HomeProps> = ({ assumptions }) => {
             </span>
           </div>
 
-          <h3 className="text-xl mt-2 mb-1">How much do I repay?</h3>
+          <h3 className="text-xl mt-4 mb-1">How much do I repay?</h3>
           <p className="py-1">
             For plans 1, 2 and 4 your repayments equal 9% of your pre-tax
             earnings above the threshold. When you have more than one type the
@@ -191,7 +195,7 @@ const Home: NextPage<HomeProps> = ({ assumptions }) => {
             earnings above the threshold.
           </p>
 
-          <h3 className="text-xl mt-2 b-1">Should I pay it off?</h3>
+          <h3 className="text-xl mt-4 b-1">Should I pay it off?</h3>
           <p className="py-1">
             MoneySavingExpert extrordinaire Martin Lewis has a good article on
             figuring out whether it&apos;s worth paying off your loan early. You
@@ -202,26 +206,40 @@ const Home: NextPage<HomeProps> = ({ assumptions }) => {
           </p>
         </div>
         <div>
-          <h2 className="text-2xl mb-1">Your Plans</h2>
-          {loanData &&
-            loanData.map((element, index) => (
-              <div key={element.loanType?.toString()}>
-                <h2>
-                  {LoanTypeToDescription(element.loanType)} -{" "}
-                  {currencyFormatter().format(element.balanceRemaining ?? 0)}
-                  <PencilFill
-                    className="inline ml-2 cursor-pointer"
-                    size={16}
-                    onClick={() => editLoan(index)}
-                  />
-                  <TrashFill
-                    className="inline ml-2 cursor-pointer"
-                    size={16}
-                    onClick={() => removeLoan(index)}
-                  />
-                </h2>
-              </div>
-            ))}
+          <h2 className="text-2xl mb-2">Your Plans</h2>
+
+          {loanData && (
+            <div>
+              {loanData.map((element, index) => (
+                <div key={element.loanType?.toString()} className="my-2 flex">
+                  <div className="w-28">
+                    <div className="text-lg">
+                      {LoanTypeToDescription(element.loanType)}
+                    </div>
+                    <div>
+                      {currencyFormatter().format(
+                        element.balanceRemaining ?? 0
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex items-center">
+                    <PencilFill
+                      className="inline cursor-pointer text-slate-600 hover:text-slate-700"
+                      size={20}
+                      onClick={() => editLoan(index)}
+                      title="Edit"
+                    />
+                    <TrashFill
+                      className="inline ml-3 cursor-pointer text-red-600 hover:text-red-700"
+                      size={20}
+                      onClick={() => removeLoan(index)}
+                      title="Delete"
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
 
           {editingLoan != null && (
             <LoanInput
@@ -241,13 +259,13 @@ const Home: NextPage<HomeProps> = ({ assumptions }) => {
               onClick={addAnotherLoan}
               className="mt-2"
             >
-              Add another loan <Plus className="inline" size={24} />
+              Add another loan
             </Button>
           )}
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
             <div>
-              <h2 className="mt-2 mb-1 text-2xl">Your Details</h2>
+              <h2 className="mb-2 text-2xl">Your Details</h2>
               <InputGroup
                 id="annualSalaryBeforeTax"
                 type="number"
@@ -278,7 +296,7 @@ const Home: NextPage<HomeProps> = ({ assumptions }) => {
               )}
             </div>
             <div>
-              <h2 className="mt-2 mb-1 text-2xl">Assumptions</h2>
+              <h2 className="mb-2 text-2xl">Assumptions</h2>
               <AssumptionsInput
                 onSalaryGrowthChange={onSalaryGrowthChange}
                 onAnnualEarningsGrowthChange={onAnnualEarningsGrowthChange}
@@ -304,7 +322,7 @@ const Home: NextPage<HomeProps> = ({ assumptions }) => {
 
       {calculationResults != null && (
         <div className="mt-2">
-          <h1 className="text-2xl mb-1">Your Results</h1>
+          <h1 className="text-2xl mb-2">Your Results</h1>
           <LoanBreakdown
             results={calculationResults}
             loanTypes={loanData.map((x) => x.loanType!)}

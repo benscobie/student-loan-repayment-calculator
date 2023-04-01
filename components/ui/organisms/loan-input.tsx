@@ -61,11 +61,11 @@ const LoanInput: NextPage<LoanInputProps> = ({
   };
 
   const onLoanTypeChange = (type: string) => {
-    setLoanType(LoanType[type as keyof typeof LoanType])
+    setLoanType(LoanType[type as keyof typeof LoanType]);
     if (balanceRemainingRef.current) {
       balanceRemainingRef.current.focus();
     }
-  }
+  };
 
   const firstRepaymentDateRequired =
     (loanType == LoanType.Type1 && academicYearLoanTakenOut == 2006) ||
@@ -146,7 +146,7 @@ const LoanInput: NextPage<LoanInputProps> = ({
         type="number"
         label="Balance remaining"
         value={balanceRemaining || ""}
-        wrapperClass="mt-1"
+        wrapperClass="mt-2"
         symbol="£"
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
           setBalanceRemaining(parseInt(e.target.value))
@@ -160,7 +160,7 @@ const LoanInput: NextPage<LoanInputProps> = ({
             type="date"
             label="Course start date"
             value={courseStartDate?.toISODate() || ""}
-            wrapperClass="mt-1"
+            wrapperClass="mt-2"
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setCourseStartDate(DateTime.fromISO(e.target.value))
             }
@@ -171,7 +171,7 @@ const LoanInput: NextPage<LoanInputProps> = ({
             type="date"
             label="Course end date"
             value={courseEndDate?.toISODate() || ""}
-            wrapperClass="mt-1"
+            wrapperClass="mt-2"
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setCourseEndDate(DateTime.fromISO(e.target.value))
             }
@@ -185,7 +185,7 @@ const LoanInput: NextPage<LoanInputProps> = ({
             id="academicYearLoanTakenOut"
             label="Academic Year Loan Taken Out"
             value={academicYearLoanTakenOut || ""}
-            wrapperClass="mt-1"
+            wrapperClass="mt-2"
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setAcademicYearLoanTakenOut(parseInt(e.target.value))
             }
@@ -213,7 +213,7 @@ const LoanInput: NextPage<LoanInputProps> = ({
           type="date"
           label="First repayment date"
           tooltip="Your first repayment date is used to calculate when the loan can be written off."
-          wrapperClass="mt-1"
+          wrapperClass="mt-2"
           value={firstRepaymentDate?.toISODate() || ""}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             setFirstRepaymentDate(DateTime.fromISO(e.target.value))
@@ -226,12 +226,12 @@ const LoanInput: NextPage<LoanInputProps> = ({
           id="studyingPartTime"
           label="Studying part-time"
           checked={studyingPartTime || false}
-          wrapperClass="mt-1"
+          wrapperClass="mt-3"
           onChange={(e) => setSudyingPartTime(e.target.checked)}
         />
       )}
 
-      <div className="mt-2">
+      <div className="mt-4">
         <Button
           id="submit"
           style="primary"
