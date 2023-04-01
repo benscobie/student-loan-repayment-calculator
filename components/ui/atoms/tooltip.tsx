@@ -10,7 +10,7 @@ const Tooltip = (props: TooltipProps) => {
       <span className="tooltip -mt-8  py-2 px-3 text-sm font-medium text-white bg-slate-600 rounded-lg shadow-sm">
         {props.children}
       </span>
-      <QuestionCircle className="ml-1 inline" size={14} />
+      <QuestionCircle className="ml-1 inline mb-1" size={14} />
     </div>
   );
 };
