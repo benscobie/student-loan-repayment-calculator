@@ -1,11 +1,21 @@
+import { ReactNode } from "react";
 import Footer from "./ui/organisms/footer";
 import Header from "./ui/organisms/header";
 
-function Layout({ children }: React.PropsWithChildren<{}>) {
+interface LayoutProps {
+  children?: ReactNode | undefined;
+  className?: string;
+}
+
+function Layout({ children, className }: LayoutProps) {
   return (
-    <div>
+    <div className={className}>
       <Header />
-      <main className="px-5 pt-4">{children}</main>
+      <main className="flex justify-center">
+        <div className="p-8 m-8 max-w-7xl w-full bg-white shadow-lg">
+          {children}
+        </div>
+      </main>
       <Footer />
     </div>
   );

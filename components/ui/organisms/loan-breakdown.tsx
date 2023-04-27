@@ -75,7 +75,7 @@ const LoanBreakdownProps: NextPage<LoanBreakdownProps> = ({
           was interest.
         </p>
       </div>
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 mt-2">
+      <div className="grid grid-cols-1 gap-4 mt-4">
         {(results.results.find((x) => x.period == 1)?.projections.length ?? 0) >
           1 && (
           <div>

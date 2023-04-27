@@ -48,7 +48,7 @@ const InputGroup = forwardRef<HTMLInputElement, InputProps>(function InputGroup(
         <input
           ref={ref}
           type={type}
-          className={`pl-7 border bg-gray-50 text-gray-900 focus:ring-blue-500 focus:border-blue-500 w-full p-2.5 font-light block text-sm rounded-md ${
+          className={`pl-7 border bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-full p-2.5 font-light block text-sm rounded ${
             error ? "border-red-600" : "border-gray-300"
           }`}
           id={id}
