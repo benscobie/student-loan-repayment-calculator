@@ -4,17 +4,17 @@ interface ButtonProps
   extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "style"> {
   id: string;
   disabled?: boolean;
-  style: string;
+  style: "primary" | "cancel";
   wrapperClass?: string;
   children?: React.ReactNode;
 }
 
-const Input = (props: ButtonProps) => {
+const Button = (props: ButtonProps) => {
   const {
     id,
     type = "button",
     disabled = false,
-    style = "success",
+    style,
     wrapperClass = "",
     className,
     children,
@@ -27,21 +27,21 @@ const Input = (props: ButtonProps) => {
     var classNames = ["text-white rounded-lg text-sm px-5 py-2.5"];
 
     if (style == "primary") {
-      classNames.push("bg-green-700");
+      classNames.push("border border-sky-600 bg-sky-600");
 
       if (!disabled) {
         classNames.push(
-          "hover:bg-green-800 focus:ring-4 focus:ring-green-300 focus:outline-none"
+          "hover:bg-sky-700 hover:border-sky-700 focus:ring-2 focus:ring-sky-500 focus:outline-none"
         );
       } else {
         classNames.push("opacity-50 cursor-not-allowed");
       }
     } else if (style == "cancel") {
-      classNames.push("bg-slate-600");
+      classNames.push("border border-sky-600 text-sky-900");
 
       if (!disabled) {
         classNames.push(
-          "hover:bg-slate-700 focus:ring-4 focus:ring-slate-300 focus:outline-none"
+          "hover:bg-sky-700 hover:text-white focus:ring-2 focus:ring-slate-300 focus:outline-none"
         );
       } else {
         classNames.push("opacity-50 cursor-not-allowed");
@@ -67,4 +67,4 @@ const Input = (props: ButtonProps) => {
   );
 };
 
-export default Input;
+export default Button;

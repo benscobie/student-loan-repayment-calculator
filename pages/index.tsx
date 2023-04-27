@@ -168,7 +168,7 @@ const Home: NextPage<HomeProps> = ({ assumptions }) => {
         />
       </Head>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
         <div className="mb-3">
           <h2 className="text-2xl mb-2">UK Student Loan Repayent Calculator</h2>
           <p>This calculator can be used to find out:</p>
@@ -176,7 +176,7 @@ const Home: NextPage<HomeProps> = ({ assumptions }) => {
             <li>How long it could take to repay your student loan</li>
             <li>The potential repayment costs over the loan&apos;s duration</li>
           </ul>
-          <div className="p-2 bg-yellow-200 rounded-md text-yellow-800 mt-2">
+          <div className="p-2 bg-yellow-200 rounded-md text-yellow-800 mt-4">
             <InfoCircle size={16} className="inline"></InfoCircle>
             <span className="ml-2">
               Please note that this calculator does not constitute financial
@@ -184,19 +184,19 @@ const Home: NextPage<HomeProps> = ({ assumptions }) => {
             </span>
           </div>
 
-          <h3 className="text-xl mt-4 mb-1">How much do I repay?</h3>
-          <p className="py-1">
+          <h3 className="text-xl mt-6">How much do I repay?</h3>
+          <p className="mt-2">
             For plans 1, 2 and 4 your repayments equal 9% of your pre-tax
             earnings above the threshold. When you have more than one type the
             payment is split according to the repayment thresholds.
           </p>
-          <p className="py-1">
+          <p className="mt-2">
             For the postgraduate loan your repayments equal 6% of your pre-tax
             earnings above the threshold.
           </p>
 
-          <h3 className="text-xl mt-4 b-1">Should I pay it off?</h3>
-          <p className="py-1">
+          <h3 className="text-xl mt-6">Should I pay it off?</h3>
+          <p className="mt-2">
             MoneySavingExpert extrordinaire Martin Lewis has a good article on
             figuring out whether it&apos;s worth paying off your loan early. You
             can find the article here:{" "}
@@ -206,66 +206,69 @@ const Home: NextPage<HomeProps> = ({ assumptions }) => {
           </p>
         </div>
         <div>
-          <h2 className="text-2xl mb-2">Your Plans</h2>
-
-          {loanData && (
-            <div>
-              {loanData.map((element, index) => (
-                <div key={element.loanType?.toString()} className="my-2 flex">
-                  <div className="w-28">
-                    <div className="text-lg">
-                      {LoanTypeToDescription(element.loanType)}
+          <h2 className="text-2xl mb-2">Your plans</h2>
+          <div className="border border-slate-300 rounded-lg p-4">
+            {loanData.length > 0 && (
+              <div className="mb-4">
+                {loanData.map((element, index) => (
+                  <div
+                    key={element.loanType?.toString()}
+                    className="flex gap-4"
+                  >
+                    <div className="flex-grow">
+                      <div className="text-xl">
+                        {LoanTypeToDescription(element.loanType)}
+                      </div>
+                      <div>
+                        {currencyFormatter().format(
+                          element.balanceRemaining ?? 0
+                        )}
+                      </div>
                     </div>
-                    <div>
-                      {currencyFormatter().format(
-                        element.balanceRemaining ?? 0
-                      )}
+                    <div className="flex items-center gap-2">
+                      <div
+                        className="px-4 py-2 rounded-lg bg-slate-200 hover:bg-slate-300 flex items-center justify-center cursor-pointer"
+                        onClick={() => editLoan(index)}
+                      >
+                        Edit
+                      </div>
+                      <div
+                        className="px-4 py-2 rounded-lg bg-slate-200 hover:bg-slate-300 flex items-center justify-center cursor-pointer"
+                        onClick={() => removeLoan(index)}
+                      >
+                        Delete
+                      </div>
                     </div>
                   </div>
-                  <div className="flex items-center">
-                    <PencilFill
-                      className="inline cursor-pointer text-slate-600 hover:text-slate-700"
-                      size={20}
-                      onClick={() => editLoan(index)}
-                      title="Edit"
-                    />
-                    <TrashFill
-                      className="inline ml-3 cursor-pointer text-red-600 hover:text-red-700"
-                      size={20}
-                      onClick={() => removeLoan(index)}
-                      title="Delete"
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
+                ))}
+              </div>
+            )}
 
-          {editingLoan != null && (
-            <LoanInput
-              key={editingLoan.loanType}
-              loan={editingLoan}
-              onChange={updateLoan}
-              onCancel={cancelLoanInput}
-              canCancel={loanData.length > 0}
-              availableLoanTypes={getAvailableLoanTypes()}
-            />
-          )}
+            {editingLoan != null && (
+              <LoanInput
+                key={editingLoan.loanType}
+                loan={editingLoan}
+                onChange={updateLoan}
+                onCancel={cancelLoanInput}
+                canCancel={loanData.length > 0}
+                availableLoanTypes={getAvailableLoanTypes()}
+              />
+            )}
 
-          {editingLoan == null && getAvailableLoanTypes().length > 0 && (
-            <Button
-              id="addAnotherLoan"
-              style="primary"
-              onClick={addAnotherLoan}
-              className="mt-2"
-            >
-              Add another loan
-            </Button>
-          )}
+            {editingLoan == null && getAvailableLoanTypes().length > 0 && (
+              <Button
+                id="addAnotherLoan"
+                style="primary"
+                onClick={addAnotherLoan}
+              >
+                Add another plan
+              </Button>
+            )}
+          </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4 p-4 border border-slate-300 rounded-lg">
             <div>
-              <h2 className="mb-2 text-2xl">Your Details</h2>
+              <h2 className="mb-2 text-lg">Your details</h2>
               <InputGroup
                 id="annualSalaryBeforeTax"
                 type="number"
@@ -296,7 +299,7 @@ const Home: NextPage<HomeProps> = ({ assumptions }) => {
               )}
             </div>
             <div>
-              <h2 className="mb-2 text-2xl">Assumptions</h2>
+              <h2 className="mb-2 text-lg">Assumptions</h2>
               <AssumptionsInput
                 onSalaryGrowthChange={onSalaryGrowthChange}
                 onAnnualEarningsGrowthChange={onAnnualEarningsGrowthChange}
@@ -309,7 +312,7 @@ const Home: NextPage<HomeProps> = ({ assumptions }) => {
           <div>
             <Button
               id="calculate"
-              wrapperClass="mt-2"
+              wrapperClass="mt-4"
               style="primary"
               disabled={!canCalculate()}
               onClick={calculate}
@@ -321,8 +324,12 @@ const Home: NextPage<HomeProps> = ({ assumptions }) => {
       </div>
 
       {calculationResults != null && (
-        <div className="mt-2">
-          <h1 className="text-2xl mb-2">Your Results</h1>
+        <div className="mt-12">
+          <div className="flex justify-center">
+            <h1 className="text-2xl mb-4 px-10 py-1 bg-pink-500 text-white rounded-lg font-bold">
+              Your results
+            </h1>
+          </div>
           <LoanBreakdown
             results={calculationResults}
             loanTypes={loanData.map((x) => x.loanType!)}

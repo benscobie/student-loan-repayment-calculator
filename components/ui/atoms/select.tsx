@@ -12,7 +12,7 @@ interface SelectProps
   children?: React.ReactNode;
 }
 
-const Input = (props: SelectProps) => {
+const Select = (props: SelectProps) => {
   const {
     id,
     placeholder = "",
@@ -35,7 +35,7 @@ const Input = (props: SelectProps) => {
       <select
         id="loanType"
         ref={inputRef}
-        className={`border bg-gray-50 text-gray-900 focus:ring-blue-500 focus:border-blue-500 w-full p-2.5 font-light block text-sm rounded-md ${
+        className={`border bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-full p-2.5 font-light block text-sm rounded ${
           error ? "border-red-600" : "border-gray-300"
         }`}
         {...rest}
@@ -49,4 +49,4 @@ const Input = (props: SelectProps) => {
   );
 };
 
-export default Input;
+export default Select;

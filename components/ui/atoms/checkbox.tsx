@@ -30,7 +30,7 @@ const Checkbox = (props: CheckboxProps) => {
       <input
         ref={inputRef}
         type="checkbox"
-        className={`border bg-gray-50 text-gray-900 focus:ring-blue-500 focus:border-blue-500 p-2.5 font-light text-sm w-4 h-4 rounded-md ${
+        className={`border bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 p-2.5 font-light text-sm w-4 h-4 rounded ${
           error ? "border-red-600" : "border-gray-300"
         }`}
         id={id}
