@@ -37,7 +37,7 @@ const Button = (props: ButtonProps) => {
         classNames.push("opacity-50 cursor-not-allowed");
       }
     } else if (style == "cancel") {
-      classNames.push("text-sky-700 border border-sky-600 text-sky-900");
+      classNames.push("text-sky-700 border border-sky-600");
 
       if (!disabled) {
         classNames.push(
