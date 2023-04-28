@@ -24,10 +24,10 @@ const Button = (props: ButtonProps) => {
   const inputRef = useRef(null);
 
   const getStyle = () => {
-    var classNames = ["text-white rounded-lg text-sm px-5 py-2.5"];
+    var classNames = ["rounded-lg text-sm px-5 py-2.5"];
 
     if (style == "primary") {
-      classNames.push("border border-sky-600 bg-sky-600");
+      classNames.push("text-white border border-sky-600 bg-sky-600");
 
       if (!disabled) {
         classNames.push(
@@ -37,7 +37,7 @@ const Button = (props: ButtonProps) => {
         classNames.push("opacity-50 cursor-not-allowed");
       }
     } else if (style == "cancel") {
-      classNames.push("border border-sky-600 text-sky-900");
+      classNames.push("text-sky-700 border border-sky-600 text-sky-900");
 
       if (!disabled) {
         classNames.push(
