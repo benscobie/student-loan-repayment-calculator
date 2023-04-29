@@ -9,7 +9,6 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   error?: boolean;
   errorText?: string;
   required?: boolean;
-  wrapperClass?: string;
   tooltip?: string;
   children?: React.ReactNode;
 }
@@ -23,7 +22,6 @@ const Input = (props: InputProps) => {
     error = false,
     errorText = "",
     required = false,
-    wrapperClass = "",
     tooltip = "",
     ...rest
   } = props;
@@ -31,7 +29,7 @@ const Input = (props: InputProps) => {
   const inputRef = useRef(null);
 
   return (
-    <div className={wrapperClass}>
+    <>
       <div className="block mb-1">
         <label htmlFor={id}>
           {label} {required && <span className="text-red">*</span>}
@@ -49,7 +47,7 @@ const Input = (props: InputProps) => {
         {...rest}
       />
       <p className="text-xs pl-2 text-red-600 mt-1">{errorText}</p>
-    </div>
+    </>
   );
 };
 

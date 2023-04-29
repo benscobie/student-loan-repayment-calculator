@@ -40,7 +40,7 @@ const LoanBreakdownProps: NextPage<LoanBreakdownProps> = ({
   return (
     <div>
       <div className="border py-3 px-3 rounded-md bg-gray-50">
-        <p>
+        <p className="leading-7">
           {paidOffDiff().years > 0 && paidOffDiff().months > 0 && (
             <>
               You will be debt free in{" "}
@@ -65,7 +65,7 @@ const LoanBreakdownProps: NextPage<LoanBreakdownProps> = ({
           <Highlight>{results.debtClearedDate.toFormat("LLLL yyyy")}</Highlight>
           .
         </p>
-        <p className="mt-2">
+        <p className="mt-3 leading-7">
           You will have a paid{" "}
           <Highlight>{currencyFormatter().format(results.totalPaid)}</Highlight>{" "}
           in total, of which{" "}

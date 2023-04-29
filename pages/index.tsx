@@ -176,7 +176,7 @@ const Home: NextPage<HomeProps> = ({ assumptions }) => {
             <li>How long it could take to repay your student loan</li>
             <li>The potential repayment costs over the loan&apos;s duration</li>
           </ul>
-          <div className="p-2 bg-yellow-200 rounded-md text-yellow-800 mt-4">
+          <div className="p-2 bg-yellow-200 rounded-md text-yellow-800 text-sm mt-4 flex items-center jus border-l-4 border-yellow-400">
             <InfoCircle size={16} className="inline"></InfoCircle>
             <span className="ml-2">
               Please note that this calculator does not constitute financial
@@ -200,16 +200,19 @@ const Home: NextPage<HomeProps> = ({ assumptions }) => {
             MoneySavingExpert extrordinaire Martin Lewis has a good article on
             figuring out whether it&apos;s worth paying off your loan early. You
             can find the article here:{" "}
-            <a href="https://www.moneysavingexpert.com/students/student-loans-repay/">
+            <a
+              className="text-sky-700"
+              href="https://www.moneysavingexpert.com/students/student-loans-repay/"
+            >
               https://www.moneysavingexpert.com/students/student-loans-repay/
             </a>
           </p>
         </div>
         <div>
           <h2 className="text-2xl mb-2">Your plans</h2>
-          <div className="border border-slate-300 rounded-lg p-4">
+          <div className="p-5 pb-6 border-t-2 border-sky-400 shadow-[rgba(0,_0,_0,_0.1)_0px_4px_10px]">
             {loanData.length > 0 && (
-              <div className="mb-4">
+              <div className="flex flex-col gap-2 mb-4">
                 {loanData.map((element, index) => (
                   <div
                     key={element.loanType?.toString()}
@@ -266,7 +269,7 @@ const Home: NextPage<HomeProps> = ({ assumptions }) => {
             )}
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4 p-4 border border-slate-300 rounded-lg">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-6 p-5 pb-6 border-t-2 border-sky-400 shadow-[rgba(0,_0,_0,_0.1)_0px_4px_10px]">
             <div>
               <h2 className="mb-2 text-lg">Your details</h2>
               <InputGroup
@@ -285,17 +288,18 @@ const Home: NextPage<HomeProps> = ({ assumptions }) => {
               />
 
               {isBirthDateRequired() && (
-                <Input
-                  id="birthDate"
-                  type="date"
-                  label="Birth Date"
-                  wrapperClass="mt-2"
-                  tooltip="Your birth date is used to calculate when the loan can be written off."
-                  value={birthDate?.toISODate() || ""}
-                  onChange={(e) =>
-                    setBirthDate(DateTime.fromISO(e.target.value))
-                  }
-                />
+                <div className="mt-2">
+                  <Input
+                    id="birthDate"
+                    type="date"
+                    label="Birth Date"
+                    tooltip="Your birth date is used to calculate when the loan can be written off."
+                    value={birthDate?.toISODate() || ""}
+                    onChange={(e) =>
+                      setBirthDate(DateTime.fromISO(e.target.value))
+                    }
+                  />
+                </div>
               )}
             </div>
             <div>
@@ -309,13 +313,13 @@ const Home: NextPage<HomeProps> = ({ assumptions }) => {
             </div>
           </div>
 
-          <div>
+          <div className="mt-4 flex justify-center">
             <Button
               id="calculate"
-              wrapperClass="mt-4"
               style="primary"
               disabled={!canCalculate()}
               onClick={calculate}
+              className="max-w-md text-xl px-8"
             >
               Calculate
             </Button>

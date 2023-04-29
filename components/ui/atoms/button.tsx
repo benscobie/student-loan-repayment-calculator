@@ -1,11 +1,12 @@
+import classNames from "classnames";
 import { useRef } from "react";
+import { twMerge } from "tailwind-merge";
 
 interface ButtonProps
   extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "style"> {
   id: string;
   disabled?: boolean;
-  style: "primary" | "cancel";
-  wrapperClass?: string;
+  style: "primary" | "secondary";
   children?: React.ReactNode;
 }
 
@@ -15,7 +16,6 @@ const Button = (props: ButtonProps) => {
     type = "button",
     disabled = false,
     style,
-    wrapperClass = "",
     className,
     children,
     ...rest
@@ -23,47 +23,29 @@ const Button = (props: ButtonProps) => {
 
   const inputRef = useRef(null);
 
-  const getStyle = () => {
-    var classNames = ["rounded-lg text-sm px-5 py-2.5"];
+  const btnClass = classNames("rounded-lg text-sm px-5 py-2.5", {
+    "text-white border border-sky-600 bg-sky-600": style == "primary",
+    "hover:bg-sky-700 hover:border-sky-700 focus:ring-2 focus:ring-sky-500 focus:outline-none":
+      style == "primary" && !disabled,
 
-    if (style == "primary") {
-      classNames.push("text-white border border-sky-600 bg-sky-600");
+    "text-sky-700 border border-sky-600": style == "secondary",
+    "hover:bg-sky-700 hover:text-white focus:ring-2 focus:ring-slate-300 focus:outline-none":
+      style == "secondary" && !disabled,
 
-      if (!disabled) {
-        classNames.push(
-          "hover:bg-sky-700 hover:border-sky-700 focus:ring-2 focus:ring-sky-500 focus:outline-none"
-        );
-      } else {
-        classNames.push("opacity-50 cursor-not-allowed");
-      }
-    } else if (style == "cancel") {
-      classNames.push("text-sky-700 border border-sky-600");
-
-      if (!disabled) {
-        classNames.push(
-          "hover:bg-sky-700 hover:text-white focus:ring-2 focus:ring-slate-300 focus:outline-none"
-        );
-      } else {
-        classNames.push("opacity-50 cursor-not-allowed");
-      }
-    }
-
-    return classNames.join(" ");
-  };
+    "opacity-50 cursor-not-allowed": disabled,
+  });
 
   return (
-    <div className={wrapperClass}>
-      <button
-        ref={inputRef}
-        type={type}
-        className={`${getStyle()} ${props.className}`}
-        id={id}
-        disabled={disabled}
-        {...rest}
-      >
-        {children}
-      </button>
-    </div>
+    <button
+      ref={inputRef}
+      type={type}
+      className={twMerge(btnClass, className)}
+      id={id}
+      disabled={disabled}
+      {...rest}
+    >
+      {children}
+    </button>
   );
 };
 

@@ -43,21 +43,22 @@ const AssumptionsInput: NextPage<AssumptionsInputProps> = ({
         }
       />
 
-      <InputGroup
-        id="annualEarningsGrowth"
-        type="number"
-        label="UK average annual earnings growth"
-        tooltip="Repayment thresholds usually rise in line with average annual earnings."
-        wrapperClass="mt-3"
-        min="-100"
-        max="100"
-        step="0.1"
-        symbol="%"
-        defaultValue={annualEarningsGrowth * 100}
-        onChange={(e: ChangeEvent<HTMLInputElement>) =>
-          handleAnnualEarningsGrowth(e.target.value)
-        }
-      />
+      <div className="mt-3">
+        <InputGroup
+          id="annualEarningsGrowth"
+          type="number"
+          label="UK average annual earnings growth"
+          tooltip="Repayment thresholds usually rise in line with average annual earnings."
+          min="-100"
+          max="100"
+          step="0.1"
+          symbol="%"
+          defaultValue={annualEarningsGrowth * 100}
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            handleAnnualEarningsGrowth(e.target.value)
+          }
+        />
+      </div>
     </div>
   );
 };
