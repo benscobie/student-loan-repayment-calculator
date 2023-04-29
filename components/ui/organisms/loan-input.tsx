@@ -140,52 +140,54 @@ const LoanInput: NextPage<LoanInputProps> = ({
         )}
       </Select>
 
-      <InputGroup
-        id="balanceRemaining"
-        ref={balanceRemainingRef}
-        type="number"
-        label="Balance remaining"
-        value={balanceRemaining || ""}
-        wrapperClass="mt-3"
-        symbol="£"
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-          setBalanceRemaining(parseInt(e.target.value))
-        }
-      />
+      <div className="mt-3">
+        <InputGroup
+          id="balanceRemaining"
+          ref={balanceRemainingRef}
+          type="number"
+          label="Balance remaining"
+          value={balanceRemaining || ""}
+          symbol="£"
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setBalanceRemaining(parseInt(e.target.value))
+          }
+        />
+      </div>
 
       {loanType == LoanType.Type2 && (
         <>
-          <Input
-            id="courseStartDate"
-            type="date"
-            label="Course start date"
-            value={courseStartDate?.toISODate() || ""}
-            wrapperClass="mt-3"
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setCourseStartDate(DateTime.fromISO(e.target.value))
-            }
-          />
+          <div className="mt-3">
+            <Input
+              id="courseStartDate"
+              type="date"
+              label="Course start date"
+              value={courseStartDate?.toISODate() || ""}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setCourseStartDate(DateTime.fromISO(e.target.value))
+              }
+            />
+          </div>
 
-          <Input
-            id="courseEndDate"
-            type="date"
-            label="Course end date"
-            value={courseEndDate?.toISODate() || ""}
-            wrapperClass="mt-3"
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setCourseEndDate(DateTime.fromISO(e.target.value))
-            }
-          />
+          <div className="mt-3">
+            <Input
+              id="courseEndDate"
+              type="date"
+              label="Course end date"
+              value={courseEndDate?.toISODate() || ""}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setCourseEndDate(DateTime.fromISO(e.target.value))
+              }
+            />
+          </div>
         </>
       )}
 
       {academicYearLoanTakenOutRequired && (
-        <>
+        <div className="mt-3">
           <Select
             id="academicYearLoanTakenOut"
             label="Academic Year Loan Taken Out"
             value={academicYearLoanTakenOut || ""}
-            wrapperClass="mt-3"
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setAcademicYearLoanTakenOut(parseInt(e.target.value))
             }
@@ -204,52 +206,47 @@ const LoanInput: NextPage<LoanInputProps> = ({
               </>
             )}
           </Select>
-        </>
+        </div>
       )}
 
       {firstRepaymentDateRequired && (
-        <Input
-          id="firstRepaymentDate"
-          type="date"
-          label="First repayment date"
-          tooltip="Your first repayment date is used to calculate when the loan can be written off."
-          wrapperClass="mt-3"
-          value={firstRepaymentDate?.toISODate() || ""}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setFirstRepaymentDate(DateTime.fromISO(e.target.value))
-          }
-        />
+        <div className="mt-3">
+          <Input
+            id="firstRepaymentDate"
+            type="date"
+            label="First repayment date"
+            tooltip="Your first repayment date is used to calculate when the loan can be written off."
+            value={firstRepaymentDate?.toISODate() || ""}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setFirstRepaymentDate(DateTime.fromISO(e.target.value))
+            }
+          />
+        </div>
       )}
 
       {loanType == LoanType.Type2 && (
-        <Checkbox
-          id="studyingPartTime"
-          label="Studying part-time"
-          checked={studyingPartTime || false}
-          wrapperClass="mt-4"
-          onChange={(e) => setSudyingPartTime(e.target.checked)}
-        />
+        <div className="mt-4">
+          <Checkbox
+            id="studyingPartTime"
+            label="Studying part-time"
+            checked={studyingPartTime || false}
+            onChange={(e) => setSudyingPartTime(e.target.checked)}
+          />
+        </div>
       )}
 
-      <div className="mt-4">
+      <div className="mt-4 flex gap-2">
         <Button
           id="submit"
           style="primary"
           disabled={!formValid()}
-          wrapperClass="inline"
-          className="mr-2"
           type="submit"
         >
           Save plan
         </Button>
 
         {canCancel && (
-          <Button
-            id="submit"
-            style="cancel"
-            wrapperClass="inline"
-            onClick={() => onCancel()}
-          >
+          <Button id="submit" style="secondary" onClick={() => onCancel()}>
             Cancel
           </Button>
         )}

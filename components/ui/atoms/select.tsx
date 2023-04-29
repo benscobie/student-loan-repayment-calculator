@@ -8,7 +8,6 @@ interface SelectProps
   error?: boolean;
   errorText?: string;
   required?: boolean;
-  wrapperClass?: string;
   children?: React.ReactNode;
 }
 
@@ -20,7 +19,6 @@ const Select = (props: SelectProps) => {
     error = false,
     errorText = "",
     required = false,
-    wrapperClass = "",
     children,
     ...rest
   } = props;
@@ -28,7 +26,7 @@ const Select = (props: SelectProps) => {
   const inputRef = useRef(null);
 
   return (
-    <div className={wrapperClass}>
+    <>
       <label htmlFor={id} className="block mb-1">
         {label} {required && <span className="text-red">*</span>}
       </label>
@@ -45,7 +43,7 @@ const Select = (props: SelectProps) => {
       {errorText && (
         <p className="text-xs pl-2 text-red-600 mt-1">{errorText}</p>
       )}
-    </div>
+    </>
   );
 };
 

@@ -119,7 +119,7 @@ const BalanceGraph = (props: BalanceGraphProps) => {
   };
 
   return (
-    <div>
+    <div className="w-full h-full">
       <Line options={options} data={data} />
     </div>
   );

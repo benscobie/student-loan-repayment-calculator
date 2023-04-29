@@ -1,4 +1,4 @@
-import { forwardRef, useRef } from "react";
+import { forwardRef } from "react";
 import Tooltip from "./tooltip";
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -9,7 +9,6 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   error?: boolean;
   errorText?: string;
   required?: boolean;
-  wrapperClass?: string;
   tooltip?: string;
   symbol?: string;
   children?: React.ReactNode;
@@ -27,14 +26,13 @@ const InputGroup = forwardRef<HTMLInputElement, InputProps>(function InputGroup(
     error = false,
     errorText = "",
     required = false,
-    wrapperClass = "",
     tooltip = "",
     symbol = "",
     ...rest
   } = props;
 
   return (
-    <div className={wrapperClass}>
+    <>
       <div className="block mb-1">
         <label htmlFor={id}>
           {label} {required && <span className="text-red">*</span>}
@@ -59,7 +57,7 @@ const InputGroup = forwardRef<HTMLInputElement, InputProps>(function InputGroup(
       {errorText && (
         <p className="text-xs pl-2 text-red-600 mt-1">{errorText}</p>
       )}
-    </div>
+    </>
   );
 });
 

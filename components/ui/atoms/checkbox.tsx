@@ -8,7 +8,6 @@ interface CheckboxProps extends React.InputHTMLAttributes<HTMLInputElement> {
   error?: boolean;
   errorText?: string;
   required?: boolean;
-  wrapperClass?: string;
   children?: React.ReactNode;
 }
 
@@ -19,14 +18,13 @@ const Checkbox = (props: CheckboxProps) => {
     error = false,
     errorText = "",
     required = false,
-    wrapperClass = "",
     ...rest
   } = props;
 
   const inputRef = useRef(null);
 
   return (
-    <div className={wrapperClass}>
+    <>
       <input
         ref={inputRef}
         type="checkbox"
@@ -42,7 +40,7 @@ const Checkbox = (props: CheckboxProps) => {
       {errorText && (
         <p className="text-xs pl-2 text-red-600 mt-1">{errorText}</p>
       )}
-    </div>
+    </>
   );
 };
 
