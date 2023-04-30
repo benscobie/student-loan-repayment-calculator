@@ -6,5 +6,5 @@ export interface Results {
     debtClearedDate: DateTime;
     debtClearedNumberOfPeriods: number;
     totalPaid: number;
-    totalInterestPaid: number;
+    totalInterestApplied: number;
 }

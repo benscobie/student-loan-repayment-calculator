@@ -6,5 +6,5 @@ export default interface Projection {
     paid: number;
     interestApplied: number;
     totalPaid: number;
-    totalInterestPaid: number;
+    totalInterestApplied: number;
 }
