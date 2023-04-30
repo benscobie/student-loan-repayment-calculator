@@ -60,6 +60,10 @@ const Home: NextPage<HomeProps> = ({ assumptions }) => {
     });
   };
 
+  const isBirthDateValid = () => {
+    return birthDate!.startOf("day") < birthDateMustBeBefore.startOf("day");
+  };
+
   const getAvailableLoanTypes = () => {
     const types = [
       LoanType.Type1,
@@ -118,12 +122,16 @@ const Home: NextPage<HomeProps> = ({ assumptions }) => {
     setEditingLoan(loanData[index]);
   };
 
+  const birthDateMustBeBefore = DateTime.now().minus({
+    years: 15,
+  });
+
   const canCalculate = () => {
     return (
       editingLoan == null &&
       loanData.length > 0 &&
       (!isBirthDateRequired() ||
-        (isBirthDateRequired() && birthDate != null)) &&
+        (isBirthDateRequired() && birthDate != null && isBirthDateValid())) &&
       annualSalaryBeforeTax != null &&
       annualSalaryBeforeTax > 0
     );
@@ -295,6 +303,13 @@ const Home: NextPage<HomeProps> = ({ assumptions }) => {
                     label="Birth Date"
                     tooltip="Your birth date is used to calculate when the loan can be written off."
                     value={birthDate?.toISODate() || ""}
+                    error={
+                      !isBirthDateValid()
+                        ? `Select a date prior to ${birthDateMustBeBefore.toFormat(
+                            "dd/MM/yyyy"
+                          )}`
+                        : undefined
+                    }
                     onChange={(e) =>
                       setBirthDate(DateTime.fromISO(e.target.value))
                     }
