@@ -1,29 +1,28 @@
-import { useRef } from "react";
+import { forwardRef } from "react";
 
 interface SelectProps
   extends React.SelectHTMLAttributes<HTMLSelectElement | HTMLInputElement> {
   id: string;
   placeholder?: string;
   label: string;
-  error?: boolean;
-  errorText?: string;
+  error?: string;
   required?: boolean;
   children?: React.ReactNode;
 }
 
-const Select = (props: SelectProps) => {
+const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select(
+  props: SelectProps,
+  ref
+) {
   const {
     id,
     placeholder = "",
     label = "",
-    error = false,
-    errorText = "",
     required = false,
     children,
+    error,
     ...rest
   } = props;
-
-  const inputRef = useRef(null);
 
   return (
     <>
@@ -32,19 +31,17 @@ const Select = (props: SelectProps) => {
       </label>
       <select
         id="loanType"
-        ref={inputRef}
+        ref={ref}
         className={`border bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-full p-2.5 font-light block text-sm rounded ${
-          error ? "border-red-600" : "border-gray-300"
+          error != null ? "border-red-600" : "border-gray-300"
         }`}
         {...rest}
       >
         {children}
       </select>
-      {errorText && (
-        <p className="text-xs pl-2 text-red-600 mt-1">{errorText}</p>
-      )}
+      {error && <p className="text-xs pl-2 text-red-600 mt-1">{error}</p>}
     </>
   );
-};
+});
 
 export default Select;
