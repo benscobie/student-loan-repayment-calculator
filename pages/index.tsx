@@ -304,7 +304,7 @@ const Home: NextPage<HomeProps> = ({ assumptions }) => {
                     tooltip="Your birth date is used to calculate when the loan can be written off."
                     value={birthDate?.toISODate() || ""}
                     error={
-                      !isBirthDateValid()
+                      birthDate != null && !isBirthDateValid()
                         ? `Select a date prior to ${birthDateMustBeBefore.toFormat(
                             "dd/MM/yyyy"
                           )}`
