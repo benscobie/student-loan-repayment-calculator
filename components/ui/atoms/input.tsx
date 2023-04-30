@@ -33,7 +33,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function InputGroup(
         <label htmlFor={id}>
           {label} {required && <span className="text-red">*</span>}
         </label>
-        {tooltip && <Tooltip>{tooltip}</Tooltip>}
+        {tooltip && <Tooltip text={tooltip} />}
       </div>
       <input
         ref={ref}
