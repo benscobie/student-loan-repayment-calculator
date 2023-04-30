@@ -66,13 +66,13 @@ const LoanBreakdownProps: NextPage<LoanBreakdownProps> = ({
           .
         </p>
         <p className="mt-3 leading-7">
-          You will have a paid{" "}
+          You will have paid{" "}
           <Highlight>{currencyFormatter().format(results.totalPaid)}</Highlight>{" "}
-          in total, of which{" "}
+          in total, with{" "}
           <Highlight>
-            {currencyFormatter().format(results.totalInterestPaid)}
+            {currencyFormatter().format(results.totalInterestApplied)}
           </Highlight>{" "}
-          was interest.
+          of interest applied over the loans duration.
         </p>
       </div>
       <div className="grid grid-cols-1 gap-4 mt-4">

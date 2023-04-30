@@ -9,6 +9,6 @@ export default interface Result {
     aggregatedDebtRemaining: number;
     aggregatedPaidInPeriod: number;
     aggregatedInterestAppliedInPeriod: number;
-    aggregatedTotalInterestPaid: number;
+    aggregatedTotalInterestApplied: number;
     aggregatedTotalPaid: number;
 }
