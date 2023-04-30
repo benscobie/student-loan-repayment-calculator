@@ -1,4 +1,5 @@
 import { QuestionCircle } from "react-bootstrap-icons";
+import { Tooltip as ReactTooltip } from "react-tooltip";
 
 interface TooltipProps {
   children?: React.ReactNode;
@@ -6,12 +7,21 @@ interface TooltipProps {
 
 const Tooltip = (props: TooltipProps) => {
   return (
-    <div className="has-tooltip inline cursor-pointer">
-      <span className="tooltip -mt-8  py-2 px-3 text-sm font-medium text-white bg-slate-600 rounded-lg shadow-sm">
+    <>
+      <div data-tooltip-id="tooltip" className="inline cursor-pointer">
+        <QuestionCircle className="ml-1 inline mb-1" size={14} />
+      </div>
+      <ReactTooltip
+        id="tooltip"
+        style={{
+          backgroundColor: "rgb(71, 85, 105)",
+          color: "#fff",
+          opacity: 1,
+        }}
+      >
         {props.children}
-      </span>
-      <QuestionCircle className="ml-1 inline mb-1" size={14} />
-    </div>
+      </ReactTooltip>
+    </>
   );
 };
 export default Tooltip;

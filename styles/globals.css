@@ -7,20 +7,8 @@
     } 
   }
 
-.tooltip {
-    @apply invisible absolute;
-}
-  
-.has-tooltip:hover .tooltip {
-    @apply visible z-50;
-}
-
 a:hover {
     text-decoration: underline;
-}
-
-main a {
-    color: blue;
 }
 
 @tailwind utilities;
