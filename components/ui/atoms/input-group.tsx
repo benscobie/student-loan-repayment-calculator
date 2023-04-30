@@ -6,8 +6,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   placeholder?: string;
   label: string;
   type?: string;
-  error?: boolean;
-  errorText?: string;
+  error?: string;
   required?: boolean;
   tooltip?: string;
   symbol?: string;
@@ -23,8 +22,7 @@ const InputGroup = forwardRef<HTMLInputElement, InputProps>(function InputGroup(
     placeholder = "",
     label = "",
     type = "text",
-    error = false,
-    errorText = "",
+    error,
     required = false,
     tooltip = "",
     symbol = "",
@@ -47,15 +45,15 @@ const InputGroup = forwardRef<HTMLInputElement, InputProps>(function InputGroup(
           ref={ref}
           type={type}
           className={`pl-7 border bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-full p-2.5 font-light block text-sm rounded ${
-            error ? "border-red-600" : "border-gray-300"
+            error != null ? "border-red-600" : "border-gray-300"
           }`}
           id={id}
           placeholder={placeholder}
           {...rest}
         />
       </div>
-      {errorText && (
-        <p className="text-xs pl-2 text-red-600 mt-1">{errorText}</p>
+      {error != null && (
+        <p className="text-xs pl-2 text-red-600 mt-1">{error}</p>
       )}
     </>
   );

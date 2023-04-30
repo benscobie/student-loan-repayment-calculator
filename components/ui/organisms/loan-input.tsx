@@ -1,6 +1,5 @@
-import { DateTime } from "luxon";
 import { NextPage } from "next";
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import Loan from "../../../models/loan";
 import LoanType from "../../../models/loanType";
 import Button from "../atoms/button";
@@ -8,14 +7,124 @@ import Checkbox from "../atoms/checkbox";
 import Input from "../atoms/input";
 import InputGroup from "../atoms/input-group";
 import Select from "../atoms/select";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { DateTime } from "luxon";
+import { dateTimeToInputDate } from "../../../utils/dateTimeToInputDate";
 
 interface LoanInputProps {
   loan: Loan;
-  onChange: Function;
-  onCancel: Function;
+  onChange(loan: Loan): void;
+  onCancel(): void;
   availableLoanTypes: LoanType[];
   canCancel: boolean;
 }
+
+type FormData = {
+  loanType: LoanType;
+  balanceRemaining: number;
+  academicYearLoanTakenOut?: number;
+  courseStartDate?: Date;
+  courseEndDate?: Date;
+  firstRepaymentDate?: Date;
+  studyingPartTime?: boolean;
+};
+
+const schema = z
+  .object({
+    loanType: z.enum(
+      [LoanType.Type1, LoanType.Type2, LoanType.Type4, LoanType.Postgraduate],
+      {
+        errorMap: () => {
+          return { message: "Loan type is required" };
+        },
+      }
+    ),
+    balanceRemaining: z
+      .number({
+        invalid_type_error: "Invalid number",
+      })
+      .min(1),
+    academicYearLoanTakenOut: z
+      .number({
+        invalid_type_error: "Academic year loan taken out is required",
+      })
+      .optional(),
+    courseStartDate: z.date().optional(),
+    courseEndDate: z.date().optional(),
+    firstRepaymentDate: z.date().optional(),
+    studyingPartTime: z.boolean().optional(),
+  })
+  .superRefine((val, ctx) => {
+    const firstRepaymentDate = firstRepaymentDateRequired(
+      val.loanType,
+      val.academicYearLoanTakenOut
+    );
+
+    if (firstRepaymentDate && !val.firstRepaymentDate) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["firstRepaymentDate"],
+        message: "First repayment date is required",
+      });
+    }
+  })
+  .superRefine((val, ctx) => {
+    if (
+      academicYearLoanTakenOutRequired(val.loanType) &&
+      (val.academicYearLoanTakenOut == null ||
+        val.academicYearLoanTakenOut <= 0)
+    ) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["academicYearLoanTakenOut"],
+        message: "Academic year loan taken out is required",
+      });
+    }
+  })
+  .superRefine((val, ctx) => {
+    if (courseStartDateRequired(val.loanType) && val.courseStartDate == null) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["courseStartDate"],
+        message: "Course start date is required",
+      });
+    }
+  })
+  .superRefine((val, ctx) => {
+    if (courseEndDateRequired(val.loanType) && val.courseEndDate == null) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["courseEndDate"],
+        message: "Course end date is required",
+      });
+    }
+  });
+
+const firstRepaymentDateRequired = (
+  loanType: LoanType,
+  academicYearLoanTakenOut?: number
+) => {
+  return (
+    (loanType == LoanType.Type1 && academicYearLoanTakenOut == 2006) ||
+    loanType == LoanType.Type2 ||
+    loanType == LoanType.Type4 ||
+    loanType == LoanType.Postgraduate
+  );
+};
+
+const academicYearLoanTakenOutRequired = (loanType: LoanType) => {
+  return loanType == LoanType.Type1 || loanType == LoanType.Type4;
+};
+
+const courseStartDateRequired = (loanType: LoanType) => {
+  return loanType == LoanType.Type2;
+};
+
+const courseEndDateRequired = (loanType: LoanType) => {
+  return loanType == LoanType.Type2;
+};
 
 const LoanInput: NextPage<LoanInputProps> = ({
   loan,
@@ -24,102 +133,75 @@ const LoanInput: NextPage<LoanInputProps> = ({
   canCancel,
   availableLoanTypes,
 }) => {
-  const [loanType, setLoanType] = React.useState(loan.loanType);
-  const [balanceRemaining, setBalanceRemaining] = React.useState(
-    loan.balanceRemaining
-  );
-  const [academicYearLoanTakenOut, setAcademicYearLoanTakenOut] =
-    React.useState(loan.academicYearLoanTakenOut);
-  const [courseStartDate, setCourseStartDate] = React.useState(
-    loan.courseStartDate
-  );
-  const [courseEndDate, setCourseEndDate] = React.useState(loan.courseEndDate);
-  const [firstRepaymentDate, setFirstRepaymentDate] = React.useState(
-    loan.firstRepaymentDate
-  );
-  const [studyingPartTime, setSudyingPartTime] = React.useState(
-    loan.studyingPartTime
-  );
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setFocus,
+    resetField,
+    formState: { errors },
+  } = useForm<FormData>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      loanType: loan.loanType,
+      academicYearLoanTakenOut: loan.academicYearLoanTakenOut,
+      balanceRemaining: loan.balanceRemaining,
+      courseStartDate: dateTimeToInputDate(loan.courseStartDate),
+      courseEndDate: dateTimeToInputDate(loan.courseEndDate),
+      firstRepaymentDate: dateTimeToInputDate(loan.firstRepaymentDate),
+      studyingPartTime: loan.studyingPartTime,
+    },
+  });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = (data: FormData) => {
     onChange({
-      loanType,
-      balanceRemaining,
-      academicYearLoanTakenOut,
-      courseStartDate,
-      courseEndDate,
-      firstRepaymentDate,
-      studyingPartTime,
+      loanType: data.loanType,
+      balanceRemaining: data.balanceRemaining,
+      academicYearLoanTakenOut: data.academicYearLoanTakenOut,
+      courseStartDate:
+        data.courseStartDate != null
+          ? DateTime.fromJSDate(data.courseStartDate)
+          : undefined,
+      courseEndDate:
+        data.courseEndDate != null
+          ? DateTime.fromJSDate(data.courseEndDate)
+          : undefined,
+      firstRepaymentDate:
+        data.firstRepaymentDate != null
+          ? DateTime.fromJSDate(data.firstRepaymentDate)
+          : undefined,
+      studyingPartTime: data.studyingPartTime,
     });
   };
 
-  const balanceRemainingRef = useRef<HTMLInputElement>(null);
+  const resetForm = () => {
+    resetField("academicYearLoanTakenOut");
+    resetField("courseStartDate");
+    resetField("courseEndDate");
+    resetField("firstRepaymentDate");
+    resetField("studyingPartTime");
+  };
+
+  const watchAllFields = watch();
 
   const loanTypeIsAvailable = (type: LoanType) => {
     return availableLoanTypes.includes(type) || loan.loanType == type;
   };
 
-  const onLoanTypeChange = (type: string) => {
-    setLoanType(LoanType[type as keyof typeof LoanType]);
-    if (balanceRemainingRef.current) {
-      balanceRemainingRef.current.focus();
-    }
-  };
-
-  const firstRepaymentDateRequired =
-    (loanType == LoanType.Type1 && academicYearLoanTakenOut == 2006) ||
-    loanType == LoanType.Type2 ||
-    loanType == LoanType.Type4 ||
-    loanType == LoanType.Postgraduate;
-
-  const academicYearLoanTakenOutRequired =
-    loanType == LoanType.Type1 || loanType == LoanType.Type4;
-
-  const courseStartDateRequired = loanType == LoanType.Type2;
-
-  const courseEndDateRequired = loanType == LoanType.Type2;
-
-  const formValid = () => {
-    if (loanType == null || loanType == LoanType.Unselected) {
-      return false;
-    }
-
-    if (balanceRemaining == null || balanceRemaining <= 0) {
-      return false;
-    }
-
-    if (
-      academicYearLoanTakenOutRequired &&
-      (academicYearLoanTakenOut == null || academicYearLoanTakenOut <= 0)
-    ) {
-      return false;
-    }
-
-    if (firstRepaymentDateRequired && firstRepaymentDate == null) {
-      return false;
-    }
-
-    if (courseStartDateRequired && courseStartDate == null) {
-      return false;
-    }
-
-    if (courseEndDateRequired && courseEndDate == null) {
-      return false;
-    }
-
-    return true;
-  };
-
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <Select
         id="loanType"
         label="Loan type"
-        value={loanType || LoanType.Unselected}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-          onLoanTypeChange(e.target.value)
-        }
+        defaultValue={LoanType.Unselected}
+        error={errors.loanType?.message}
+        {...register("loanType", {
+          required: true,
+          onChange: () => {
+            resetForm();
+            setFocus("balanceRemaining");
+          },
+        })}
       >
         <option value={LoanType.Unselected}>--Please choose a plan--</option>
 
@@ -143,28 +225,29 @@ const LoanInput: NextPage<LoanInputProps> = ({
       <div className="mt-3">
         <InputGroup
           id="balanceRemaining"
-          ref={balanceRemainingRef}
           type="number"
           label="Balance remaining"
-          value={balanceRemaining || ""}
           symbol="£"
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setBalanceRemaining(parseInt(e.target.value))
-          }
+          error={errors.balanceRemaining?.message}
+          {...register("balanceRemaining", {
+            required: true,
+            valueAsNumber: true,
+          })}
         />
       </div>
 
-      {loanType == LoanType.Type2 && (
+      {watchAllFields.loanType == LoanType.Type2 && (
         <>
           <div className="mt-3">
             <Input
               id="courseStartDate"
               type="date"
               label="Course start date"
-              value={courseStartDate?.toISODate() || ""}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setCourseStartDate(DateTime.fromISO(e.target.value))
-              }
+              error={errors.courseStartDate?.message}
+              {...register("courseStartDate", {
+                required: true,
+                valueAsDate: true,
+              })}
             />
           </div>
 
@@ -173,33 +256,35 @@ const LoanInput: NextPage<LoanInputProps> = ({
               id="courseEndDate"
               type="date"
               label="Course end date"
-              value={courseEndDate?.toISODate() || ""}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setCourseEndDate(DateTime.fromISO(e.target.value))
-              }
+              error={errors.courseEndDate?.message}
+              {...register("courseEndDate", {
+                required: true,
+                valueAsDate: true,
+              })}
             />
           </div>
         </>
       )}
 
-      {academicYearLoanTakenOutRequired && (
+      {academicYearLoanTakenOutRequired(watchAllFields.loanType) && (
         <div className="mt-3">
           <Select
             id="academicYearLoanTakenOut"
             label="Academic Year Loan Taken Out"
-            value={academicYearLoanTakenOut || ""}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setAcademicYearLoanTakenOut(parseInt(e.target.value))
-            }
+            error={errors.academicYearLoanTakenOut?.message}
+            {...register("academicYearLoanTakenOut", {
+              required: true,
+              valueAsNumber: true,
+            })}
           >
             <option value="">--Please choose an option--</option>
-            {loanType == LoanType.Type1 && (
+            {watchAllFields.loanType == LoanType.Type1 && (
               <>
                 <option value="2005">2005 to 2006, or earlier</option>
                 <option value="2006">2006 to 2007, or later</option>
               </>
             )}
-            {loanType == LoanType.Type4 && (
+            {watchAllFields.loanType == LoanType.Type4 && (
               <>
                 <option value="2006">2006 to 2007, or earlier</option>
                 <option value="2007">2007 to 2008, or later</option>
@@ -209,44 +294,42 @@ const LoanInput: NextPage<LoanInputProps> = ({
         </div>
       )}
 
-      {firstRepaymentDateRequired && (
+      {firstRepaymentDateRequired(
+        watchAllFields.loanType,
+        watchAllFields.academicYearLoanTakenOut
+      ) && (
         <div className="mt-3">
           <Input
             id="firstRepaymentDate"
             type="date"
             label="First repayment date"
             tooltip="Your first repayment date is used to calculate when the loan can be written off."
-            value={firstRepaymentDate?.toISODate() || ""}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setFirstRepaymentDate(DateTime.fromISO(e.target.value))
-            }
+            error={errors.firstRepaymentDate?.message}
+            {...register("firstRepaymentDate", {
+              required: true,
+              valueAsDate: true,
+            })}
           />
         </div>
       )}
 
-      {loanType == LoanType.Type2 && (
+      {watchAllFields.loanType == LoanType.Type2 && (
         <div className="mt-4">
           <Checkbox
             id="studyingPartTime"
             label="Studying part-time"
-            checked={studyingPartTime || false}
-            onChange={(e) => setSudyingPartTime(e.target.checked)}
+            {...register("studyingPartTime", { required: true })}
           />
         </div>
       )}
 
       <div className="mt-4 flex gap-2">
-        <Button
-          id="submit"
-          style="primary"
-          disabled={!formValid()}
-          type="submit"
-        >
+        <Button id="submit" style="primary" type="submit">
           Save plan
         </Button>
 
         {canCancel && (
-          <Button id="submit" style="secondary" onClick={() => onCancel()}>
+          <Button id="cancel" style="secondary" onClick={() => onCancel()}>
             Cancel
           </Button>
         )}
