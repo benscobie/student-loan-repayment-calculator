@@ -23,6 +23,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           backgroundColor: "rgb(71, 85, 105)",
           color: "#fff",
           opacity: 1,
+          maxWidth: "80vw",
         }}
       />
     </Layout>
