@@ -13,5 +13,5 @@ export function dateTimeToInputDate(date?: DateTime) {
         return undefined;
     }
     
-    return date.toJSON().slice(0, 10) as unknown as Date;
+    return date.toJSON()!.slice(0, 10) as unknown as Date;
 }
