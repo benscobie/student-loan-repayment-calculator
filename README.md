@@ -4,9 +4,9 @@
 
 A UK student loan repayment calculator which supports multiple plans.
 
-This project is a work in progress and the calculations may not be 100% correct, this calculator does not constitute financial advice.
+This calculator does not constitute financial advice and the calculations aren't guaranteed to be 100% correct, always do your own research.
 
-An up-to-date live version of this application can be found at the following URL: https://student-loan-repayment-calculator.benscobie.com/
+The application can be found here: https://studentloanrepaymentcalc.co.uk/
 
 ## Getting Started
 
