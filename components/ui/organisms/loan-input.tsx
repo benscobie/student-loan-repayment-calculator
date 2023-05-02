@@ -151,6 +151,7 @@ const LoanInput: NextPage<LoanInputProps> = ({
       firstRepaymentDate: dateTimeToInputDate(loan.firstRepaymentDate),
       studyingPartTime: loan.studyingPartTime,
     },
+    shouldUnregister: true,
   });
 
   const onSubmit = (data: FormData) => {
@@ -199,7 +200,6 @@ const LoanInput: NextPage<LoanInputProps> = ({
           required: true,
           onChange: () => {
             resetForm();
-            setFocus("balanceRemaining");
           },
         })}
       >

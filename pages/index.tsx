@@ -139,7 +139,7 @@ const Home: NextPage<HomeProps> = ({ assumptions }) => {
 
   const calculate = async () => {
     const response = await getAxios().post<Results>(
-      process.env.NEXT_PUBLIC_API_URL + "/ukstudentloans/calculate",
+      "/api/calculate",
       {
         annualSalaryBeforeTax: annualSalaryBeforeTax,
         birthDate: birthDate,
@@ -169,10 +169,10 @@ const Home: NextPage<HomeProps> = ({ assumptions }) => {
   return (
     <div>
       <Head>
-        <title>Student Loan Repayment Calculator</title>
+        <title>UK Student Loan Repayment Calculator</title>
         <meta
           name="description"
-          content="Calculate how long you have remaining, interest paid etc."
+          content="A free UK student loan repayment calculator. Calculate time left, amount to be paid and interest for all plan types."
         />
       </Head>
 
@@ -351,7 +351,9 @@ const Home: NextPage<HomeProps> = ({ assumptions }) => {
           </div>
           <LoanBreakdown
             results={calculationResults}
-            loanTypes={loanData.map((x) => x.loanType!)}
+            loanTypes={calculationResults.results[0].projections.map(
+              (x) => x.loanType
+            )}
           />
         </div>
       )}
