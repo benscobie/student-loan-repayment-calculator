@@ -1,13 +1,12 @@
 import type { NextPage } from "next";
 import React from "react";
-import { DateTime } from "luxon";
-import LoanType from "../../../models/loanType";
+import LoanType, { LoanTypeToDescription } from "../../../models/loanType";
 import BalanceGraph from "../molecules/balanceGraph";
 import GraphHeader from "../molecules/graphHeader";
 import TotalsGraph from "../molecules/totalsGraph";
 import { Results } from "../../../api/models/results";
-import Highlight from "../atoms/highlight";
-import currencyFormatter from "../../../utils/currencyFormatter";
+import LoanRepaymentNarrative from "../molecules/loan-repayment-narrative";
+import classNames from "classnames";
 
 interface LoanBreakdownProps {
   results: Results;
@@ -18,64 +17,23 @@ const LoanBreakdownProps: NextPage<LoanBreakdownProps> = ({
   results,
   loanTypes,
 }) => {
-  const paidOffDiff = () => {
-    const paidOff = results.debtClearedDate;
-
-    var now = DateTime.local();
-    var rezoned = now.setZone(paidOff.zone, { keepLocalTime: true });
-
-    return paidOff.diff(rezoned, ["years", "months"]);
-  };
-
-  const formattedYearText = () => {
-    return `${paidOffDiff().years} year${paidOffDiff().years > 1 ? "s" : ""}`;
-  };
-
-  const formattedMonthText = () => {
-    const months = Math.ceil(paidOffDiff().months);
-
-    return `${months} month${months > 1 ? "s" : ""}`;
-  };
-
   return (
     <div>
-      <div className="border py-3 px-3 rounded-md bg-gray-50">
-        <p className="leading-7">
-          {paidOffDiff().years > 0 && paidOffDiff().months > 0 && (
-            <>
-              You will be debt free in{" "}
-              <Highlight>
-                {formattedYearText()} and {formattedMonthText()}
-              </Highlight>
-            </>
-          )}
-          {paidOffDiff().years > 0 && paidOffDiff().months == 0 && (
-            <>
-              You will be debt free in{" "}
-              <Highlight>{formattedYearText()}</Highlight>
-            </>
-          )}
-          {paidOffDiff().years == 0 && paidOffDiff().months > 0 && (
-            <>
-              You will be debt free in{" "}
-              <Highlight>{formattedMonthText()}</Highlight>
-            </>
-          )}
-          , with your last payment date being in{" "}
-          <Highlight>{results.debtClearedDate.toFormat("LLLL yyyy")}</Highlight>
-          .
-        </p>
-        <p className="mt-3 leading-7">
-          You will have paid{" "}
-          <Highlight>{currencyFormatter().format(results.totalPaid)}</Highlight>{" "}
-          in total, with{" "}
-          <Highlight>
-            {currencyFormatter().format(results.totalInterestApplied)}
-          </Highlight>{" "}
-          of interest applied over the loans duration.
-        </p>
+      <div className={classNames("grid grid-cols-1 lg:grid-cols-2 gap-4")}>
+        {loanTypes.map((loanType) => (
+          <div className="w-full" key={loanType}>
+            {loanTypes.length > 1 && (
+              <h3 className="mb-2 text-xl">
+                {LoanTypeToDescription(loanType)}
+              </h3>
+            )}
+            <div className="border py-3 px-3 rounded-md bg-gray-50">
+              <LoanRepaymentNarrative loanType={loanType} results={results} />
+            </div>
+          </div>
+        ))}
       </div>
-      <div className="grid grid-cols-1 gap-4 mt-4">
+      <div className="flex flex-col gap-4 mt-8">
         {(results.results.find((x) => x.period == 1)?.projections.length ?? 0) >
           1 && (
           <div>

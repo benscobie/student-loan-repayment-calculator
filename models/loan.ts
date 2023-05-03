@@ -2,17 +2,17 @@ import { DateTime } from "luxon";
 import LoanType from "./loanType";
 
 export default interface Loan {
-    balanceRemaining?: number;
+  balanceRemaining?: number;
 
-    loanType?: LoanType;
+  loanType?: LoanType;
 
-    firstRepaymentDate?: DateTime;
+  firstRepaymentDate?: DateTime;
 
-    academicYearLoanTakenOut?: number;
+  academicYearLoanTakenOut?: number;
 
-    studyingPartTime?: boolean;
+  studyingPartTime?: boolean;
 
-    courseStartDate?: DateTime;
+  courseStartDate?: DateTime;
 
-    courseEndDate?: DateTime;
+  courseEndDate?: DateTime;
 }

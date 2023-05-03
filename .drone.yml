@@ -35,5 +35,3 @@ trigger:
 ---
 kind: signature
 hmac: 6787b59b581253bbd7446057e8753080afeb470ce557cfa9a9b58add83d6fe72
-
-...

@@ -2,13 +2,13 @@
 @tailwind components;
 
 @layer base {
-    html {
-      @apply text-slate-900;
-    } 
+  html {
+    @apply text-slate-900;
   }
+}
 
 a:hover {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
 @tailwind utilities;
