@@ -4,6 +4,7 @@ enum LoanType {
   Type2 = "Type2",
   Type4 = "Type4",
   Postgraduate = "Postgraduate",
+  Type5 = "Type5",
 }
 
 export function LoanTypeToDescription(type?: LoanType): string {
@@ -15,6 +16,8 @@ export function LoanTypeToDescription(type?: LoanType): string {
     return "Plan 4";
   } else if (type == LoanType.Postgraduate) {
     return "Postgraduate Loan";
+  } else if (type == LoanType.Type5) {
+    return "Plan 5";
   }
 
   return "Unknown";
