@@ -6,7 +6,7 @@ import Input from "../components/ui/atoms/input";
 import LoanInput from "../components/ui/organisms/loan-input";
 import Loan from "../models/loan";
 import LoanType, { LoanTypeToDescription } from "../models/loanType";
-import { InfoCircle, PencilFill, TrashFill } from "react-bootstrap-icons";
+import { InfoCircle } from "react-bootstrap-icons";
 import { Results } from "../api/models/results";
 import { DateTime } from "luxon";
 import getAxios from "../utils/useAxios";
@@ -70,6 +70,7 @@ const Home: NextPage<HomeProps> = ({ assumptions }) => {
       LoanType.Type2,
       LoanType.Type4,
       LoanType.Postgraduate,
+      LoanType.Type5,
     ];
 
     var filterdTypes = types.filter((type) => {
@@ -172,7 +173,7 @@ const Home: NextPage<HomeProps> = ({ assumptions }) => {
         <title>UK Student Loan Repayment Calculator</title>
         <meta
           name="description"
-          content="A free UK student loan repayment calculator. Calculate time left, amount to be paid and interest for all plan types."
+          content="A free UK student loan repayment calculator. Calculate time left, amount to be paid and interest for plans 1, 2, 4, 5 and postgraduate loan."
         />
       </Head>
 

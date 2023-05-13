@@ -34,7 +34,13 @@ type FormData = {
 const schema = z
   .object({
     loanType: z.enum(
-      [LoanType.Type1, LoanType.Type2, LoanType.Type4, LoanType.Postgraduate],
+      [
+        LoanType.Type1,
+        LoanType.Type2,
+        LoanType.Type4,
+        LoanType.Postgraduate,
+        LoanType.Type5,
+      ],
       {
         errorMap: () => {
           return { message: "Loan type is required" };
@@ -110,7 +116,8 @@ const firstRepaymentDateRequired = (
     (loanType == LoanType.Type1 && academicYearLoanTakenOut == 2006) ||
     loanType == LoanType.Type2 ||
     loanType == LoanType.Type4 ||
-    loanType == LoanType.Postgraduate
+    loanType == LoanType.Postgraduate ||
+    loanType == LoanType.Type5
   );
 };
 
@@ -137,7 +144,6 @@ const LoanInput: NextPage<LoanInputProps> = ({
     register,
     handleSubmit,
     watch,
-    setFocus,
     resetField,
     formState: { errors },
   } = useForm<FormData>({
@@ -219,6 +225,10 @@ const LoanInput: NextPage<LoanInputProps> = ({
 
         {loanTypeIsAvailable(LoanType.Postgraduate) && (
           <option value={LoanType.Postgraduate}>Postgraduate loan</option>
+        )}
+
+        {loanTypeIsAvailable(LoanType.Type5) && (
+          <option value={LoanType.Type5}>Plan 5</option>
         )}
       </Select>
 
