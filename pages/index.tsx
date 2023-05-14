@@ -27,6 +27,7 @@ const Home: NextPage<HomeProps> = ({ assumptions }) => {
     React.useState<number>();
   const [editingLoan, setEditingLoan] = React.useState<Loan | null>({
     loanType: LoanType.Unselected,
+    studyingPartTime: false,
   });
   const [salaryGrowth, setSalaryGrowth] = React.useState(
     assumptions.salaryGrowth
@@ -51,7 +52,7 @@ const Home: NextPage<HomeProps> = ({ assumptions }) => {
         (loan.loanType == LoanType.Type1 &&
           loan.academicYearLoanTakenOut == 2005) ||
         (loan.loanType == LoanType.Type4 &&
-          loan.academicYearLoanTakenOut == 2007)
+          loan.academicYearLoanTakenOut == 2006)
       ) {
         return true;
       }
@@ -107,7 +108,7 @@ const Home: NextPage<HomeProps> = ({ assumptions }) => {
   };
 
   const addAnotherLoan = () => {
-    setEditingLoan({ loanType: LoanType.Unselected });
+    setEditingLoan({ loanType: LoanType.Unselected, studyingPartTime: false });
   };
 
   const removeLoan = (index: number) => {
@@ -139,6 +140,21 @@ const Home: NextPage<HomeProps> = ({ assumptions }) => {
   };
 
   const calculate = async () => {
+    console.log({
+      annualSalaryBeforeTax: annualSalaryBeforeTax,
+      birthDate: birthDate,
+      salaryGrowth: salaryGrowth,
+      annualEarningsGrowth: annualEarningsGrowth,
+      loans: loanData.map((loan) => ({
+        loanType: loan.loanType,
+        balanceRemaining: loan.balanceRemaining,
+        academicYearLoanTakenOut: loan.academicYearLoanTakenOut,
+        studyingPartTime: loan.studyingPartTime,
+        courseStartDate: loan.courseStartDate,
+        courseEndDate: loan.courseEndDate,
+      })),
+    });
+
     const response = await getAxios().post<Results>(
       "/api/calculate",
       {
@@ -149,9 +165,8 @@ const Home: NextPage<HomeProps> = ({ assumptions }) => {
         loans: loanData.map((loan) => ({
           loanType: loan.loanType,
           balanceRemaining: loan.balanceRemaining,
-          firstRepaymentDate: loan.firstRepaymentDate,
           academicYearLoanTakenOut: loan.academicYearLoanTakenOut,
-          studyingPartTime: loan.studyingPartTime ?? false,
+          studyingPartTime: loan.studyingPartTime,
           courseStartDate: loan.courseStartDate,
           courseEndDate: loan.courseEndDate,
         })),
