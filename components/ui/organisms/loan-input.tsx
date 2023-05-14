@@ -27,8 +27,7 @@ type FormData = {
   academicYearLoanTakenOut?: number;
   courseStartDate?: Date;
   courseEndDate?: Date;
-  firstRepaymentDate?: Date;
-  studyingPartTime?: boolean;
+  studyingPartTime: boolean;
 };
 
 const schema = z
@@ -59,22 +58,7 @@ const schema = z
       .optional(),
     courseStartDate: z.date().optional(),
     courseEndDate: z.date().optional(),
-    firstRepaymentDate: z.date().optional(),
-    studyingPartTime: z.boolean().optional(),
-  })
-  .superRefine((val, ctx) => {
-    const firstRepaymentDate = firstRepaymentDateRequired(
-      val.loanType,
-      val.academicYearLoanTakenOut
-    );
-
-    if (firstRepaymentDate && !val.firstRepaymentDate) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ["firstRepaymentDate"],
-        message: "First repayment date is required",
-      });
-    }
+    studyingPartTime: z.boolean(),
   })
   .superRefine((val, ctx) => {
     if (
@@ -90,7 +74,10 @@ const schema = z
     }
   })
   .superRefine((val, ctx) => {
-    if (courseStartDateRequired(val.loanType) && val.courseStartDate == null) {
+    if (
+      courseStartDateRequired(val.loanType, val.studyingPartTime) &&
+      val.courseStartDate == null
+    ) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         path: ["courseStartDate"],
@@ -108,29 +95,19 @@ const schema = z
     }
   });
 
-const firstRepaymentDateRequired = (
-  loanType: LoanType,
-  academicYearLoanTakenOut?: number
-) => {
-  return (
-    (loanType == LoanType.Type1 && academicYearLoanTakenOut == 2006) ||
-    loanType == LoanType.Type2 ||
-    loanType == LoanType.Type4 ||
-    loanType == LoanType.Postgraduate ||
-    loanType == LoanType.Type5
-  );
-};
-
 const academicYearLoanTakenOutRequired = (loanType: LoanType) => {
   return loanType == LoanType.Type1 || loanType == LoanType.Type4;
 };
 
-const courseStartDateRequired = (loanType: LoanType) => {
-  return loanType == LoanType.Type2;
+const courseStartDateRequired = (
+  loanType: LoanType,
+  studyingPartTime: boolean
+) => {
+  return loanType == LoanType.Type2 || studyingPartTime;
 };
 
 const courseEndDateRequired = (loanType: LoanType) => {
-  return loanType == LoanType.Type2;
+  return loanType != LoanType.Type5 && loanType != LoanType.Unselected;
 };
 
 const LoanInput: NextPage<LoanInputProps> = ({
@@ -154,7 +131,6 @@ const LoanInput: NextPage<LoanInputProps> = ({
       balanceRemaining: loan.balanceRemaining,
       courseStartDate: dateTimeToInputDate(loan.courseStartDate),
       courseEndDate: dateTimeToInputDate(loan.courseEndDate),
-      firstRepaymentDate: dateTimeToInputDate(loan.firstRepaymentDate),
       studyingPartTime: loan.studyingPartTime,
     },
     shouldUnregister: true,
@@ -173,10 +149,6 @@ const LoanInput: NextPage<LoanInputProps> = ({
         data.courseEndDate != null
           ? DateTime.fromJSDate(data.courseEndDate)
           : undefined,
-      firstRepaymentDate:
-        data.firstRepaymentDate != null
-          ? DateTime.fromJSDate(data.firstRepaymentDate)
-          : undefined,
       studyingPartTime: data.studyingPartTime,
     });
   };
@@ -185,7 +157,6 @@ const LoanInput: NextPage<LoanInputProps> = ({
     resetField("academicYearLoanTakenOut");
     resetField("courseStartDate");
     resetField("courseEndDate");
-    resetField("firstRepaymentDate");
     resetField("studyingPartTime");
   };
 
@@ -246,34 +217,45 @@ const LoanInput: NextPage<LoanInputProps> = ({
         />
       </div>
 
-      {watchAllFields.loanType == LoanType.Type2 && (
-        <>
-          <div className="mt-3">
-            <Input
-              id="courseStartDate"
-              type="date"
-              label="Course start date"
-              error={errors.courseStartDate?.message}
-              {...register("courseStartDate", {
-                required: true,
-                valueAsDate: true,
-              })}
-            />
-          </div>
+      <div className="mt-4">
+        <Checkbox
+          id="studyingPartTime"
+          label="Studying part-time"
+          {...register("studyingPartTime", { required: true })}
+        />
+      </div>
 
-          <div className="mt-3">
-            <Input
-              id="courseEndDate"
-              type="date"
-              label="Course end date"
-              error={errors.courseEndDate?.message}
-              {...register("courseEndDate", {
-                required: true,
-                valueAsDate: true,
-              })}
-            />
-          </div>
-        </>
+      {courseStartDateRequired(
+        watchAllFields.loanType,
+        watchAllFields.studyingPartTime
+      ) && (
+        <div className="mt-3">
+          <Input
+            id="courseStartDate"
+            type="date"
+            label="Course start date"
+            error={errors.courseStartDate?.message}
+            {...register("courseStartDate", {
+              required: true,
+              valueAsDate: true,
+            })}
+          />
+        </div>
+      )}
+
+      {courseEndDateRequired(watchAllFields.loanType) && (
+        <div className="mt-3">
+          <Input
+            id="courseEndDate"
+            type="date"
+            label="Course end date"
+            error={errors.courseEndDate?.message}
+            {...register("courseEndDate", {
+              required: true,
+              valueAsDate: true,
+            })}
+          />
+        </div>
       )}
 
       {academicYearLoanTakenOutRequired(watchAllFields.loanType) && (
@@ -301,35 +283,6 @@ const LoanInput: NextPage<LoanInputProps> = ({
               </>
             )}
           </Select>
-        </div>
-      )}
-
-      {firstRepaymentDateRequired(
-        watchAllFields.loanType,
-        watchAllFields.academicYearLoanTakenOut
-      ) && (
-        <div className="mt-3">
-          <Input
-            id="firstRepaymentDate"
-            type="date"
-            label="First repayment date"
-            tooltip="Your first repayment date is used to calculate when the loan can be written off."
-            error={errors.firstRepaymentDate?.message}
-            {...register("firstRepaymentDate", {
-              required: true,
-              valueAsDate: true,
-            })}
-          />
-        </div>
-      )}
-
-      {watchAllFields.loanType == LoanType.Type2 && (
-        <div className="mt-4">
-          <Checkbox
-            id="studyingPartTime"
-            label="Studying part-time"
-            {...register("studyingPartTime", { required: true })}
-          />
         </div>
       )}
 

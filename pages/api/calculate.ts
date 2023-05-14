@@ -7,9 +7,8 @@ import LoanType from "../../models/loanType";
 type LoanBody = {
   loanType: LoanType;
   balanceRemaining?: number;
-  firstRepaymentDate?: DateTime;
   academicYearLoanTakenOut?: number;
-  studyingPartTime?: boolean;
+  studyingPartTime: boolean;
   courseStartDate?: DateTime;
   courseEndDate?: DateTime;
 };

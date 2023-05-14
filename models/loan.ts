@@ -6,11 +6,9 @@ export default interface Loan {
 
   loanType?: LoanType;
 
-  firstRepaymentDate?: DateTime;
-
   academicYearLoanTakenOut?: number;
 
-  studyingPartTime?: boolean;
+  studyingPartTime: boolean;
 
   courseStartDate?: DateTime;
 
