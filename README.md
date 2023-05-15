@@ -6,7 +6,7 @@ A UK student loan repayment calculator which supports multiple plans.
 
 This calculator does not constitute financial advice and the calculations aren't guaranteed to be 100% correct, always do your own research.
 
-The application can be found here: https://studentloanrepaymentcalc.co.uk/
+The application can be found here: https://www.studentloanrepaymentcalc.co.uk/
 
 ## Getting Started
 
