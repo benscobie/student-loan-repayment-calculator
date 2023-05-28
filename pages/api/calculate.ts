@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { Results } from "../../api/models/results";
 import getAxios from "../../utils/useAxios";
-import { DateTime } from "luxon";
 import LoanType from "../../models/loanType";
 
 type LoanBody = {
@@ -9,16 +8,22 @@ type LoanBody = {
   balanceRemaining?: number;
   academicYearLoanTakenOut?: number;
   studyingPartTime: boolean;
-  courseStartDate?: DateTime;
-  courseEndDate?: DateTime;
+  courseStartDate?: Date;
+  courseEndDate?: Date;
+};
+
+type SalaryAdjustment = {
+  date: Date;
+  value: number;
 };
 
 type RequestBody = {
   annualSalaryBeforeTax?: number;
-  birthDate?: DateTime;
+  birthDate?: Date;
   salaryGrowth: number;
   annualEarningsGrowth: number;
   loans: LoanBody[];
+  salaryAdjustments: SalaryAdjustment[];
 };
 
 export default async function handler(

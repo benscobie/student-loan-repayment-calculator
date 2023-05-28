@@ -1,69 +1,36 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import React from "react";
+import React, { useRef, useState } from "react";
 import Button from "../components/ui/atoms/button";
-import Input from "../components/ui/atoms/input";
 import LoanInput from "../components/ui/organisms/loan-input";
 import Loan from "../models/loan";
 import LoanType, { LoanTypeToDescription } from "../models/loanType";
 import { InfoCircle } from "react-bootstrap-icons";
 import { Results } from "../api/models/results";
-import { DateTime } from "luxon";
 import getAxios from "../utils/useAxios";
 import LoanBreakdown from "../components/ui/organisms/loan-breakdown";
 import currencyFormatter from "../utils/currencyFormatter";
-import AssumptionsInput from "../components/ui/organisms/assumptions-input";
-import InputGroup from "../components/ui/atoms/input-group";
 import Assumptions from "../api/models/assumptions";
+import { Details } from "../models/details";
+import DetailsInput from "../components/ui/organisms/details-input";
+
+const getDateWithoutTimezone = (date: Date) => {
+  const tzOffset = date.getTimezoneOffset() * 60000;
+  return new Date(date.getTime() - tzOffset).toISOString();
+};
 
 interface HomeProps {
   assumptions: Assumptions;
 }
 
 const Home: NextPage<HomeProps> = ({ assumptions }) => {
-  const [loanData, setLoanData] = React.useState<Loan[]>([]);
-  const [birthDate, setBirthDate] = React.useState<DateTime>();
-  const [annualSalaryBeforeTax, setAnnualSalaryBeforeTax] =
-    React.useState<number>();
-  const [editingLoan, setEditingLoan] = React.useState<Loan | null>({
+  const [loanData, setLoanData] = useState<Loan[]>([]);
+  const [editingLoan, setEditingLoan] = useState<Loan | null>({
     loanType: LoanType.Unselected,
     studyingPartTime: false,
   });
-  const [salaryGrowth, setSalaryGrowth] = React.useState(
-    assumptions.salaryGrowth
-  );
-  const [annualEarningsGrowth, setAnnualEarningsGrowth] = React.useState(
-    assumptions.annualEarningsGrowth
-  );
-
-  const [calculationResults, setCalculationResults] = React.useState<Results>();
-
-  const onSalaryGrowthChange = (value: number) => {
-    setSalaryGrowth(value);
-  };
-
-  const onAnnualEarningsGrowthChange = (value: number) => {
-    setAnnualEarningsGrowth(value);
-  };
-
-  const isBirthDateRequired = () => {
-    return loanData.some((loan) => {
-      if (
-        (loan.loanType == LoanType.Type1 &&
-          loan.academicYearLoanTakenOut == 2005) ||
-        (loan.loanType == LoanType.Type4 &&
-          loan.academicYearLoanTakenOut == 2006)
-      ) {
-        return true;
-      }
-
-      return false;
-    });
-  };
-
-  const isBirthDateValid = () => {
-    return birthDate!.startOf("day") < birthDateMustBeBefore.startOf("day");
-  };
+  const [calculationResults, setCalculationResults] = useState<Results>();
+  const detailsSubmitRef = useRef<HTMLButtonElement>(null);
 
   const getAvailableLoanTypes = () => {
     const types = [
@@ -124,52 +91,43 @@ const Home: NextPage<HomeProps> = ({ assumptions }) => {
     setEditingLoan(loanData[index]);
   };
 
-  const birthDateMustBeBefore = DateTime.now().minus({
-    years: 15,
-  });
-
   const canCalculate = () => {
-    return (
-      editingLoan == null &&
-      loanData.length > 0 &&
-      (!isBirthDateRequired() ||
-        (isBirthDateRequired() && birthDate != null && isBirthDateValid())) &&
-      annualSalaryBeforeTax != null &&
-      annualSalaryBeforeTax > 0
-    );
+    return editingLoan == null && loanData.length > 0;
   };
 
-  const calculate = async () => {
-    console.log({
-      annualSalaryBeforeTax: annualSalaryBeforeTax,
-      birthDate: birthDate,
-      salaryGrowth: salaryGrowth,
-      annualEarningsGrowth: annualEarningsGrowth,
-      loans: loanData.map((loan) => ({
-        loanType: loan.loanType,
-        balanceRemaining: loan.balanceRemaining,
-        academicYearLoanTakenOut: loan.academicYearLoanTakenOut,
-        studyingPartTime: loan.studyingPartTime,
-        courseStartDate: loan.courseStartDate,
-        courseEndDate: loan.courseEndDate,
-      })),
-    });
+  const calculateSubmit = async () => {
+    detailsSubmitRef.current!.click();
+  };
 
+  const handleDetailsSubmit = (details: Details) => {
+    calculate(details);
+  };
+
+  const calculate = async (details: Details) => {
     const response = await getAxios().post<Results>(
       "/api/calculate",
       {
-        annualSalaryBeforeTax: annualSalaryBeforeTax,
-        birthDate: birthDate,
-        salaryGrowth: salaryGrowth,
-        annualEarningsGrowth: annualEarningsGrowth,
+        annualSalaryBeforeTax: details.annualSalaryBeforeTax,
+        birthDate: details.birthDate
+          ? getDateWithoutTimezone(details.birthDate)
+          : undefined,
+        salaryGrowth: details.salaryGrowth / 100,
+        annualEarningsGrowth: details.annualEarningsGrowth / 100,
         loans: loanData.map((loan) => ({
           loanType: loan.loanType,
           balanceRemaining: loan.balanceRemaining,
           academicYearLoanTakenOut: loan.academicYearLoanTakenOut,
           studyingPartTime: loan.studyingPartTime,
-          courseStartDate: loan.courseStartDate,
-          courseEndDate: loan.courseEndDate,
+          courseStartDate: loan.courseStartDate
+            ? getDateWithoutTimezone(loan.courseStartDate)
+            : undefined,
+          courseEndDate: loan.courseEndDate
+            ? getDateWithoutTimezone(loan.courseEndDate)
+            : undefined,
         })),
+        salaryAdjustments: details.salaryAdjustments.map((x) => {
+          return { date: getDateWithoutTimezone(x.date), value: x.value };
+        }),
       },
       {
         headers: {
@@ -253,18 +211,20 @@ const Home: NextPage<HomeProps> = ({ assumptions }) => {
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <div
+                      <button
+                        type="button"
                         className="px-4 py-2 rounded-lg bg-slate-200 hover:bg-slate-300 flex items-center justify-center cursor-pointer"
                         onClick={() => editLoan(index)}
                       >
                         Edit
-                      </div>
-                      <div
+                      </button>
+                      <button
+                        type="button"
                         className="px-4 py-2 rounded-lg bg-slate-200 hover:bg-slate-300 flex items-center justify-center cursor-pointer"
                         onClick={() => removeLoan(index)}
                       >
                         Delete
-                      </div>
+                      </button>
                     </div>
                   </div>
                 ))}
@@ -293,55 +253,14 @@ const Home: NextPage<HomeProps> = ({ assumptions }) => {
             )}
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-6 p-5 pb-6 border-t-2 border-sky-400 shadow-[rgba(0,_0,_0,_0.1)_0px_4px_10px]">
-            <div>
-              <h2 className="mb-2 text-lg">Your details</h2>
-              <InputGroup
-                id="annualSalaryBeforeTax"
-                type="number"
-                label="Annual salary before tax"
-                value={annualSalaryBeforeTax || ""}
-                symbol="£"
-                onChange={(e) =>
-                  setAnnualSalaryBeforeTax(
-                    e.target.value.length == 0
-                      ? undefined
-                      : parseInt(e.target.value)
-                  )
-                }
-              />
-
-              {isBirthDateRequired() && (
-                <div className="mt-2">
-                  <Input
-                    id="birthDate"
-                    type="date"
-                    label="Birth Date"
-                    tooltip="Your birth date is used to calculate when the loan can be written off."
-                    value={birthDate?.toISODate() || ""}
-                    error={
-                      birthDate != null && !isBirthDateValid()
-                        ? `Select a date prior to ${birthDateMustBeBefore.toFormat(
-                            "dd/MM/yyyy"
-                          )}`
-                        : undefined
-                    }
-                    onChange={(e) =>
-                      setBirthDate(DateTime.fromISO(e.target.value))
-                    }
-                  />
-                </div>
-              )}
-            </div>
-            <div>
-              <h2 className="mb-2 text-lg">Assumptions</h2>
-              <AssumptionsInput
-                onSalaryGrowthChange={onSalaryGrowthChange}
-                onAnnualEarningsGrowthChange={onAnnualEarningsGrowthChange}
-                salaryGrowth={salaryGrowth}
-                annualEarningsGrowth={annualEarningsGrowth}
-              />
-            </div>
+          <div className="mt-6 p-5 pb-6 border-t-2 border-sky-400 shadow-[rgba(0,_0,_0,_0.1)_0px_4px_10px]">
+            <DetailsInput
+              annualEarningsGrowth={assumptions.annualEarningsGrowth}
+              salaryGrowth={assumptions.salaryGrowth}
+              loans={loanData}
+              submitRef={detailsSubmitRef}
+              handleSubmit={(details: Details) => handleDetailsSubmit(details)}
+            />
           </div>
 
           <div className="mt-4 flex justify-center">
@@ -349,7 +268,7 @@ const Home: NextPage<HomeProps> = ({ assumptions }) => {
               id="calculate"
               style="primary"
               disabled={!canCalculate()}
-              onClick={calculate}
+              onClick={calculateSubmit}
               className="max-w-md text-xl px-8"
             >
               Calculate

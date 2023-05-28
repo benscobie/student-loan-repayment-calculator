@@ -1,4 +1,3 @@
-import { DateTime } from "luxon";
 import LoanType from "./loanType";
 
 export default interface Loan {
@@ -10,7 +9,7 @@ export default interface Loan {
 
   studyingPartTime: boolean;
 
-  courseStartDate?: DateTime;
+  courseStartDate?: Date;
 
-  courseEndDate?: DateTime;
+  courseEndDate?: Date;
 }
