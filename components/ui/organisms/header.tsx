@@ -16,21 +16,23 @@ const Header = () => {
           </div>
           <div className="sm:hidden flex w-8 h-8 items-center justify-center">
             {!isNavOpen ? (
-              <div
+              <button
+                type="button"
                 className="block sm:hidden space-y-2 cursor-pointer p-2 group"
                 onClick={() => setIsNavOpen(true)}
               >
                 <div className="h-0.5 w-8 bg-white rounded-lg group-hover:bg-slate-200"></div>
                 <div className="h-0.5 w-8 bg-white rounded-lg group-hover:bg-slate-200"></div>
                 <div className="h-0.5 w-8 bg-white rounded-lg group-hover:bg-slate-200"></div>
-              </div>
+              </button>
             ) : (
-              <div
+              <button
+                type="button"
                 className="flex items-center justify-center hover:bg-sky-700 p-1 rounded-lg cursor-pointer"
                 onClick={() => setIsNavOpen(false)}
               >
                 <X className="inline" size={30} />
-              </div>
+              </button>
             )}
           </div>
         </div>

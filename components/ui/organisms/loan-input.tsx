@@ -10,8 +10,6 @@ import Select from "../atoms/select";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { DateTime } from "luxon";
-import { dateTimeToInputDate } from "../../../utils/dateTimeToInputDate";
 
 interface LoanInputProps {
   loan: Loan;
@@ -129,8 +127,8 @@ const LoanInput: NextPage<LoanInputProps> = ({
       loanType: loan.loanType,
       academicYearLoanTakenOut: loan.academicYearLoanTakenOut,
       balanceRemaining: loan.balanceRemaining,
-      courseStartDate: dateTimeToInputDate(loan.courseStartDate),
-      courseEndDate: dateTimeToInputDate(loan.courseEndDate),
+      courseStartDate: loan.courseStartDate,
+      courseEndDate: loan.courseEndDate,
       studyingPartTime: loan.studyingPartTime,
     },
     shouldUnregister: true,
@@ -141,14 +139,8 @@ const LoanInput: NextPage<LoanInputProps> = ({
       loanType: data.loanType,
       balanceRemaining: data.balanceRemaining,
       academicYearLoanTakenOut: data.academicYearLoanTakenOut,
-      courseStartDate:
-        data.courseStartDate != null
-          ? DateTime.fromJSDate(data.courseStartDate)
-          : undefined,
-      courseEndDate:
-        data.courseEndDate != null
-          ? DateTime.fromJSDate(data.courseEndDate)
-          : undefined,
+      courseStartDate: data.courseStartDate,
+      courseEndDate: data.courseEndDate,
       studyingPartTime: data.studyingPartTime,
     });
   };
