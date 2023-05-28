@@ -332,7 +332,7 @@ const DetailsInput: NextPage<DetailsInputProps> = ({
             style="primary"
             onClick={() => append({})}
           >
-            Add adjustment
+            {fields.length == 0 ? "Add adjustment" : "Add another adjustment"}
           </Button>
         </div>
       </div>
