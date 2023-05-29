@@ -253,7 +253,7 @@ const DetailsInput: NextPage<DetailsInputProps> = ({
       <div className="w-full flex justify-center">
         <button
           type="button"
-          className="w-1/2 text-center cursor-pointer py-2 bg-slate-200 hover:bg-slate-300 rounded-lg text-sm"
+          className="w-full sm:w-1/2 md:w-4/5 lg:w-1/2 text-center cursor-pointer py-2 px-2 bg-slate-200 hover:bg-slate-300 rounded-lg text-sm"
           onClick={toggleShowAdvancedOptions}
         >
           {!showAdvancedOptions
@@ -269,10 +269,10 @@ const DetailsInput: NextPage<DetailsInputProps> = ({
           can add these here. Annual salary growth will still apply.
         </p>
         {fields.length > 0 && (
-          <div className="grid grid-cols-2 gap-x-4 gap-y-3 mb-4">
+          <div className="flex gap-y-3 mb-4 flex-col">
             {fields?.map((field, index) => (
-              <>
-                <div>
+              <div key={field.id} className="flex gap-x-2 sm:gap-x-4">
+                <div className="grow">
                   <Controller
                     control={control}
                     name={`salaryAdjustments.${index}.date`}
@@ -293,36 +293,32 @@ const DetailsInput: NextPage<DetailsInputProps> = ({
                     )}
                   />
                 </div>
-                <div className="flex gap-2">
-                  <div>
-                    <InputGroup
-                      id="salaryAdjustmentAmount"
-                      type="number"
-                      label="Salary"
-                      symbol="£"
-                      error={
-                        errors["salaryAdjustments"]?.[index]?.value?.message
-                      }
-                      {...register(`salaryAdjustments.${index}.value`, {
-                        required: true,
-                        valueAsNumber: true,
-                      })}
-                    />
-                  </div>
-                  <div className="ml-2">
-                    <div className="block mb-1">&nbsp;</div>
-                    <div className="h-10 flex items-center">
-                      <button
-                        type="button"
-                        className="cursor-pointer text-slate-600 hover:text-slate-900"
-                        onClick={() => remove(index)}
-                      >
-                        <Trash />
-                      </button>
-                    </div>
+                <div className="grow">
+                  <InputGroup
+                    id="salaryAdjustmentAmount"
+                    type="number"
+                    label="Salary"
+                    symbol="£"
+                    error={errors["salaryAdjustments"]?.[index]?.value?.message}
+                    {...register(`salaryAdjustments.${index}.value`, {
+                      required: true,
+                      valueAsNumber: true,
+                    })}
+                  />
+                </div>
+                <div>
+                  <div className="block mb-1">&nbsp;</div>
+                  <div className="h-10 flex items-center">
+                    <button
+                      type="button"
+                      className="cursor-pointer text-slate-600 hover:text-slate-900"
+                      onClick={() => remove(index)}
+                    >
+                      <Trash />
+                    </button>
                   </div>
                 </div>
-              </>
+              </div>
             ))}
           </div>
         )}
@@ -330,7 +326,14 @@ const DetailsInput: NextPage<DetailsInputProps> = ({
           <Button
             id="addSalaryAdjustment"
             style="primary"
-            onClick={() => append({})}
+            onClick={() =>
+              append(
+                {},
+                {
+                  shouldFocus: false,
+                }
+              )
+            }
           >
             {fields.length == 0 ? "Add adjustment" : "Add another adjustment"}
           </Button>
