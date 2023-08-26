@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { X } from "react-bootstrap-icons";
 
 const Header = () => {
@@ -12,7 +12,12 @@ const Header = () => {
             Student Loan Repayment Calculator
           </div>
           <div className="hidden sm:block">
-            <a href="https://forms.gle/FWqyT5SUgumSKJG46">Share feedback</a>
+            <a
+              href="https://forms.gle/FWqyT5SUgumSKJG46"
+              className="hover:underline-offset-4"
+            >
+              Share feedback
+            </a>
           </div>
           <div className="sm:hidden flex w-8 h-8 items-center justify-center">
             {!isNavOpen ? (
