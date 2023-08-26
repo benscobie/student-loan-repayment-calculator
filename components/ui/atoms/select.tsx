@@ -12,7 +12,7 @@ interface SelectProps
 
 const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select(
   props: SelectProps,
-  ref
+  ref,
 ) {
   const {
     id,

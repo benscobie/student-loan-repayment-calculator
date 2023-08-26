@@ -52,7 +52,7 @@ let baseSchema = z.object({
             invalid_type_error: "Invalid number",
           })
           .min(0),
-      })
+      }),
     )
     .superRefine((items, ctx) => {
       items.forEach(({ date }, index) => {
@@ -82,7 +82,7 @@ let birthDateRequiredSchema = z.object({
         years: 15,
       })
       .startOf("day")
-      .toFormat("dd/MM/yyyy")}`
+      .toFormat("dd/MM/yyyy")}`,
   ),
 });
 

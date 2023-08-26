@@ -42,7 +42,7 @@ const schema = z
         errorMap: () => {
           return { message: "Loan type is required" };
         },
-      }
+      },
     ),
     balanceRemaining: z
       .number({
@@ -99,7 +99,7 @@ const academicYearLoanTakenOutRequired = (loanType: LoanType) => {
 
 const courseStartDateRequired = (
   loanType: LoanType,
-  studyingPartTime: boolean
+  studyingPartTime: boolean,
 ) => {
   return loanType == LoanType.Type2 || studyingPartTime;
 };
@@ -219,7 +219,7 @@ const LoanInput: NextPage<LoanInputProps> = ({
 
       {courseStartDateRequired(
         watchAllFields.loanType,
-        watchAllFields.studyingPartTime
+        watchAllFields.studyingPartTime,
       ) && (
         <div className="mt-3">
           <Input
