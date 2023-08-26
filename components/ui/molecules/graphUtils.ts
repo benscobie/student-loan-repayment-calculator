@@ -35,7 +35,7 @@ export function groupDataEveryNthPeriod(results: Result[]) {
 
 export function getLabelsForGroupedDataCallback(
   results: Result[],
-  label: string
+  label: string,
 ) {
   var date = DateTime.fromISO(label);
 

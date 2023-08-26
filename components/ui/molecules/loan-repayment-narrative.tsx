@@ -20,11 +20,11 @@ const LoanRepaymentNarrative: NextPage<LoanRepaymentNarrativeProps> = ({
     r.projections.find(
       (p) =>
         p.loanType == loanType &&
-        (p.repaymentStatus == "WrittenOff" || p.repaymentStatus == "PaidOff")
-    )
+        (p.repaymentStatus == "WrittenOff" || p.repaymentStatus == "PaidOff"),
+    ),
   )!;
   const periodCompleteProjection = periodComplete.projections.find(
-    (p) => p.loanType == loanType
+    (p) => p.loanType == loanType,
   )!;
 
   const paidOffDiff = () => {
@@ -50,7 +50,7 @@ const LoanRepaymentNarrative: NextPage<LoanRepaymentNarrativeProps> = ({
     <>
       Will be{" "}
       {RepaymentStatusToDescription(
-        periodCompleteProjection.repaymentStatus
+        periodCompleteProjection.repaymentStatus,
       ).toLowerCase()}{" "}
       in{" "}
     </>
@@ -91,7 +91,7 @@ const LoanRepaymentNarrative: NextPage<LoanRepaymentNarrativeProps> = ({
         in total, with{" "}
         <Highlight>
           {currencyFormatter().format(
-            periodCompleteProjection.totalInterestApplied
+            periodCompleteProjection.totalInterestApplied,
           )}
         </Highlight>{" "}
         of interest applied over the loans duration.

@@ -12,6 +12,7 @@ import {
   Scale,
   Tick,
   CoreScaleOptions,
+  ChartOptions,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 import LoanType, { LoanTypeToDescription } from "../../../models/loanType";
@@ -29,7 +30,7 @@ ChartJS.register(
   LineElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
 );
 
 interface BalanceGraphProps {
@@ -38,8 +39,9 @@ interface BalanceGraphProps {
 }
 
 const BalanceGraph = (props: BalanceGraphProps) => {
-  const options = {
+  const options: ChartOptions<"line"> = {
     responsive: true,
+    maintainAspectRatio: false,
     scales: {
       x: {
         ticks: {
@@ -47,11 +49,11 @@ const BalanceGraph = (props: BalanceGraphProps) => {
             this: Scale<CoreScaleOptions>,
             tickValue: string | number,
             index: number,
-            ticks: Tick[]
+            ticks: Tick[],
           ): string {
             return getLabelsForGroupedDataCallback(
               props.results.results,
-              this.getLabelForValue(index)
+              this.getLabelForValue(index),
             );
           },
           autoSkip: false,
@@ -107,7 +109,7 @@ const BalanceGraph = (props: BalanceGraphProps) => {
   const dataSetsPerLoanType = props.loanTypes.map((loanType, index) => ({
     label: LoanTypeToDescription(loanType),
     data: groupedData.data.map(
-      (x) => x.projections.find((p) => p.loanType == loanType)?.debtRemaining
+      (x) => x.projections.find((p) => p.loanType == loanType)?.debtRemaining,
     ),
     borderColor: colors[index],
     backgroundColor: backgroundColors[index],
@@ -119,7 +121,7 @@ const BalanceGraph = (props: BalanceGraphProps) => {
   };
 
   return (
-    <div className="w-full h-full">
+    <div className="w-full h-[500px]">
       <Line options={options} data={data} />
     </div>
   );

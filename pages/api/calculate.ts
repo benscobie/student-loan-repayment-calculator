@@ -28,7 +28,7 @@ type RequestBody = {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Results>
+  res: NextApiResponse<Results>,
 ) {
   if (req.method === "POST") {
     const body = req.body as RequestBody;
@@ -40,7 +40,7 @@ export default async function handler(
           "Content-Type": "application/json",
           Accept: "application/json",
         },
-      }
+      },
     );
 
     res.status(200).json(response.data);

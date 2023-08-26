@@ -14,7 +14,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 
 const Input = forwardRef<HTMLInputElement, InputProps>(function InputGroup(
   props: InputProps,
-  ref
+  ref,
 ) {
   const {
     id,

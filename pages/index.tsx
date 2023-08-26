@@ -60,7 +60,7 @@ const Home: NextPage<HomeProps> = ({ assumptions }) => {
           }
 
           return obj;
-        })
+        }),
       );
     } else {
       if (editingLoan != null) {
@@ -134,7 +134,7 @@ const Home: NextPage<HomeProps> = ({ assumptions }) => {
           "Content-Type": "application/json",
           Accept: "application/json",
         },
-      }
+      },
     );
 
     setCalculationResults(response.data);
@@ -206,7 +206,7 @@ const Home: NextPage<HomeProps> = ({ assumptions }) => {
                       </div>
                       <div>
                         {currencyFormatter().format(
-                          element.balanceRemaining ?? 0
+                          element.balanceRemaining ?? 0,
                         )}
                       </div>
                     </div>
@@ -287,7 +287,7 @@ const Home: NextPage<HomeProps> = ({ assumptions }) => {
           <LoanBreakdown
             results={calculationResults}
             loanTypes={calculationResults.results[0].projections.map(
-              (x) => x.loanType
+              (x) => x.loanType,
             )}
           />
         </div>

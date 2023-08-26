@@ -44,7 +44,7 @@ const DatePicker = forwardRef<ReactDatePicker, DatePickerProps>(
         )}
       </>
     );
-  }
+  },
 );
 
 export default DatePicker;
