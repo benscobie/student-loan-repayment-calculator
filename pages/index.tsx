@@ -183,7 +183,7 @@ const Home: NextPage<HomeProps> = ({ assumptions }) => {
             figuring out whether it&apos;s worth paying off your loan early. You
             can find the article here:{" "}
             <a
-              className="text-sky-700"
+              className="text-sky-700 break-words"
               href="https://www.moneysavingexpert.com/students/student-loans-repay/"
             >
               https://www.moneysavingexpert.com/students/student-loans-repay/

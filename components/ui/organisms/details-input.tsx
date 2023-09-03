@@ -331,7 +331,7 @@ const DetailsInput: NextPage<DetailsInputProps> = ({
                 {},
                 {
                   shouldFocus: false,
-                }
+                },
               )
             }
           >
