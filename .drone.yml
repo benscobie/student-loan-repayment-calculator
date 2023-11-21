@@ -5,7 +5,7 @@ name: default
 
 steps:
   - name: build
-    image: node:18-alpine
+    image: node:20-alpine
     pull: always
     commands:
       - yarn install
@@ -34,4 +34,6 @@ trigger:
 
 ---
 kind: signature
-hmac: 8353d8f5ccfd07e4ac42790385a7c51dece64ba77837503c6e7f5826db7faf7d
+hmac: 389905633c892a07de4c357da3f1ad1913c46fdcab1b08c671f67d7120afa797
+
+...
