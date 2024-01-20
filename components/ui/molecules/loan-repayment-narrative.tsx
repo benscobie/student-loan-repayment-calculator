@@ -20,11 +20,11 @@ const LoanRepaymentNarrative: NextPage<LoanRepaymentNarrativeProps> = ({
     r.projections.find(
       (p) =>
         p.loanType == loanType &&
-        (p.repaymentStatus == "WrittenOff" || p.repaymentStatus == "PaidOff"),
-    ),
+        (p.repaymentStatus == "WrittenOff" || p.repaymentStatus == "PaidOff")
+    )
   )!;
   const periodCompleteProjection = periodComplete.projections.find(
-    (p) => p.loanType == loanType,
+    (p) => p.loanType == loanType
   )!;
 
   const paidOffDiff = () => {
@@ -50,7 +50,7 @@ const LoanRepaymentNarrative: NextPage<LoanRepaymentNarrativeProps> = ({
     <>
       Will be{" "}
       {RepaymentStatusToDescription(
-        periodCompleteProjection.repaymentStatus,
+        periodCompleteProjection.repaymentStatus
       ).toLowerCase()}{" "}
       in{" "}
     </>
@@ -79,22 +79,22 @@ const LoanRepaymentNarrative: NextPage<LoanRepaymentNarrativeProps> = ({
             <Highlight>{formattedMonthText()}</Highlight>
           </>
         )}
-        , with your last payment date being in{" "}
+        , with the last payment date being in{" "}
         <Highlight>{periodComplete.periodDate.toFormat("LLLL yyyy")}</Highlight>
         .
       </p>
       <p className="mt-3 leading-7">
-        You will have paid{" "}
+        There is{" "}
         <Highlight>
           {currencyFormatter().format(periodCompleteProjection.totalPaid)}
         </Highlight>{" "}
-        in total, with{" "}
+        remaining to pay, with{" "}
         <Highlight>
           {currencyFormatter().format(
-            periodCompleteProjection.totalInterestApplied,
+            periodCompleteProjection.totalInterestApplied
           )}
         </Highlight>{" "}
-        of interest applied over the loans duration.
+        of that being interest.
       </p>
     </>
   );

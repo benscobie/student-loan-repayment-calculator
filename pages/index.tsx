@@ -60,7 +60,7 @@ const Home: NextPage<HomeProps> = ({ assumptions }) => {
           }
 
           return obj;
-        }),
+        })
       );
     } else {
       if (editingLoan != null) {
@@ -134,7 +134,7 @@ const Home: NextPage<HomeProps> = ({ assumptions }) => {
           "Content-Type": "application/json",
           Accept: "application/json",
         },
-      },
+      }
     );
 
     setCalculationResults(response.data);
@@ -168,7 +168,7 @@ const Home: NextPage<HomeProps> = ({ assumptions }) => {
 
           <h3 className="text-xl mt-6">How much do I repay?</h3>
           <p className="mt-2">
-            For plans 1, 2 and 4 your repayments equal 9% of your pre-tax
+            For plans 1, 2, 4 and 5 your repayments equal 9% of your pre-tax
             earnings above the threshold. When you have more than one type the
             payment is split according to the repayment thresholds.
           </p>
@@ -179,9 +179,9 @@ const Home: NextPage<HomeProps> = ({ assumptions }) => {
 
           <h3 className="text-xl mt-6">Should I pay it off?</h3>
           <p className="mt-2">
-            MoneySavingExpert extrordinaire Martin Lewis has a good article on
-            figuring out whether it&apos;s worth paying off your loan early. You
-            can find the article here:{" "}
+            MoneySavingExpert&apos;s Martin Lewis has a good article on figuring
+            out whether it&apos;s worth paying off your loan early. You can find
+            that article here:{" "}
             <a
               className="text-sky-700 break-words"
               href="https://www.moneysavingexpert.com/students/student-loans-repay/"
@@ -206,7 +206,7 @@ const Home: NextPage<HomeProps> = ({ assumptions }) => {
                       </div>
                       <div>
                         {currencyFormatter().format(
-                          element.balanceRemaining ?? 0,
+                          element.balanceRemaining ?? 0
                         )}
                       </div>
                     </div>
@@ -287,7 +287,7 @@ const Home: NextPage<HomeProps> = ({ assumptions }) => {
           <LoanBreakdown
             results={calculationResults}
             loanTypes={calculationResults.results[0].projections.map(
-              (x) => x.loanType,
+              (x) => x.loanType
             )}
           />
         </div>
