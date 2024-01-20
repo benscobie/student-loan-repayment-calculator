@@ -23,8 +23,8 @@ type FormData = {
   loanType: LoanType;
   balanceRemaining: number;
   academicYearLoanTakenOut?: number;
-  courseStartDate?: Date;
-  courseEndDate?: Date;
+  courseStartDate?: string;
+  courseEndDate?: string;
   studyingPartTime: boolean;
 };
 
@@ -54,8 +54,8 @@ const schema = z
         invalid_type_error: "Academic year loan taken out is required",
       })
       .optional(),
-    courseStartDate: z.date().optional(),
-    courseEndDate: z.date().optional(),
+    courseStartDate: z.coerce.date().optional(),
+    courseEndDate: z.coerce.date().optional(),
     studyingPartTime: z.boolean(),
   })
   .superRefine((val, ctx) => {
@@ -127,8 +127,12 @@ const LoanInput: NextPage<LoanInputProps> = ({
       loanType: loan.loanType,
       academicYearLoanTakenOut: loan.academicYearLoanTakenOut,
       balanceRemaining: loan.balanceRemaining,
-      courseStartDate: loan.courseStartDate,
-      courseEndDate: loan.courseEndDate,
+      courseStartDate: loan.courseStartDate
+        ? loan.courseStartDate.toISOString().substring(0, 10)
+        : undefined,
+      courseEndDate: loan.courseEndDate
+        ? loan.courseEndDate.toISOString().substring(0, 10)
+        : undefined,
       studyingPartTime: loan.studyingPartTime,
     },
     shouldUnregister: true,
@@ -139,8 +143,12 @@ const LoanInput: NextPage<LoanInputProps> = ({
       loanType: data.loanType,
       balanceRemaining: data.balanceRemaining,
       academicYearLoanTakenOut: data.academicYearLoanTakenOut,
-      courseStartDate: data.courseStartDate,
-      courseEndDate: data.courseEndDate,
+      courseStartDate: data.courseStartDate
+        ? new Date(data.courseStartDate)
+        : undefined,
+      courseEndDate: data.courseEndDate
+        ? new Date(data.courseEndDate)
+        : undefined,
       studyingPartTime: data.studyingPartTime,
     });
   };
@@ -229,7 +237,6 @@ const LoanInput: NextPage<LoanInputProps> = ({
             error={errors.courseStartDate?.message}
             {...register("courseStartDate", {
               required: true,
-              valueAsDate: true,
             })}
           />
         </div>
@@ -244,7 +251,6 @@ const LoanInput: NextPage<LoanInputProps> = ({
             error={errors.courseEndDate?.message}
             {...register("courseEndDate", {
               required: true,
-              valueAsDate: true,
             })}
           />
         </div>
