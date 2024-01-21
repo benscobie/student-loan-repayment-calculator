@@ -140,6 +140,7 @@ const LoanInput: NextPage<LoanInputProps> = ({
 
   const onSubmit = (data: FormData) => {
     onChange({
+      id: loan.id,
       loanType: data.loanType,
       balanceRemaining: data.balanceRemaining,
       academicYearLoanTakenOut: data.academicYearLoanTakenOut,

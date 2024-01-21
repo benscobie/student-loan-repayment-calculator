@@ -26,6 +26,7 @@ interface HomeProps {
 const Home: NextPage<HomeProps> = ({ assumptions }) => {
   const [loanData, setLoanData] = useState<Loan[]>([]);
   const [editingLoan, setEditingLoan] = useState<Loan | null>({
+    id: new Date().getTime(),
     loanType: LoanType.Unselected,
     studyingPartTime: false,
   });
@@ -49,12 +50,12 @@ const Home: NextPage<HomeProps> = ({ assumptions }) => {
   };
 
   const updateLoan = (loan: Loan) => {
-    var loanExists = loanData.some((x) => x.loanType == loan.loanType);
+    var loanExists = loanData.some((x) => x.id == loan.id);
 
     if (loanExists) {
       setLoanData((current) =>
         current.map((obj) => {
-          if (obj.loanType == loan.loanType) {
+          if (obj.id == loan.id) {
             setEditingLoan(null);
             return loan;
           }
@@ -75,7 +76,11 @@ const Home: NextPage<HomeProps> = ({ assumptions }) => {
   };
 
   const addAnotherLoan = () => {
-    setEditingLoan({ loanType: LoanType.Unselected, studyingPartTime: false });
+    setEditingLoan({
+      id: new Date().getTime(),
+      loanType: LoanType.Unselected,
+      studyingPartTime: false,
+    });
   };
 
   const removeLoan = (index: number) => {
