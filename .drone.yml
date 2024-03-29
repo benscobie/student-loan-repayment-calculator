@@ -8,10 +8,16 @@ steps:
     image: node:20-alpine
     pull: always
     commands:
-      - yarn install
+      - yarn install --immutable
       - yarn build
     env:
       - NODE_ENV=production
+      - SENTRY_AUTH_TOKEN:
+          from_secret: sentry_auth_token
+      - SENTRY_DSN:
+          from_secret: sentry_dsn
+      - NEXT_PUBLIC_SENTRY_DSN:
+          from_secret: sentry_dsn
 
   - name: publish_linux-amd64
     when:
@@ -34,6 +40,6 @@ trigger:
 
 ---
 kind: signature
-hmac: 389905633c892a07de4c357da3f1ad1913c46fdcab1b08c671f67d7120afa797
+hmac: 0718865e98bc987bf690137e135d80c1287ed575699e4ba21bc34469e562accc
 
 ...

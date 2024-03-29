@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",
+    "@sentry/nextjs": "^7.105.0",
     "axios": "^1.6.5",
     "chart.js": "^4.4.1",
     "classnames": "^2.5.1",
@@ -46,5 +47,6 @@
   },
   "resolutions": {
     "@types/react": "^18.2.38"
-  }
+  },
+  "packageManager": "yarn@4.1.1"
 }
