@@ -12,6 +12,12 @@ steps:
       - yarn build
     env:
       - NODE_ENV=production
+      - SENTRY_AUTH_TOKEN:
+          from_secret: sentry_auth_token
+      - SENTRY_DSN:
+          from_secret: sentry_dsn
+      - NEXT_PUBLIC_SENTRY_DSN:
+          from_secret: sentry_dsn
 
   - name: publish_linux-amd64
     when:
@@ -34,6 +40,6 @@ trigger:
 
 ---
 kind: signature
-hmac: 3f84ad88c3ba53cb87dfe71d88bde2ac0f0b9ace7e9a6b8a8d9b46ec0731a925
+hmac: 0718865e98bc987bf690137e135d80c1287ed575699e4ba21bc34469e562accc
 
 ...
