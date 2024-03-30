@@ -10,14 +10,14 @@ steps:
     commands:
       - yarn install --immutable
       - yarn build
-    env:
-      - NODE_ENV=production
-      - SENTRY_AUTH_TOKEN:
-          from_secret: sentry_auth_token
-      - SENTRY_DSN:
-          from_secret: sentry_dsn
-      - NEXT_PUBLIC_SENTRY_DSN:
-          from_secret: sentry_dsn
+    environment:
+      NODE_ENV: production
+      SENTRY_AUTH_TOKEN:
+        from_secret: sentry_auth_token
+      SENTRY_DSN:
+        from_secret: sentry_dsn
+      NEXT_PUBLIC_SENTRY_DSN:
+        from_secret: sentry_dsn
 
   - name: publish_linux-amd64
     when:
@@ -40,6 +40,6 @@ trigger:
 
 ---
 kind: signature
-hmac: 0718865e98bc987bf690137e135d80c1287ed575699e4ba21bc34469e562accc
+hmac: e5b2966489f2016acf973d442f155ab035119b40d6744c0c1611d05cbb216219
 
 ...

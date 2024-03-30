@@ -10,7 +10,6 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({
 
 module.exports = withBundleAnalyzer(nextConfig);
 
-
 // Injected content via Sentry wizard below
 
 const { withSentryConfig } = require("@sentry/nextjs");
@@ -24,7 +23,7 @@ module.exports = withSentryConfig(
     // Suppresses source map uploading logs during build
     silent: true,
     org: "none-rai",
-    project: "javascript-nextjs",
+    project: "slrc-frontend",
   },
   {
     // For all available options, see:
