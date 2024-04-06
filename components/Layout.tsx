@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
-import Footer from "./ui/organisms/footer";
-import Header from "./ui/organisms/header";
+import Footer from "./ui/organisms/Footer";
+import Header from "./ui/organisms/Header";
 
 interface LayoutProps {
   children?: ReactNode | undefined;
@@ -12,7 +12,7 @@ function Layout({ children, className }: LayoutProps) {
     <div className={className}>
       <Header />
       <main className="flex justify-center">
-        <div className="p-8 m-8 max-w-7xl w-full bg-white shadow-lg">
+        <div className="m-0 p-8 sm:m-8 max-w-7xl w-full bg-white shadow-lg">
           {children}
         </div>
       </main>

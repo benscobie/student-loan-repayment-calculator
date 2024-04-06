@@ -1,18 +1,18 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import React, { useRef, useState } from "react";
-import Button from "../components/ui/atoms/button";
-import LoanInput from "../components/ui/organisms/loan-input";
+import Button from "../components/ui/atoms/Button";
+import LoanInput from "../components/ui/organisms/LoanInput";
 import Loan from "../models/loan";
 import LoanType, { LoanTypeToDescription } from "../models/loanType";
 import { InfoCircle } from "react-bootstrap-icons";
 import { Results } from "../api/models/results";
 import getAxios from "../utils/useAxios";
-import LoanBreakdown from "../components/ui/organisms/loan-breakdown";
-import currencyFormatter from "../utils/currencyFormatter";
+import LoanBreakdown from "../components/ui/organisms/LoanBreakdown";
+import { currencyFormatter } from "../utils/currencyFormatter";
 import Assumptions from "../api/models/assumptions";
 import { Details } from "../models/details";
-import DetailsInput from "../components/ui/organisms/details-input";
+import DetailsInput from "../components/ui/organisms/DetailsInput";
 
 const getDateWithoutTimezone = (date: Date) => {
   const tzOffset = date.getTimezoneOffset() * 60000;
@@ -163,12 +163,12 @@ const Home: NextPage<HomeProps> = ({ assumptions }) => {
             <li>How long it could take to repay your student loan</li>
             <li>The potential repayment costs over the loan&apos;s duration</li>
           </ul>
-          <div className="p-2 bg-yellow-200 rounded-md text-yellow-800 text-sm mt-4 flex items-center jus border-l-4 border-yellow-400">
-            <InfoCircle size={16} className="inline"></InfoCircle>
-            <span className="ml-2">
+          <div className="p-2 bg-yellow-100 rounded-md text-yellow-800 text-sm mt-4 flex items-center border-l-4 border-yellow-400 space-x-2 w-fit">
+            <InfoCircle size={16} className="shrink-0"></InfoCircle>
+            <p>
               Please note that this calculator does not constitute financial
               advice.
-            </span>
+            </p>
           </div>
 
           <h3 className="text-xl mt-6">How much do I repay?</h3>
@@ -210,7 +210,7 @@ const Home: NextPage<HomeProps> = ({ assumptions }) => {
                         {LoanTypeToDescription(element.loanType)}
                       </div>
                       <div>
-                        {currencyFormatter().format(
+                        {currencyFormatter.format(
                           element.balanceRemaining ?? 0
                         )}
                       </div>

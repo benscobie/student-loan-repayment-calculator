@@ -3,8 +3,8 @@ import React from "react";
 import { DateTime } from "luxon";
 import LoanType from "../../../models/loanType";
 import { Results } from "../../../api/models/results";
-import Highlight from "../atoms/highlight";
-import currencyFormatter from "../../../utils/currencyFormatter";
+import Highlight from "../atoms/Highlight";
+import { currencyFormatter } from "../../../utils/currencyFormatter";
 import { RepaymentStatusToDescription } from "../../../models/repaymentStatus";
 
 interface LoanRepaymentNarrativeProps {
@@ -86,11 +86,11 @@ const LoanRepaymentNarrative: NextPage<LoanRepaymentNarrativeProps> = ({
       <p className="mt-3 leading-7">
         There is{" "}
         <Highlight>
-          {currencyFormatter().format(periodCompleteProjection.totalPaid)}
+          {currencyFormatter.format(periodCompleteProjection.totalPaid)}
         </Highlight>{" "}
         remaining to pay, with{" "}
         <Highlight>
-          {currencyFormatter().format(
+          {currencyFormatter.format(
             periodCompleteProjection.totalInterestApplied
           )}
         </Highlight>{" "}

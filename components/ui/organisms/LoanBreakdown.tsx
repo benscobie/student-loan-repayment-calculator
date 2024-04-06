@@ -1,19 +1,20 @@
 import type { NextPage } from "next";
 import React from "react";
 import LoanType, { LoanTypeToDescription } from "../../../models/loanType";
-import BalanceGraph from "../molecules/balanceGraph";
-import GraphHeader from "../molecules/graphHeader";
-import TotalsGraph from "../molecules/totalsGraph";
+import BalanceGraph from "../molecules/BalanceGraph";
+import GraphHeader from "../molecules/GraphHeader";
+import TotalsGraph from "../molecules/TotalsGraph";
 import { Results } from "../../../api/models/results";
-import LoanRepaymentNarrative from "../molecules/loan-repayment-narrative";
+import LoanRepaymentNarrative from "../molecules/LoanRepaymentNarrative";
 import classNames from "classnames";
+import { MonthLoanTable } from "../molecules/MonthLoanTable";
 
 interface LoanBreakdownProps {
   results: Results;
   loanTypes: LoanType[];
 }
 
-const LoanBreakdownProps: NextPage<LoanBreakdownProps> = ({
+const LoanBreakdown: NextPage<LoanBreakdownProps> = ({
   results,
   loanTypes,
 }) => {
@@ -46,8 +47,12 @@ const LoanBreakdownProps: NextPage<LoanBreakdownProps> = ({
           <TotalsGraph results={results} loanTypes={loanTypes} />
         </div>
       </div>
+
+      {loanTypes.map((loanType) => (
+        <MonthLoanTable key={loanType} loanType={loanType} results={results} />
+      ))}
     </div>
   );
 };
 
-export default LoanBreakdownProps;
+export default LoanBreakdown;

@@ -1,6 +1,6 @@
 import { NextPage } from "next";
 import { RefObject, useEffect, useState } from "react";
-import InputGroup from "../atoms/input-group";
+import InputGroup from "../atoms/InputGroup";
 import Loan from "../../../models/loan";
 import LoanType from "../../../models/loanType";
 import { DateTime } from "luxon";
@@ -8,10 +8,10 @@ import { Details } from "../../../models/details";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import Input from "../atoms/input";
-import Button from "../atoms/button";
+import Input from "../atoms/Input";
+import Button from "../atoms/Button";
 import { Trash } from "react-bootstrap-icons";
-import DatePicker from "../atoms/date-picker";
+import DatePicker from "../atoms/DatePicker";
 import classNames from "classnames";
 
 let nextMonth = () => {
@@ -52,7 +52,7 @@ let baseSchema = z.object({
             invalid_type_error: "Invalid number",
           })
           .min(0),
-      }),
+      })
     )
     .superRefine((items, ctx) => {
       items.forEach(({ date }, index) => {
@@ -82,7 +82,7 @@ let birthDateRequiredSchema = z.object({
         years: 15,
       })
       .startOf("day")
-      .toFormat("dd/MM/yyyy")}`,
+      .toFormat("dd/MM/yyyy")}`
   ),
 });
 
@@ -331,7 +331,7 @@ const DetailsInput: NextPage<DetailsInputProps> = ({
                 {},
                 {
                   shouldFocus: false,
-                },
+                }
               )
             }
           >

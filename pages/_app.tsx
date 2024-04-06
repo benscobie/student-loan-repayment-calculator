@@ -1,7 +1,7 @@
 import "../styles/globals.css";
 import "react-tooltip/dist/react-tooltip.css";
 import type { AppProps } from "next/app";
-import Layout from "../components/layout";
+import Layout from "../components/Layout";
 import { Open_Sans } from "next/font/google";
 import { Tooltip } from "react-tooltip";
 import Script from "next/script";
