@@ -23,6 +23,14 @@ interface HomeProps {
   assumptions: Assumptions;
 }
 
+const types = [
+  LoanType.Type1,
+  LoanType.Type2,
+  LoanType.Type4,
+  LoanType.Postgraduate,
+  LoanType.Type5,
+];
+
 const Home: NextPage<HomeProps> = ({ assumptions }) => {
   const [loanData, setLoanData] = useState<Loan[]>([]);
   const [editingLoan, setEditingLoan] = useState<Loan | null>({
@@ -32,22 +40,10 @@ const Home: NextPage<HomeProps> = ({ assumptions }) => {
   });
   const [calculationResults, setCalculationResults] = useState<Results>();
   const detailsSubmitRef = useRef<HTMLButtonElement>(null);
-
-  const getAvailableLoanTypes = () => {
-    const types = [
-      LoanType.Type1,
-      LoanType.Type2,
-      LoanType.Type4,
-      LoanType.Postgraduate,
-      LoanType.Type5,
-    ];
-
-    var filterdTypes = types.filter((type) => {
-      return !loanData.some((loan) => loan.loanType == type);
-    });
-
-    return filterdTypes;
-  };
+  const canCalculate = editingLoan == null && loanData.length > 0;
+  const availableLoanTypes = types.filter((type) => {
+    return !loanData.some((loan) => loan.loanType == type);
+  });
 
   const updateLoan = (loan: Loan) => {
     var loanExists = loanData.some((x) => x.id == loan.id);
@@ -84,20 +80,19 @@ const Home: NextPage<HomeProps> = ({ assumptions }) => {
   };
 
   const removeLoan = (index: number) => {
-    let filteredArray = loanData.filter((_, i) => index !== i);
-    setLoanData(filteredArray);
+    setLoanData((prev) => {
+      const newLoans = prev.filter((_, i) => index !== i);
 
-    if (filteredArray.length == 0) {
-      addAnotherLoan();
-    }
+      if (newLoans.length == 0) {
+        addAnotherLoan();
+      }
+
+      return newLoans;
+    });
   };
 
   const editLoan = (index: number) => {
     setEditingLoan(loanData[index]);
-  };
-
-  const canCalculate = () => {
-    return editingLoan == null && loanData.length > 0;
   };
 
   const calculateSubmit = async () => {
@@ -243,11 +238,11 @@ const Home: NextPage<HomeProps> = ({ assumptions }) => {
                 onChange={updateLoan}
                 onCancel={cancelLoanInput}
                 canCancel={loanData.length > 0}
-                availableLoanTypes={getAvailableLoanTypes()}
+                availableLoanTypes={availableLoanTypes}
               />
             )}
 
-            {editingLoan == null && getAvailableLoanTypes().length > 0 && (
+            {editingLoan == null && availableLoanTypes.length > 0 && (
               <Button
                 id="addAnotherLoan"
                 style="primary"
@@ -265,6 +260,7 @@ const Home: NextPage<HomeProps> = ({ assumptions }) => {
               loans={loanData}
               submitRef={detailsSubmitRef}
               handleSubmit={(details: Details) => handleDetailsSubmit(details)}
+              canSubmit={canCalculate}
             />
           </div>
 
@@ -272,7 +268,7 @@ const Home: NextPage<HomeProps> = ({ assumptions }) => {
             <Button
               id="calculate"
               style="primary"
-              disabled={!canCalculate()}
+              disabled={!canCalculate}
               onClick={calculateSubmit}
               className="max-w-md text-xl px-8"
             >

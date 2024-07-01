@@ -52,7 +52,7 @@ let baseSchema = z.object({
             invalid_type_error: "Invalid number",
           })
           .min(0),
-      }),
+      })
     )
     .superRefine((items, ctx) => {
       items.forEach(({ date }, index) => {
@@ -82,7 +82,7 @@ let birthDateRequiredSchema = z.object({
         years: 15,
       })
       .startOf("day")
-      .toFormat("dd/MM/yyyy")}`,
+      .toFormat("dd/MM/yyyy")}`
   ),
 });
 
@@ -92,6 +92,7 @@ interface DetailsInputProps {
   annualEarningsGrowth: number;
   handleSubmit(details: Details): any;
   submitRef: RefObject<HTMLButtonElement>;
+  canSubmit: boolean;
 }
 
 type FormData = {
@@ -113,6 +114,7 @@ const DetailsInput: NextPage<DetailsInputProps> = ({
   loans,
   submitRef,
   handleSubmit: handleSubmitHook,
+  canSubmit,
 }) => {
   const [showAdvancedOptions, setShowAdvancedOptions] =
     useState<boolean>(false);
@@ -331,7 +333,7 @@ const DetailsInput: NextPage<DetailsInputProps> = ({
                 {},
                 {
                   shouldFocus: false,
-                },
+                }
               )
             }
           >
@@ -339,7 +341,12 @@ const DetailsInput: NextPage<DetailsInputProps> = ({
           </Button>
         </div>
       </div>
-      <button ref={submitRef} type="submit" style={{ display: "none" }} />
+      <button
+        ref={submitRef}
+        type="submit"
+        disabled={!canSubmit}
+        style={{ display: "none" }}
+      />
     </form>
   );
 };
