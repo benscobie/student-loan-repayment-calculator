@@ -10,7 +10,7 @@ import { Results } from "../api/models/results";
 import getAxios from "../utils/useAxios";
 import LoanBreakdown from "../components/ui/organisms/loan-breakdown";
 import currencyFormatter from "../utils/currencyFormatter";
-import Assumptions from "../api/models/assumptions";
+import Assumptions from "../models/assumptions";
 import { Details } from "../models/details";
 import DetailsInput from "../components/ui/organisms/details-input";
 
@@ -18,10 +18,6 @@ const getDateWithoutTimezone = (date: Date) => {
   const tzOffset = date.getTimezoneOffset() * 60000;
   return new Date(date.getTime() - tzOffset).toISOString();
 };
-
-interface HomeProps {
-  assumptions: Assumptions;
-}
 
 const types = [
   LoanType.Type1,
@@ -31,7 +27,12 @@ const types = [
   LoanType.Type5,
 ];
 
-const Home: NextPage<HomeProps> = ({ assumptions }) => {
+const assumptions: Assumptions = {
+  annualEarningsGrowth: 0.042,
+  salaryGrowth: 0.05,
+};
+
+const Home: NextPage = () => {
   const [loanData, setLoanData] = useState<Loan[]>([]);
   const [editingLoan, setEditingLoan] = useState<Loan | null>({
     id: new Date().getTime(),
@@ -296,16 +297,5 @@ const Home: NextPage<HomeProps> = ({ assumptions }) => {
     </div>
   );
 };
-
-export async function getServerSideProps() {
-  const res = await fetch(process.env.API_URL + `/ukstudentloans/assumptions`);
-  const assumptions = await res.json();
-
-  return {
-    props: {
-      assumptions,
-    },
-  };
-}
 
 export default Home;
