@@ -159,7 +159,7 @@ const Home: NextPage = () => {
             <li>How long it could take to repay your student loan</li>
             <li>The potential repayment costs over the loan&apos;s duration</li>
           </ul>
-          <div className="p-2 bg-yellow-200 rounded-md text-yellow-800 text-sm mt-4 flex items-center jus border-l-4 border-yellow-400">
+          <div className="p-2 bg-yellow-100 rounded-md text-yellow-800 text-sm mt-4 flex items-center jus border-l-4 border-yellow-400">
             <InfoCircle size={16} className="inline"></InfoCircle>
             <span className="ml-2">
               Please note that this calculator does not constitute financial
