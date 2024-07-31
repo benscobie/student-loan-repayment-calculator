@@ -28,17 +28,19 @@ let baseSchema = z.object({
     .number({
       invalid_type_error: "Invalid number",
     })
-    .min(0),
+    .min(-100)
+    .max(100),
   annualEarningsGrowth: z
     .number({
       invalid_type_error: "Invalid number",
     })
-    .min(0),
+    .min(-100)
+    .max(100),
   annualSalaryBeforeTax: z
     .number({
       invalid_type_error: "Invalid number",
     })
-    .min(0),
+    .min(1),
   salaryAdjustments: z
     .array(
       z.object({
