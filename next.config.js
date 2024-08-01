@@ -2,6 +2,18 @@
 const nextConfig = {
   reactStrictMode: true,
   output: "standalone",
+  rewrites: async () => {
+    return [
+      {
+        source: "/t.js",
+        destination: "https://umami.benscobie.com/script.js",
+      },
+      {
+        source: "/api/send",
+        destination: "https://umami.benscobie.com/api/send",
+      },
+    ];
+  },
 };
 
 const withBundleAnalyzer = require("@next/bundle-analyzer")({

@@ -16,7 +16,8 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <Layout className={openSans.className}>
       <Script
-        src="https://umami.benscobie.com/script.js"
+        async
+        src="/t.js"
         data-website-id="bc37a9e4-da7b-4e96-a848-120ab3d33703"
       />
       <Component {...pageProps} />
