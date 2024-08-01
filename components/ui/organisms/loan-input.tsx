@@ -1,6 +1,6 @@
 import { NextPage } from "next";
 import React from "react";
-import Loan from "../../../models/loan";
+import { Loan, NewLoan } from "../../../models/loan";
 import LoanType from "../../../models/loanType";
 import Button from "../atoms/button";
 import Checkbox from "../atoms/checkbox";
@@ -12,7 +12,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 interface LoanInputProps {
-  loan: Loan;
+  loan: NewLoan | Loan;
   onChange(loan: Loan): void;
   onCancel(): void;
   availableLoanTypes: LoanType[];

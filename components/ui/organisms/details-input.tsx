@@ -1,7 +1,7 @@
 import { NextPage } from "next";
 import { RefObject, useEffect, useState } from "react";
 import InputGroup from "../atoms/input-group";
-import Loan from "../../../models/loan";
+import { Loan } from "../../../models/loan";
 import LoanType from "../../../models/loanType";
 import { DateTime } from "luxon";
 import { Details } from "../../../models/details";

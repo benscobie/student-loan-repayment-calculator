@@ -3,16 +3,17 @@ import Head from "next/head";
 import React, { useRef, useState } from "react";
 import Button from "../components/ui/atoms/button";
 import LoanInput from "../components/ui/organisms/loan-input";
-import Loan from "../models/loan";
+import { Loan, NewLoan } from "../models/loan";
 import LoanType, { LoanTypeToDescription } from "../models/loanType";
 import { InfoCircle } from "react-bootstrap-icons";
 import { Results } from "../api/models/results";
-import getAxios from "../utils/useAxios";
+import { axios } from "../utils/axios";
 import LoanBreakdown from "../components/ui/organisms/loan-breakdown";
 import currencyFormatter from "../utils/currencyFormatter";
 import Assumptions from "../models/assumptions";
 import { Details } from "../models/details";
 import DetailsInput from "../components/ui/organisms/details-input";
+import { useTracking } from "../features/tracking/useTracking";
 
 const getDateWithoutTimezone = (date: Date) => {
   const tzOffset = date.getTimezoneOffset() * 60000;
@@ -34,13 +35,14 @@ const assumptions: Assumptions = {
 
 const Home: NextPage = () => {
   const [loanData, setLoanData] = useState<Loan[]>([]);
-  const [editingLoan, setEditingLoan] = useState<Loan | null>({
+  const [editingLoan, setEditingLoan] = useState<NewLoan | null>({
     id: new Date().getTime(),
     loanType: LoanType.Unselected,
     studyingPartTime: false,
   });
   const [calculationResults, setCalculationResults] = useState<Results>();
   const detailsSubmitRef = useRef<HTMLButtonElement>(null);
+  const tracking = useTracking();
   const canCalculate = editingLoan == null && loanData.length > 0;
   const availableLoanTypes = types.filter((type) => {
     return !loanData.some((loan) => loan.loanType == type);
@@ -105,7 +107,7 @@ const Home: NextPage = () => {
   };
 
   const calculate = async (details: Details) => {
-    const response = await getAxios().post<Results>(
+    const response = await axios.post<Results>(
       "/api/calculate",
       {
         annualSalaryBeforeTax: details.annualSalaryBeforeTax,
@@ -138,6 +140,7 @@ const Home: NextPage = () => {
       }
     );
 
+    tracking.track("calculate", { types: loanData.map((x) => x.loanType) });
     setCalculationResults(response.data);
   };
 
@@ -196,19 +199,14 @@ const Home: NextPage = () => {
           <div className="p-5 pb-6 border-t-2 border-sky-400 shadow-[rgba(0,_0,_0,_0.1)_0px_4px_10px]">
             {loanData.length > 0 && (
               <div className="flex flex-col gap-2 mb-4">
-                {loanData.map((element, index) => (
-                  <div
-                    key={element.loanType?.toString()}
-                    className="flex gap-4"
-                  >
+                {loanData.map((loan, index) => (
+                  <div key={loan.loanType} className="flex gap-4">
                     <div className="flex-grow">
                       <div className="text-xl">
-                        {LoanTypeToDescription(element.loanType)}
+                        {LoanTypeToDescription(loan.loanType)}
                       </div>
                       <div>
-                        {currencyFormatter().format(
-                          element.balanceRemaining ?? 0
-                        )}
+                        {currencyFormatter().format(loan.balanceRemaining)}
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
