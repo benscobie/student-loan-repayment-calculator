@@ -7,11 +7,14 @@ import { Tooltip } from "react-tooltip";
 import Script from "next/script";
 
 // If loading a variable font, you don't need to specify the font weight
-const inter = Open_Sans({ subsets: ["latin"] });
+const openSans = Open_Sans({
+  subsets: ["latin"],
+  fallback: ["Arial", "sans-serif"],
+});
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <Layout className={inter.className}>
+    <Layout className={openSans.className}>
       <Script
         src="https://umami.benscobie.com/script.js"
         data-website-id="bc37a9e4-da7b-4e96-a848-120ab3d33703"
