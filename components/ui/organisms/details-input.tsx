@@ -40,7 +40,7 @@ let baseSchema = z.object({
     .number({
       invalid_type_error: "Invalid number",
     })
-    .min(1),
+    .min(0),
   salaryAdjustments: z
     .array(
       z.object({
