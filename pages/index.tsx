@@ -156,9 +156,11 @@ const Home: NextPage = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
         <div className="mb-3">
-          <h2 className="text-2xl mb-2">UK Student Loan Repayent Calculator</h2>
+          <h2 className="text-2xl mb-2 font-medium">
+            UK Student Loan Repayent Calculator
+          </h2>
           <p>This calculator can be used to find out:</p>
-          <ul className="list-disc list-inside ml-2 my-1">
+          <ul className="list-disc list-inside ml-2 my-1 space-y-0.5">
             <li>How long it could take to repay your student loan</li>
             <li>The potential repayment costs over the loan&apos;s duration</li>
           </ul>
@@ -170,7 +172,7 @@ const Home: NextPage = () => {
             </span>
           </div>
 
-          <h3 className="text-xl mt-6">How much do I repay?</h3>
+          <h3 className="text-xl mt-6 font-medium">How much do I repay?</h3>
           <p className="mt-2">
             For plans 1, 2, 4 and 5 your repayments equal 9% of your pre-tax
             earnings above the threshold. When you have more than one type the
@@ -181,7 +183,7 @@ const Home: NextPage = () => {
             earnings above the threshold.
           </p>
 
-          <h3 className="text-xl mt-6">Should I pay it off?</h3>
+          <h3 className="text-xl mt-6 font-medium">Should I pay it off?</h3>
           <p className="mt-2">
             MoneySavingExpert&apos;s Martin Lewis has a good article on figuring
             out whether it&apos;s worth paying off your loan early. You can find
@@ -195,7 +197,7 @@ const Home: NextPage = () => {
           </p>
         </div>
         <div>
-          <h2 className="text-2xl mb-2">Your plans</h2>
+          <h2 className="text-xl mb-2 font-medium">Your plans</h2>
           <div className="p-5 pb-6 border-t-2 border-sky-400 shadow-[rgba(0,_0,_0,_0.1)_0px_4px_10px]">
             {loanData.length > 0 && (
               <div className="flex flex-col gap-2 mb-4">
