@@ -18,7 +18,7 @@ type SalaryAdjustment = {
 };
 
 type RequestBody = {
-  annualSalaryBeforeTax?: number;
+  annualSalaryBeforeTax: number;
   birthDate?: Date;
   salaryGrowth: number;
   annualEarningsGrowth: number;
