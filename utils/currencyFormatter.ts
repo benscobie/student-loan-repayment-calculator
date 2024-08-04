@@ -1,10 +1,10 @@
-const getInstance = () => {
-  return new Intl.NumberFormat("en-GB", {
-    style: "currency",
-    currency: "GBP",
-  });
-};
+export const currencyFormatter = new Intl.NumberFormat("en-GB", {
+  style: "currency",
+  currency: "GBP",
+});
 
-export default function currencyFormatter() {
-  return getInstance();
-}
+export const currencyFormatterNoFraction = new Intl.NumberFormat("en-GB", {
+  style: "currency",
+  currency: "GBP",
+  maximumFractionDigits: 0,
+});

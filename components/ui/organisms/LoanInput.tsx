@@ -2,11 +2,11 @@ import { NextPage } from "next";
 import React from "react";
 import { Loan, NewLoan } from "../../../models/loan";
 import LoanType from "../../../models/loanType";
-import Button from "../atoms/button";
-import Checkbox from "../atoms/checkbox";
-import Input from "../atoms/input";
-import InputGroup from "../atoms/input-group";
-import Select from "../atoms/select";
+import Button from "../atoms/Button";
+import Checkbox from "../atoms/Checkbox";
+import Input from "../atoms/Input";
+import InputGroup from "../atoms/InputGroup";
+import Select from "../atoms/Select";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -261,7 +261,7 @@ const LoanInput: NextPage<LoanInputProps> = ({
         <div className="mt-3">
           <Select
             id="academicYearLoanTakenOut"
-            label="Academic Year Loan Taken Out"
+            label="Academic year loan taken out"
             error={errors.academicYearLoanTakenOut?.message}
             {...register("academicYearLoanTakenOut", {
               required: true,

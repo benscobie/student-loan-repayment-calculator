@@ -10,4 +10,5 @@ export default interface Projection {
   interestApplied: number;
   totalPaid: number;
   totalInterestApplied: number;
+  threshold: number;
 }

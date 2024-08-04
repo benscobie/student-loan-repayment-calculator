@@ -1,6 +1,6 @@
 import { NextPage } from "next";
 import { ChangeEvent } from "react";
-import InputGroup from "../atoms/input-group";
+import InputGroup from "../atoms/InputGroup";
 
 interface AssumptionsInputProps {
   salaryGrowth: number;
