@@ -9,18 +9,18 @@ import {
   Title,
   Tooltip,
   Legend,
+  CoreScaleOptions,
   Scale,
   Tick,
-  CoreScaleOptions,
   ChartOptions,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
-import LoanType, { LoanTypeToDescription } from "../../../models/loanType";
+import LoanType from "../../../models/loanType";
 import {
   getLabelsForGroupedDataCallback,
   groupDataEveryNthPeriod,
 } from "./graphUtils";
-import currencyFormatter from "../../../utils/currencyFormatter";
+import { currencyFormatter } from "../../../utils/currencyFormatter";
 import { DateTime } from "luxon";
 
 ChartJS.register(
@@ -30,15 +30,15 @@ ChartJS.register(
   LineElement,
   Title,
   Tooltip,
-  Legend,
+  Legend
 );
 
-interface BalanceGraphProps {
+interface TotalsGraphProps {
   results: Results;
   loanTypes: LoanType[];
 }
 
-const BalanceGraph = (props: BalanceGraphProps) => {
+const TotalsGraph = (props: TotalsGraphProps) => {
   const options: ChartOptions<"line"> = {
     responsive: true,
     maintainAspectRatio: false,
@@ -49,11 +49,11 @@ const BalanceGraph = (props: BalanceGraphProps) => {
             this: Scale<CoreScaleOptions>,
             tickValue: string | number,
             index: number,
-            ticks: Tick[],
+            ticks: Tick[]
           ): string {
             return getLabelsForGroupedDataCallback(
               props.results.results,
-              this.getLabelForValue(index),
+              this.getLabelForValue(index)
             );
           },
           autoSkip: false,
@@ -77,7 +77,7 @@ const BalanceGraph = (props: BalanceGraphProps) => {
             }
 
             if (context.parsed.y !== null) {
-              label += currencyFormatter().format(context.parsed.y);
+              label += currencyFormatter.format(context.parsed.y);
             }
 
             return label;
@@ -91,29 +91,22 @@ const BalanceGraph = (props: BalanceGraphProps) => {
     },
   };
 
-  const colors = [
-    "rgb(255, 99, 132)",
-    "rgb(37, 150, 190)",
-    "rgb(234, 182, 118)",
-    "rgb(136, 118, 234)",
-  ];
-  const backgroundColors = [
-    "rgb(255, 99, 132)",
-    "rgb(37, 150, 190)",
-    "rgb(234, 182, 118)",
-    "rgb(136, 118, 234)",
-  ];
-
   const groupedData = groupDataEveryNthPeriod(props.results.results);
 
-  const dataSetsPerLoanType = props.loanTypes.map((loanType, index) => ({
-    label: LoanTypeToDescription(loanType),
-    data: groupedData.data.map(
-      (x) => x.projections.find((p) => p.loanType == loanType)?.debtRemaining,
-    ),
-    borderColor: colors[index],
-    backgroundColor: backgroundColors[index],
-  }));
+  const dataSetsPerLoanType = [
+    {
+      label: "Toal Paid",
+      data: groupedData.data.map((x) => x.aggregatedTotalPaid),
+      borderColor: "rgb(21, 128, 61)",
+      backgroundColor: "rgb(21, 128, 61)",
+    },
+    {
+      label: "Debt Remaining",
+      data: groupedData.data.map((x) => x.aggregatedDebtRemaining),
+      borderColor: "rgb(255, 99, 132)",
+      backgroundColor: "rgb(255, 99, 132)",
+    },
+  ];
 
   const data = {
     labels: groupedData.labels,
@@ -127,4 +120,4 @@ const BalanceGraph = (props: BalanceGraphProps) => {
   );
 };
 
-export default BalanceGraph;
+export default TotalsGraph;

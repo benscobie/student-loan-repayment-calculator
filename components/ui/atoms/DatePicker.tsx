@@ -1,5 +1,5 @@
 import { forwardRef } from "react";
-import Tooltip from "./tooltip";
+import Tooltip from "./Tooltip";
 import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { ReactDatePickerProps } from "react-datepicker";
@@ -44,7 +44,7 @@ const DatePicker = forwardRef<ReactDatePicker, DatePickerProps>(
         )}
       </>
     );
-  },
+  }
 );
 
 export default DatePicker;

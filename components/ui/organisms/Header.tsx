@@ -43,7 +43,7 @@ const Header = () => {
         </div>
       </header>
       {isNavOpen && (
-        <div className="flex sm:hidden items-center justify-center bg-white shadow">
+        <div className="flex sm:hidden items-center justify-center bg-white shadow mb-4">
           <div className="flex flex-col text-lg w-full">
             <a
               href="https://forms.gle/FWqyT5SUgumSKJG46"

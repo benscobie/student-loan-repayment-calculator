@@ -1,17 +1,17 @@
 import { NextPage } from "next";
 import { RefObject, useEffect, useState } from "react";
-import InputGroup from "../atoms/input-group";
 import { Loan } from "../../../models/loan";
+import InputGroup from "../atoms/InputGroup";
 import LoanType from "../../../models/loanType";
 import { DateTime } from "luxon";
 import { Details } from "../../../models/details";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import Input from "../atoms/input";
-import Button from "../atoms/button";
+import Input from "../atoms/Input";
+import Button from "../atoms/Button";
 import { Trash } from "react-bootstrap-icons";
-import DatePicker from "../atoms/date-picker";
+import DatePicker from "../atoms/DatePicker";
 import classNames from "classnames";
 
 let nextMonth = () => {
