@@ -32,7 +32,7 @@ export const MonthLoanTable: NextPage<MonthLoanTableProps> = ({
     )
   )!;
 
-  const completedResults = results.results.slice(0, periodCompleteIndex);
+  const completedResults = results.results.slice(0, periodCompleteIndex + 1);
   const paging = usePager(completedResults);
 
   return (
