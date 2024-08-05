@@ -11,7 +11,7 @@ function Layout({ children, className }: LayoutProps) {
   return (
     <div className={className}>
       <Header />
-      <main className="container mx-auto my-8">{children}</main>
+      <main className="container mx-auto max-w-7xl my-8">{children}</main>
       <Footer />
     </div>
   );
