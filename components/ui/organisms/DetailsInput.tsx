@@ -146,6 +146,7 @@ const DetailsInput: NextPage<DetailsInputProps> = ({
     formState: { errors },
     control,
     handleSubmit,
+    watch,
   } = useForm<FormData>({
     resolver: zodResolver(fullSchema),
     defaultValues: {
@@ -183,11 +184,13 @@ const DetailsInput: NextPage<DetailsInputProps> = ({
     setShowAdvancedOptions(!showAdvancedOptions);
   };
 
+  const annualSalaryBeforeTax = watch("annualSalaryBeforeTax");
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
         <div>
-          <h2 className="mb-2 text-lg">Your details</h2>
+          <h2 className="mb-2 text-lg font-medium">Your details</h2>
           <InputGroup
             id="annualSalaryBeforeTax"
             type="number"
@@ -199,6 +202,11 @@ const DetailsInput: NextPage<DetailsInputProps> = ({
               valueAsNumber: true,
             })}
           />
+          {annualSalaryBeforeTax == 0 && (
+            <p className="mt-1 text-sm text-gray-500">
+              You can enter a future salary in the advanced options below.
+            </p>
+          )}
 
           {isBirthDateRequired() && (
             <div className="mt-2">
@@ -217,7 +225,7 @@ const DetailsInput: NextPage<DetailsInputProps> = ({
           )}
         </div>
         <div>
-          <h2 className="mb-2 text-lg">Assumptions</h2>
+          <h2 className="mb-2 text-lg font-medium">Assumptions</h2>
           <div>
             <InputGroup
               id="salaryGrowth"
@@ -266,7 +274,7 @@ const DetailsInput: NextPage<DetailsInputProps> = ({
         </button>
       </div>
       <div className={classNames("mt-4", { hidden: !showAdvancedOptions })}>
-        <h2 className="text-lg mb-1">Salary adjustments</h2>
+        <h2 className="text-lg mb-2 font-medium">Salary adjustments</h2>
         <p className="mb-4 text-sm">
           If you know you&apos;re going to be getting a pay increase or if you
           just want to see how a pay increase might affect your payments, you

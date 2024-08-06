@@ -164,15 +164,16 @@ const Home: NextPage = () => {
         <Container>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
             <div className="mb-3">
-              <h2 className="text-2xl mb-2 font-medium">
+              <h2 className="text-2xl mb-4 font-medium">
                 UK Student Loan Repayment Calculator
               </h2>
               <p>This calculator can be used to find out:</p>
-              <ul className="list-disc list-inside ml-2 my-1 space-y-0.5">
+              <ul className="list-disc list-inside ml-2 my-1 space-y-1">
                 <li>How long it could take to repay your student loan</li>
                 <li>
                   The potential repayment costs over the loan&apos;s duration
                 </li>
+                <li>How a change in salary could affect your repayments</li>
               </ul>
               <div className="p-2 bg-yellow-100 rounded-md text-yellow-800 text-sm mt-4 flex items-center border-l-4 border-yellow-400 space-x-2 w-fit">
                 <InfoCircle size={16} className="shrink-0"></InfoCircle>
