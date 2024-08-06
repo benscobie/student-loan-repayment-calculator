@@ -27,7 +27,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select(
   return (
     <>
       <label htmlFor={id} className="mb-1 block">
-        {label} {required && <span className="text-red">*</span>}
+        {label} {required && <span className="text-red-600">*</span>}
       </label>
       <select
         id="loanType"
