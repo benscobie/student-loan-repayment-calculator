@@ -1,23 +1,23 @@
 enum RepaymentStatus {
   NotSet,
-  NotPaying = "NotPaying",
-  Paying = "Paying",
-  PaidOff = "PaidOff",
-  WrittenOff = "WrittenOff",
+  NotPaying = 'NotPaying',
+  Paying = 'Paying',
+  PaidOff = 'PaidOff',
+  WrittenOff = 'WrittenOff',
 }
 
 export function RepaymentStatusToDescription(status?: RepaymentStatus): string {
   if (status == RepaymentStatus.NotPaying) {
-    return "Not paying";
+    return 'Not paying'
   } else if (status == RepaymentStatus.Paying) {
-    return "Paying";
+    return 'Paying'
   } else if (status == RepaymentStatus.PaidOff) {
-    return "Paid off";
+    return 'Paid off'
   } else if (status == RepaymentStatus.WrittenOff) {
-    return "Written off";
+    return 'Written off'
   }
 
-  return "Unknown";
+  return 'Unknown'
 }
 
-export default RepaymentStatus;
+export default RepaymentStatus

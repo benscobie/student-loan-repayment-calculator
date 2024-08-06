@@ -1,7 +1,7 @@
-import { QuestionCircle } from "react-bootstrap-icons";
+import { QuestionCircle } from 'react-bootstrap-icons'
 
 interface TooltipProps {
-  text: string;
+  text: string
 }
 
 const Tooltip = (props: TooltipProps) => {
@@ -12,9 +12,9 @@ const Tooltip = (props: TooltipProps) => {
         className="inline cursor-pointer"
         data-tooltip-content={props.text}
       >
-        <QuestionCircle className="ml-1 inline mb-1" size={14} />
+        <QuestionCircle className="mb-1 ml-1 inline" size={14} />
       </div>
     </>
-  );
-};
-export default Tooltip;
+  )
+}
+export default Tooltip

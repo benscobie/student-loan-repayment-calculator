@@ -1,11 +1,11 @@
-import { ReactNode } from "react";
-import Footer from "./ui/organisms/Footer";
-import Header from "./ui/organisms/Header";
-import Head from "next/head";
+import { ReactNode } from 'react'
+import Footer from './ui/organisms/Footer'
+import Header from './ui/organisms/Header'
+import Head from 'next/head'
 
 interface LayoutProps {
-  children?: ReactNode | undefined;
-  className?: string;
+  children?: ReactNode | undefined
+  className?: string
 }
 
 function Layout({ children, className }: LayoutProps) {
@@ -33,11 +33,11 @@ function Layout({ children, className }: LayoutProps) {
       </Head>
       <div className={className}>
         <Header />
-        <main className="container mx-auto max-w-7xl my-8">{children}</main>
+        <main className="container mx-auto my-8 max-w-7xl">{children}</main>
         <Footer />
       </div>
     </>
-  );
+  )
 }
 
-export default Layout;
+export default Layout

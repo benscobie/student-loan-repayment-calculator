@@ -1,12 +1,12 @@
-import { NextPage } from "next";
-import { ChangeEvent } from "react";
-import InputGroup from "../atoms/InputGroup";
+import { NextPage } from 'next'
+import { ChangeEvent } from 'react'
+import InputGroup from '../atoms/InputGroup'
 
 interface AssumptionsInputProps {
-  salaryGrowth: number;
-  annualEarningsGrowth: number;
-  onSalaryGrowthChange: (value: number) => void;
-  onAnnualEarningsGrowthChange: (value: number) => void;
+  salaryGrowth: number
+  annualEarningsGrowth: number
+  onSalaryGrowthChange: (value: number) => void
+  onAnnualEarningsGrowthChange: (value: number) => void
 }
 
 const AssumptionsInput: NextPage<AssumptionsInputProps> = ({
@@ -16,16 +16,16 @@ const AssumptionsInput: NextPage<AssumptionsInputProps> = ({
   onAnnualEarningsGrowthChange,
 }) => {
   const handleSalaryGrowthChange = (value: string) => {
-    const salaryGrowth = parseFloat(value) / 100;
+    const salaryGrowth = parseFloat(value) / 100
 
-    onSalaryGrowthChange(salaryGrowth);
-  };
+    onSalaryGrowthChange(salaryGrowth)
+  }
 
   const handleAnnualEarningsGrowth = (value: string) => {
-    const annualEarningsGrowth = parseFloat(value) / 100;
+    const annualEarningsGrowth = parseFloat(value) / 100
 
-    onAnnualEarningsGrowthChange(annualEarningsGrowth);
-  };
+    onAnnualEarningsGrowthChange(annualEarningsGrowth)
+  }
 
   return (
     <div>
@@ -60,7 +60,7 @@ const AssumptionsInput: NextPage<AssumptionsInputProps> = ({
         />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default AssumptionsInput;
+export default AssumptionsInput

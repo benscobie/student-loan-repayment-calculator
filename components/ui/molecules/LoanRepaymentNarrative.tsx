@@ -1,15 +1,15 @@
-import type { NextPage } from "next";
-import React from "react";
-import { DateTime } from "luxon";
-import LoanType from "../../../models/loanType";
-import { Results } from "../../../api/models/results";
-import Highlight from "../atoms/Highlight";
-import { currencyFormatter } from "../../../utils/currencyFormatter";
-import { RepaymentStatusToDescription } from "../../../models/repaymentStatus";
+import type { NextPage } from 'next'
+import React from 'react'
+import { DateTime } from 'luxon'
+import LoanType from '../../../models/loanType'
+import { Results } from '../../../api/models/results'
+import Highlight from '../atoms/Highlight'
+import { currencyFormatter } from '../../../utils/currencyFormatter'
+import { RepaymentStatusToDescription } from '../../../models/repaymentStatus'
 
 interface LoanRepaymentNarrativeProps {
-  results: Results;
-  loanType: LoanType;
+  results: Results
+  loanType: LoanType
 }
 
 const LoanRepaymentNarrative: NextPage<LoanRepaymentNarrativeProps> = ({
@@ -20,41 +20,41 @@ const LoanRepaymentNarrative: NextPage<LoanRepaymentNarrativeProps> = ({
     r.projections.find(
       (p) =>
         p.loanType == loanType &&
-        (p.repaymentStatus == "WrittenOff" || p.repaymentStatus == "PaidOff")
-    )
-  )!;
+        (p.repaymentStatus == 'WrittenOff' || p.repaymentStatus == 'PaidOff'),
+    ),
+  )!
   const periodCompleteProjection = periodComplete.projections.find(
-    (p) => p.loanType == loanType
-  )!;
+    (p) => p.loanType == loanType,
+  )!
 
   const paidOffDiff = () => {
-    const paidOff = periodComplete.periodDate;
+    const paidOff = periodComplete.periodDate
 
-    var now = DateTime.local();
-    var rezoned = now.setZone(paidOff.zone, { keepLocalTime: true });
+    var now = DateTime.local()
+    var rezoned = now.setZone(paidOff.zone, { keepLocalTime: true })
 
-    return paidOff.diff(rezoned, ["years", "months"]);
-  };
+    return paidOff.diff(rezoned, ['years', 'months'])
+  }
 
   const formattedYearText = () => {
-    return `${paidOffDiff().years} year${paidOffDiff().years > 1 ? "s" : ""}`;
-  };
+    return `${paidOffDiff().years} year${paidOffDiff().years > 1 ? 's' : ''}`
+  }
 
   const formattedMonthText = () => {
-    const months = Math.ceil(paidOffDiff().months);
+    const months = Math.ceil(paidOffDiff().months)
 
-    return `${months} month${months > 1 ? "s" : ""}`;
-  };
+    return `${months} month${months > 1 ? 's' : ''}`
+  }
 
   const explainer = (
     <>
-      The loan will be{" "}
+      The loan will be{' '}
       {RepaymentStatusToDescription(
-        periodCompleteProjection.repaymentStatus
-      ).toLowerCase()}{" "}
-      in{" "}
+        periodCompleteProjection.repaymentStatus,
+      ).toLowerCase()}{' '}
+      in{' '}
     </>
-  );
+  )
 
   return (
     <>
@@ -79,25 +79,25 @@ const LoanRepaymentNarrative: NextPage<LoanRepaymentNarrativeProps> = ({
             <Highlight>{formattedMonthText()}</Highlight>
           </>
         )}
-        , with the last payment date being in{" "}
-        <Highlight>{periodComplete.periodDate.toFormat("LLLL yyyy")}</Highlight>
+        , with the last payment date being in{' '}
+        <Highlight>{periodComplete.periodDate.toFormat('LLLL yyyy')}</Highlight>
         .
       </p>
       <p>
-        There is{" "}
+        There is{' '}
         <Highlight>
           {currencyFormatter.format(periodCompleteProjection.totalPaid)}
-        </Highlight>{" "}
-        remaining to pay, with{" "}
+        </Highlight>{' '}
+        remaining to pay, with{' '}
         <Highlight>
           {currencyFormatter.format(
-            periodCompleteProjection.totalInterestApplied
+            periodCompleteProjection.totalInterestApplied,
           )}
-        </Highlight>{" "}
+        </Highlight>{' '}
         of that being interest.
       </p>
     </>
-  );
-};
+  )
+}
 
-export default LoanRepaymentNarrative;
+export default LoanRepaymentNarrative

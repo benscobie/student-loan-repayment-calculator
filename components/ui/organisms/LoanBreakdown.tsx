@@ -1,17 +1,17 @@
-import type { NextPage } from "next";
-import React from "react";
-import LoanType, { LoanTypeToDescription } from "../../../models/loanType";
-import GraphHeader from "../molecules/GraphHeader";
-import { Results } from "../../../api/models/results";
-import LoanRepaymentNarrative from "../molecules/LoanRepaymentNarrative";
-import classNames from "classnames";
-import { MonthLoanTable } from "../molecules/MonthLoanTable";
-import { GraphUp, Table } from "react-bootstrap-icons";
-import TotalsGraph from "../molecules/TotalsGraph";
+import type { NextPage } from 'next'
+import React from 'react'
+import LoanType, { LoanTypeToDescription } from '../../../models/loanType'
+import GraphHeader from '../molecules/GraphHeader'
+import { Results } from '../../../api/models/results'
+import LoanRepaymentNarrative from '../molecules/LoanRepaymentNarrative'
+import classNames from 'classnames'
+import { MonthLoanTable } from '../molecules/MonthLoanTable'
+import { GraphUp, Table } from 'react-bootstrap-icons'
+import TotalsGraph from '../molecules/TotalsGraph'
 
 interface LoanBreakdownProps {
-  results: Results;
-  loanType: LoanType;
+  results: Results
+  loanType: LoanType
 }
 
 enum ResultType {
@@ -21,29 +21,29 @@ enum ResultType {
 
 const LoanBreakdown: NextPage<LoanBreakdownProps> = ({ results, loanType }) => {
   const [resultType, setResultType] = React.useState<ResultType>(
-    ResultType.Chart
-  );
+    ResultType.Chart,
+  )
 
   return (
     <div>
       <h3 className="mb-5 text-2xl font-medium ">
-        Your{" "}
-        <span className="underline decoration-4 underline-offset-8 decoration-pink-500">
+        Your{' '}
+        <span className="underline decoration-pink-500 decoration-4 underline-offset-8">
           {LoanTypeToDescription(loanType)}
-        </span>{" "}
+        </span>{' '}
         results
       </h3>
       <div>
         <LoanRepaymentNarrative loanType={loanType} results={results} />
       </div>
 
-      <div className="flex mt-8 h-9">
+      <div className="mt-8 flex h-9">
         <button
           className={classNames(
-            "px-5 rounded-l-lg font-medium flex items-center gap-x-2 h-full",
+            'px-5 rounded-l-lg font-medium flex items-center gap-x-2 h-full',
             resultType == ResultType.Chart
-              ? "bg-sky-600 text-white"
-              : "bg-slate-100 hover:bg-slate-200"
+              ? 'bg-sky-600 text-white'
+              : 'bg-slate-100 hover:bg-slate-200',
           )}
           onClick={() => setResultType(ResultType.Chart)}
         >
@@ -52,10 +52,10 @@ const LoanBreakdown: NextPage<LoanBreakdownProps> = ({ results, loanType }) => {
         </button>
         <button
           className={classNames(
-            "px-5 rounded-r-lg font-medium flex items-center gap-x-2 h-full",
+            'px-5 rounded-r-lg font-medium flex items-center gap-x-2 h-full',
             resultType == ResultType.Table
-              ? "bg-sky-600 text-white"
-              : "bg-slate-100 hover:bg-slate-200"
+              ? 'bg-sky-600 text-white'
+              : 'bg-slate-100 hover:bg-slate-200',
           )}
           onClick={() => setResultType(ResultType.Table)}
         >
@@ -81,7 +81,7 @@ const LoanBreakdown: NextPage<LoanBreakdownProps> = ({ results, loanType }) => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default LoanBreakdown;
+export default LoanBreakdown

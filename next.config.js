@@ -1,33 +1,33 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  output: "standalone",
+  output: 'standalone',
   experimental: {
     instrumentationHook: true,
   },
   rewrites: async () => {
     return [
       {
-        source: "/t.js",
-        destination: "https://umami.benscobie.com/script.js",
+        source: '/t.js',
+        destination: 'https://umami.benscobie.com/script.js',
       },
       {
-        source: "/api/send",
-        destination: "https://umami.benscobie.com/api/send",
+        source: '/api/send',
+        destination: 'https://umami.benscobie.com/api/send',
       },
-    ];
+    ]
   },
-};
+}
 
-const withBundleAnalyzer = require("@next/bundle-analyzer")({
-  enabled: process.env.ANALYZE === "true",
-});
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true',
+})
 
-module.exports = withBundleAnalyzer(nextConfig);
+module.exports = withBundleAnalyzer(nextConfig)
 
 // Injected content via Sentry wizard below
 
-const { withSentryConfig } = require("@sentry/nextjs");
+const { withSentryConfig } = require('@sentry/nextjs')
 
 module.exports = withSentryConfig(module.exports, {
   // For all available options, see:
@@ -35,8 +35,8 @@ module.exports = withSentryConfig(module.exports, {
 
   // Suppresses source map uploading logs during build
   silent: true,
-  org: "none-rai",
-  project: "slrc-frontend",
+  org: 'none-rai',
+  project: 'slrc-frontend',
   // For all available options, see:
   // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/
 
@@ -49,7 +49,7 @@ module.exports = withSentryConfig(module.exports, {
   // Routes browser requests to Sentry through a Next.js rewrite to circumvent ad-blockers. (increases server load)
   // Note: Check that the configured route will not match with your Next.js middleware, otherwise reporting of client-
   // side errors will fail.
-  tunnelRoute: "/monitoring",
+  tunnelRoute: '/monitoring',
 
   // Hides source maps from generated client bundles
   hideSourceMaps: true,
@@ -62,4 +62,4 @@ module.exports = withSentryConfig(module.exports, {
   // https://docs.sentry.io/product/crons/
   // https://vercel.com/docs/cron-jobs
   automaticVercelMonitors: true,
-});
+})

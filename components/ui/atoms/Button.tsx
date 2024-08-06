@@ -1,39 +1,39 @@
-import classNames from "classnames";
-import { useRef } from "react";
-import { twMerge } from "tailwind-merge";
+import classNames from 'classnames'
+import { useRef } from 'react'
+import { twMerge } from 'tailwind-merge'
 
 interface ButtonProps
-  extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "style"> {
-  id: string;
-  disabled?: boolean;
-  style: "primary" | "secondary";
-  children?: React.ReactNode;
+  extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'style'> {
+  id: string
+  disabled?: boolean
+  style: 'primary' | 'secondary'
+  children?: React.ReactNode
 }
 
 const Button = (props: ButtonProps) => {
   const {
     id,
-    type = "button",
+    type = 'button',
     disabled = false,
     style,
     className,
     children,
     ...rest
-  } = props;
+  } = props
 
-  const inputRef = useRef(null);
+  const inputRef = useRef(null)
 
-  const btnClass = classNames("rounded-lg text-sm px-5 py-2.5", {
-    "text-white border border-sky-600 bg-sky-600": style == "primary",
-    "hover:bg-sky-700 hover:border-sky-700 focus:ring-2 focus:ring-sky-500 focus:outline-none":
-      style == "primary" && !disabled,
+  const btnClass = classNames('rounded-lg text-sm px-5 py-2.5', {
+    'text-white border border-sky-600 bg-sky-600': style == 'primary',
+    'hover:bg-sky-700 hover:border-sky-700 focus:ring-2 focus:ring-sky-500 focus:outline-none':
+      style == 'primary' && !disabled,
 
-    "text-sky-700 border border-sky-600": style == "secondary",
-    "hover:bg-sky-700 hover:text-white focus:ring-2 focus:ring-slate-300 focus:outline-none":
-      style == "secondary" && !disabled,
+    'text-sky-700 border border-sky-600': style == 'secondary',
+    'hover:bg-sky-700 hover:text-white focus:ring-2 focus:ring-slate-300 focus:outline-none':
+      style == 'secondary' && !disabled,
 
-    "opacity-50 cursor-not-allowed": disabled,
-  });
+    'opacity-50 cursor-not-allowed': disabled,
+  })
 
   return (
     <button
@@ -46,7 +46,7 @@ const Button = (props: ButtonProps) => {
     >
       {children}
     </button>
-  );
-};
+  )
+}
 
-export default Button;
+export default Button

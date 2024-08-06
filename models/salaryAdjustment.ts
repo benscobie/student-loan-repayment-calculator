@@ -1,4 +1,4 @@
 export default interface SalaryAdjustment {
-  date: Date;
-  value: number;
+  date: Date
+  value: number
 }
