@@ -1,35 +1,35 @@
-import { forwardRef } from "react";
-import Tooltip from "./Tooltip";
+import { forwardRef } from 'react'
+import Tooltip from './Tooltip'
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  id: string;
-  placeholder?: string;
-  label: string;
-  type?: string;
-  error?: string;
-  required?: boolean;
-  tooltip?: string;
-  children?: React.ReactNode;
+  id: string
+  placeholder?: string
+  label: string
+  type?: string
+  error?: string
+  required?: boolean
+  tooltip?: string
+  children?: React.ReactNode
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(function InputGroup(
   props: InputProps,
-  ref
+  ref,
 ) {
   const {
     id,
-    placeholder = "",
-    label = "",
-    type = "text",
+    placeholder = '',
+    label = '',
+    type = 'text',
     error,
     required = false,
-    tooltip = "",
+    tooltip = '',
     ...rest
-  } = props;
+  } = props
 
   return (
     <>
-      <div className="block mb-1">
+      <div className="mb-1 block">
         <label htmlFor={id}>
           {label} {required && <span className="text-red">*</span>}
         </label>
@@ -38,18 +38,18 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function InputGroup(
       <input
         ref={ref}
         type={type}
-        className={`border bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-full p-2.5 font-light block text-sm rounded appearance-none ${
-          error != null ? "border-red-600" : "border-gray-300"
+        className={`block w-full appearance-none rounded border bg-gray-50 p-2.5 text-sm font-light text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+          error != null ? 'border-red-600' : 'border-gray-300'
         }`}
         id={id}
         placeholder={placeholder}
         {...rest}
       />
       {error != null && (
-        <p className="text-xs pl-2 text-red-600 mt-1">{error}</p>
+        <p className="mt-1 pl-2 text-xs text-red-600">{error}</p>
       )}
     </>
-  );
-});
+  )
+})
 
-export default Input;
+export default Input

@@ -1,32 +1,32 @@
-import { NextPage } from "next";
-import React from "react";
-import { Loan, NewLoan } from "../../../models/loan";
-import LoanType from "../../../models/loanType";
-import Button from "../atoms/Button";
-import Checkbox from "../atoms/Checkbox";
-import Input from "../atoms/Input";
-import InputGroup from "../atoms/InputGroup";
-import Select from "../atoms/Select";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { NextPage } from 'next'
+import React from 'react'
+import { Loan, NewLoan } from '../../../models/loan'
+import LoanType from '../../../models/loanType'
+import Button from '../atoms/Button'
+import Checkbox from '../atoms/Checkbox'
+import Input from '../atoms/Input'
+import InputGroup from '../atoms/InputGroup'
+import Select from '../atoms/Select'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
 
 interface LoanInputProps {
-  loan: NewLoan | Loan;
-  onChange(loan: Loan): void;
-  onCancel(): void;
-  availableLoanTypes: LoanType[];
-  canCancel: boolean;
+  loan: NewLoan | Loan
+  onChange(loan: Loan): void
+  onCancel(): void
+  availableLoanTypes: LoanType[]
+  canCancel: boolean
 }
 
 type FormData = {
-  loanType: LoanType;
-  balanceRemaining: number;
-  academicYearLoanTakenOut?: number;
-  courseStartDate?: string;
-  courseEndDate?: string;
-  studyingPartTime: boolean;
-};
+  loanType: LoanType
+  balanceRemaining: number
+  academicYearLoanTakenOut?: number
+  courseStartDate?: string
+  courseEndDate?: string
+  studyingPartTime: boolean
+}
 
 const schema = z
   .object({
@@ -40,18 +40,18 @@ const schema = z
       ],
       {
         errorMap: () => {
-          return { message: "Loan type is required" };
+          return { message: 'Loan type is required' }
         },
-      }
+      },
     ),
     balanceRemaining: z
       .number({
-        invalid_type_error: "Invalid number",
+        invalid_type_error: 'Invalid number',
       })
       .min(1),
     academicYearLoanTakenOut: z
       .number({
-        invalid_type_error: "Academic year loan taken out is required",
+        invalid_type_error: 'Academic year loan taken out is required',
       })
       .optional(),
     courseStartDate: z.coerce.date().optional(),
@@ -66,9 +66,9 @@ const schema = z
     ) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        path: ["academicYearLoanTakenOut"],
-        message: "Academic year loan taken out is required",
-      });
+        path: ['academicYearLoanTakenOut'],
+        message: 'Academic year loan taken out is required',
+      })
     }
   })
   .superRefine((val, ctx) => {
@@ -78,35 +78,35 @@ const schema = z
     ) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        path: ["courseStartDate"],
-        message: "Course start date is required",
-      });
+        path: ['courseStartDate'],
+        message: 'Course start date is required',
+      })
     }
   })
   .superRefine((val, ctx) => {
     if (courseEndDateRequired(val.loanType) && val.courseEndDate == null) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        path: ["courseEndDate"],
-        message: "Course end date is required",
-      });
+        path: ['courseEndDate'],
+        message: 'Course end date is required',
+      })
     }
-  });
+  })
 
 const academicYearLoanTakenOutRequired = (loanType: LoanType) => {
-  return loanType == LoanType.Type1 || loanType == LoanType.Type4;
-};
+  return loanType == LoanType.Type1 || loanType == LoanType.Type4
+}
 
 const courseStartDateRequired = (
   loanType: LoanType,
-  studyingPartTime: boolean
+  studyingPartTime: boolean,
 ) => {
-  return loanType == LoanType.Type2 || studyingPartTime;
-};
+  return loanType == LoanType.Type2 || studyingPartTime
+}
 
 const courseEndDateRequired = (loanType: LoanType) => {
-  return loanType != LoanType.Type5 && loanType != LoanType.Unselected;
-};
+  return loanType != LoanType.Type5 && loanType != LoanType.Unselected
+}
 
 const LoanInput: NextPage<LoanInputProps> = ({
   loan,
@@ -136,7 +136,7 @@ const LoanInput: NextPage<LoanInputProps> = ({
       studyingPartTime: loan.studyingPartTime,
     },
     shouldUnregister: true,
-  });
+  })
 
   const onSubmit = (data: FormData) => {
     onChange({
@@ -151,21 +151,21 @@ const LoanInput: NextPage<LoanInputProps> = ({
         ? new Date(data.courseEndDate)
         : undefined,
       studyingPartTime: data.studyingPartTime,
-    });
-  };
+    })
+  }
 
   const resetForm = () => {
-    resetField("academicYearLoanTakenOut");
-    resetField("courseStartDate");
-    resetField("courseEndDate");
-    resetField("studyingPartTime");
-  };
+    resetField('academicYearLoanTakenOut')
+    resetField('courseStartDate')
+    resetField('courseEndDate')
+    resetField('studyingPartTime')
+  }
 
-  const watchAllFields = watch();
+  const watchAllFields = watch()
 
   const loanTypeIsAvailable = (type: LoanType) => {
-    return availableLoanTypes.includes(type) || loan.loanType == type;
-  };
+    return availableLoanTypes.includes(type) || loan.loanType == type
+  }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -174,10 +174,10 @@ const LoanInput: NextPage<LoanInputProps> = ({
         label="Loan type"
         defaultValue={LoanType.Unselected}
         error={errors.loanType?.message}
-        {...register("loanType", {
+        {...register('loanType', {
           required: true,
           onChange: () => {
-            resetForm();
+            resetForm()
           },
         })}
       >
@@ -211,7 +211,7 @@ const LoanInput: NextPage<LoanInputProps> = ({
           label="Balance remaining"
           symbol="£"
           error={errors.balanceRemaining?.message}
-          {...register("balanceRemaining", {
+          {...register('balanceRemaining', {
             required: true,
             valueAsNumber: true,
           })}
@@ -222,13 +222,13 @@ const LoanInput: NextPage<LoanInputProps> = ({
         <Checkbox
           id="studyingPartTime"
           label="Studying part-time"
-          {...register("studyingPartTime", { required: true })}
+          {...register('studyingPartTime', { required: true })}
         />
       </div>
 
       {courseStartDateRequired(
         watchAllFields.loanType,
-        watchAllFields.studyingPartTime
+        watchAllFields.studyingPartTime,
       ) && (
         <div className="mt-3">
           <Input
@@ -236,7 +236,7 @@ const LoanInput: NextPage<LoanInputProps> = ({
             type="date"
             label="Course start date"
             error={errors.courseStartDate?.message}
-            {...register("courseStartDate", {
+            {...register('courseStartDate', {
               required: true,
             })}
           />
@@ -250,7 +250,7 @@ const LoanInput: NextPage<LoanInputProps> = ({
             type="date"
             label="Course end date"
             error={errors.courseEndDate?.message}
-            {...register("courseEndDate", {
+            {...register('courseEndDate', {
               required: true,
             })}
           />
@@ -263,7 +263,7 @@ const LoanInput: NextPage<LoanInputProps> = ({
             id="academicYearLoanTakenOut"
             label="Academic year loan taken out"
             error={errors.academicYearLoanTakenOut?.message}
-            {...register("academicYearLoanTakenOut", {
+            {...register('academicYearLoanTakenOut', {
               required: true,
               valueAsNumber: true,
             })}
@@ -297,7 +297,7 @@ const LoanInput: NextPage<LoanInputProps> = ({
         )}
       </div>
     </form>
-  );
-};
+  )
+}
 
-export default LoanInput;
+export default LoanInput

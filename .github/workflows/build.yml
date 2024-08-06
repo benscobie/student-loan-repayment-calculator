@@ -2,9 +2,9 @@ name: Build
 
 on:
   push:
-    branches: ["master"]
+    branches: ['master']
   pull_request:
-    branches: ["master"]
+    branches: ['master']
 
 jobs:
   build:
@@ -18,7 +18,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: '20'
           cache: yarn
 
       - name: Restore cache
@@ -61,4 +61,4 @@ jobs:
           push: true
           tags: benscobie/student-loan-repayment-calculator:latest
           context: .
-          file: "docker/Dockerfile.linux.amd64"
+          file: 'docker/Dockerfile.linux.amd64'
