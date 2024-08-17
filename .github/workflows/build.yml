@@ -15,50 +15,23 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: yarn
-
-      - name: Restore cache
-        uses: actions/cache@v4
-        with:
-          path: |
-            .next/cache
-          # Generate a new cache whenever packages or source files change.
-          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
-          # If source files changed but packages didn't, rebuild from a prior cache.
-          restore-keys: |
-            ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}-
-
-      - name: Install dependencies
-        run: yarn install --immutable
-
-      - name: Build
-        run: yarn build
-        env:
-          NODE_ENV: production
-          SENTRY_AUTH_TOKEN: ${{ github.event_name == 'push' && secrets.SENTRY_AUTH_TOKEN || '' }}
-          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
-          NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.NEXT_PUBLIC_SENTRY_DSN }}
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-        if: ${{ github.ref == 'refs/heads/master' }}
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
-        if: ${{ github.ref == 'refs/heads/master' }}
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
-        if: ${{ github.ref == 'refs/heads/master' }}
         with:
-          push: true
+          push: ${{ github.ref == 'refs/heads/master' }}
           tags: benscobie/student-loan-repayment-calculator:latest
           context: .
           file: 'docker/Dockerfile.linux.amd64'
+          build-args: |
+            NEXT_PUBLIC_SENTRY_DSN=${{ vars.NEXT_PUBLIC_SENTRY_DSN }}
+          secrets: |
+            SENTRY_AUTH_TOKEN=${{ github.event_name == 'push' && secrets.SENTRY_AUTH_TOKEN || '' }}
