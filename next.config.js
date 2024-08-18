@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  output: 'standalone',
+  //output: 'standalone',
   experimental: {
     instrumentationHook: true,
   },
@@ -34,7 +34,7 @@ module.exports = withSentryConfig(module.exports, {
   // https://github.com/getsentry/sentry-webpack-plugin#options
 
   // Suppresses source map uploading logs during build
-  silent: true,
+  silent: false,
   org: 'none-rai',
   project: 'slrc-frontend',
   // For all available options, see:
@@ -55,7 +55,7 @@ module.exports = withSentryConfig(module.exports, {
   hideSourceMaps: true,
 
   // Automatically tree-shake Sentry logger statements to reduce bundle size
-  disableLogger: true,
+  disableLogger: false,
 
   // Enables automatic instrumentation of Vercel Cron Monitors.
   // See the following for more information:
