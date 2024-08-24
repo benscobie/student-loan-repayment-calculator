@@ -5,6 +5,7 @@ const nextConfig = {
   experimental: {
     instrumentationHook: true,
   },
+  transpilePackages: ['chart.js'],
   rewrites: async () => {
     return [
       {
