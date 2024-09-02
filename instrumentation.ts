@@ -1,4 +1,5 @@
 import * as Sentry from '@sentry/nextjs'
+import { handleSentryBeforeSend } from './utils/sentryUtils'
 
 export function register() {
   const SENTRY_DSN =
@@ -10,6 +11,7 @@ export function register() {
         dsn: SENTRY_DSN,
         tracesSampleRate: 1,
         debug: false,
+        beforeSend: handleSentryBeforeSend,
       })
     }
   }
@@ -20,6 +22,7 @@ export function register() {
         dsn: SENTRY_DSN,
         tracesSampleRate: 1,
         debug: false,
+        beforeSend: handleSentryBeforeSend,
       })
     }
   }

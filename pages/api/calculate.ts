@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { Results } from '../../api/models/results'
 import { axios } from '../../utils/axios'
 import LoanType from '../../models/loanType'
+import { HttpStatusCode, isAxiosError } from 'axios'
 
 type LoanBody = {
   loanType: LoanType
@@ -32,19 +33,29 @@ export default async function handler(
 ) {
   if (req.method === 'POST') {
     const body = req.body as RequestBody
-    const response = await axios.post<Results>(
-      `${process.env.API_URL}/ukstudentloans/calculate`,
-      JSON.stringify(body),
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-      },
-    )
 
-    res.status(200).json(response.data)
+    try {
+      const response = await axios.post<Results>(
+        `${process.env.API_URL}/ukstudentloans/calculate`,
+        JSON.stringify(body),
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+        },
+      )
+
+      res.status(HttpStatusCode.Ok).json(response.data)
+    } catch (error: unknown) {
+      if (isAxiosError(error) && error.response?.status) {
+        res.status(error.response?.status).end()
+        return
+      }
+
+      throw error
+    }
   } else {
-    res.status(405).end()
+    res.status(HttpStatusCode.MethodNotAllowed).end()
   }
 }

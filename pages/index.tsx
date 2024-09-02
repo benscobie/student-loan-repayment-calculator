@@ -17,6 +17,7 @@ import Assumptions from '../models/assumptions'
 import { Container } from '../components/ui/atoms/Container'
 import GraphHeader from '../components/ui/molecules/GraphHeader'
 import BalanceGraph from '../components/ui/molecules/BalanceGraph'
+import { HttpStatusCode, isAxiosError } from 'axios'
 
 const getDateWithoutTimezone = (date: Date) => {
   const tzOffset = date.getTimezoneOffset() * 60000
@@ -44,6 +45,7 @@ const Home: NextPage = () => {
     studyingPartTime: false,
   })
   const [calculationResults, setCalculationResults] = useState<Results>()
+  const [calculationError, setCalculationError] = useState<string>()
   const detailsSubmitRef = useRef<HTMLButtonElement>(null)
   const tracking = useTracking()
   const canCalculate = editingLoan == null && loanData.length > 0
@@ -110,41 +112,68 @@ const Home: NextPage = () => {
   }
 
   const calculate = async (details: Details) => {
-    const response = await axios.post<Results>(
-      '/api/calculate',
-      {
-        annualSalaryBeforeTax: details.annualSalaryBeforeTax,
-        birthDate: details.birthDate
-          ? getDateWithoutTimezone(details.birthDate)
+    setCalculationError(undefined)
+    setCalculationResults(undefined)
+
+    const request = {
+      annualSalaryBeforeTax: details.annualSalaryBeforeTax,
+      birthDate: details.birthDate
+        ? getDateWithoutTimezone(details.birthDate)
+        : undefined,
+      salaryGrowth: details.salaryGrowth / 100,
+      annualEarningsGrowth: details.annualEarningsGrowth / 100,
+      loans: loanData.map((loan) => ({
+        loanType: loan.loanType,
+        balanceRemaining: loan.balanceRemaining,
+        academicYearLoanTakenOut: loan.academicYearLoanTakenOut,
+        studyingPartTime: loan.studyingPartTime,
+        courseStartDate: loan.courseStartDate
+          ? getDateWithoutTimezone(loan.courseStartDate)
           : undefined,
-        salaryGrowth: details.salaryGrowth / 100,
-        annualEarningsGrowth: details.annualEarningsGrowth / 100,
-        loans: loanData.map((loan) => ({
-          loanType: loan.loanType,
-          balanceRemaining: loan.balanceRemaining,
-          academicYearLoanTakenOut: loan.academicYearLoanTakenOut,
-          studyingPartTime: loan.studyingPartTime,
-          courseStartDate: loan.courseStartDate
-            ? getDateWithoutTimezone(loan.courseStartDate)
-            : undefined,
-          courseEndDate: loan.courseEndDate
-            ? getDateWithoutTimezone(loan.courseEndDate)
-            : undefined,
-        })),
-        salaryAdjustments: details.salaryAdjustments.map((x) => {
-          return { date: getDateWithoutTimezone(x.date), value: x.value }
-        }),
-      },
-      {
+        courseEndDate: loan.courseEndDate
+          ? getDateWithoutTimezone(loan.courseEndDate)
+          : undefined,
+      })),
+      salaryAdjustments: details.salaryAdjustments.map((x) => {
+        return { date: getDateWithoutTimezone(x.date), value: x.value }
+      }),
+    }
+
+    try {
+      const response = await axios.post<Results>('/api/calculate', request, {
         headers: {
           'Content-Type': 'application/json',
           Accept: 'application/json',
         },
-      },
-    )
+      })
 
-    tracking.track('calculate', { types: loanData.map((x) => x.loanType) })
-    setCalculationResults(response.data)
+      tracking.track('calculate', { types: loanData.map((x) => x.loanType) })
+      setCalculationResults(response.data)
+    } catch (error: unknown) {
+      if (isAxiosError(error)) {
+        if (!error.response) {
+          setCalculationError(
+            'A network error occurred, please check your internet connection and try again.',
+          )
+        } else {
+          if (error.response.status === HttpStatusCode.BadRequest) {
+            setCalculationError(
+              'Invalid data was submitted. Please check your inputs and try again.',
+            )
+          } else {
+            setCalculationError(
+              'An error occurred while calculating. Please try again later.',
+            )
+          }
+          throw error
+        }
+      } else {
+        setCalculationError(
+          'An error occurred while calculating. Please try again.',
+        )
+        throw error
+      }
+    }
   }
 
   const calculatedLoanTypes =
@@ -289,6 +318,12 @@ const Home: NextPage = () => {
                   Calculate
                 </Button>
               </div>
+
+              {calculationError && (
+                <div className="mx-auto mt-4 w-fit rounded bg-red-50 px-4 py-1.5 text-center text-sm text-red-800">
+                  {calculationError}
+                </div>
+              )}
             </div>
           </div>
         </Container>
