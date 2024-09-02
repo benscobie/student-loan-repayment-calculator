@@ -45,6 +45,7 @@ const Home: NextPage = () => {
     studyingPartTime: false,
   })
   const [calculationResults, setCalculationResults] = useState<Results>()
+  const [calculating, setCalculating] = useState<boolean>()
   const [calculationError, setCalculationError] = useState<string>()
   const detailsSubmitRef = useRef<HTMLButtonElement>(null)
   const tracking = useTracking()
@@ -112,8 +113,11 @@ const Home: NextPage = () => {
   }
 
   const calculate = async (details: Details) => {
+    if (calculating) return
+
     setCalculationError(undefined)
     setCalculationResults(undefined)
+    setCalculating(true)
 
     const request = {
       annualSalaryBeforeTax: details.annualSalaryBeforeTax,
@@ -173,6 +177,8 @@ const Home: NextPage = () => {
         )
         throw error
       }
+    } finally {
+      setCalculating(false)
     }
   }
 
@@ -311,7 +317,7 @@ const Home: NextPage = () => {
                 <Button
                   id="calculate"
                   style="primary"
-                  disabled={!canCalculate}
+                  disabled={!canCalculate || calculating}
                   onClick={calculateSubmit}
                   className="max-w-md px-8 text-xl"
                 >
