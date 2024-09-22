@@ -14,6 +14,7 @@ import {
   ChevronLeft,
   ChevronRight,
 } from 'react-bootstrap-icons'
+import { percentFormatter } from '../../../utils/percentFormatter'
 
 interface MonthLoanTableProps {
   results: Results
@@ -134,7 +135,7 @@ export const MonthLoanTable: NextPage<MonthLoanTableProps> = ({
                     )}
                   </td>
                   <td className="border-b border-l px-2 py-1.5 sm:px-3 md:px-4">
-                    {projection.interestRate * 100}%
+                    {percentFormatter.format(projection.interestRate)}
                   </td>
                   <td className="border-b border-l px-2 py-1.5 sm:px-3 md:px-4">
                     {currencyFormatterNoFraction.format(projection.threshold)}
