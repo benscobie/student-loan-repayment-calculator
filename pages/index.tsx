@@ -55,7 +55,7 @@ const Home: NextPage = () => {
   })
 
   const updateLoan = (loan: Loan) => {
-    var loanExists = loanData.some((x) => x.id == loan.id)
+    const loanExists = loanData.some((x) => x.id == loan.id)
 
     if (loanExists) {
       setLoanData((current) =>
