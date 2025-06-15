@@ -1,4 +1,4 @@
-import { Results } from '../../../api/models/results'
+import Results from '../../../api/models/results'
 import React from 'react'
 import {
   Chart as ChartJS,
@@ -10,8 +10,6 @@ import {
   Tooltip,
   Legend,
   Scale,
-  Tick,
-  CoreScaleOptions,
   ChartOptions,
 } from 'chart.js'
 import { Line } from 'react-chartjs-2'
@@ -33,7 +31,7 @@ ChartJS.register(
   Legend,
 )
 
-interface BalanceGraphProps {
+type BalanceGraphProps = {
   results: Results
   loanTypes: LoanType[]
 }
@@ -46,10 +44,9 @@ const BalanceGraph = (props: BalanceGraphProps) => {
       x: {
         ticks: {
           callback(
-            this: Scale<CoreScaleOptions>,
+            this: Scale,
             tickValue: string | number,
             index: number,
-            ticks: Tick[],
           ): string {
             return getLabelsForGroupedDataCallback(
               props.results.results,
@@ -61,29 +58,26 @@ const BalanceGraph = (props: BalanceGraphProps) => {
       },
     },
     plugins: {
-      legend: {
-        position: 'top' as const,
-      },
-      title: {
-        display: false,
-      },
+      legend: { position: 'top' as const },
+      title: { display: false },
       tooltip: {
         callbacks: {
-          label: function (context: any) {
-            let label = context.dataset.label || ''
+          label: function (context) {
+            let label = context.dataset.label ?? ''
 
             if (label) {
               label += ': '
             }
 
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- I have seen this null before
             if (context.parsed.y !== null) {
               label += currencyFormatter.format(context.parsed.y)
             }
 
             return label
           },
-          title: function (context: any) {
-            var date = DateTime.fromISO(context[0].label)
+          title: function (context) {
+            const date = DateTime.fromISO(context[0].label)
             return date.toLocaleString()
           },
         },
@@ -115,10 +109,7 @@ const BalanceGraph = (props: BalanceGraphProps) => {
     backgroundColor: backgroundColors[index],
   }))
 
-  const data = {
-    labels: groupedData.labels,
-    datasets: dataSetsPerLoanType,
-  }
+  const data = { labels: groupedData.labels, datasets: dataSetsPerLoanType }
 
   return (
     <div className="h-[500px] w-full">

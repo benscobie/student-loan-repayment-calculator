@@ -3,7 +3,7 @@ import Footer from './ui/organisms/Footer'
 import Header from './ui/organisms/Header'
 import Head from 'next/head'
 
-interface LayoutProps {
+type LayoutProps = {
   children?: ReactNode | undefined
   className?: string
 }

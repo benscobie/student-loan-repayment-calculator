@@ -14,8 +14,8 @@ import { Trash } from 'react-bootstrap-icons'
 import DatePicker from '../atoms/DatePicker'
 import classNames from 'classnames'
 
-let nextMonth = () => {
-  var now = new Date()
+const nextMonth = () => {
+  const now = new Date()
   if (now.getMonth() == 11) {
     return new Date(now.getFullYear() + 1, 0, 1)
   } else {
@@ -23,37 +23,30 @@ let nextMonth = () => {
   }
 }
 
-let baseSchema = z.object({
+const baseSchema = z.object({
   salaryGrowth: z
-    .number({
-      invalid_type_error: 'Invalid number',
-    })
+    .number({ invalid_type_error: 'Invalid number' })
     .min(-100)
     .max(100),
   annualEarningsGrowth: z
-    .number({
-      invalid_type_error: 'Invalid number',
-    })
+    .number({ invalid_type_error: 'Invalid number' })
     .min(-100)
     .max(100),
   annualSalaryBeforeTax: z
-    .number({
-      invalid_type_error: 'Invalid number',
-    })
+    .number({ invalid_type_error: 'Invalid number' })
     .min(0),
   salaryAdjustments: z
     .array(
       z.object({
         date: z
-          .date({
-            invalid_type_error: 'Invalid date',
-          })
-          .min(nextMonth(), 'Date cannot be in the past'),
+          .union([z.date({ invalid_type_error: 'Invalid date' }), z.string()])
+          .pipe(z.coerce.date().min(nextMonth(), 'Date cannot be in the past')),
         value: z
-          .number({
-            invalid_type_error: 'Invalid number',
-          })
-          .min(0),
+          .union([
+            z.string({ invalid_type_error: 'Invalid number' }),
+            z.number(),
+          ])
+          .pipe(z.coerce.number().min(0)),
       }),
     )
     .superRefine((items, ctx) => {
@@ -69,46 +62,29 @@ let baseSchema = z.object({
         }
       })
     }),
+  birthDate: z
+    .date()
+    .max(
+      DateTime.now().minus({ years: 15 }).startOf('day').toJSDate(),
+      `Select a date prior to ${DateTime.now()
+        .minus({ years: 15 })
+        .startOf('day')
+        .toFormat('dd/MM/yyyy')}`,
+    )
+    .optional(),
 })
 
-let birthDateRequiredSchema = z.object({
-  birthDate: z.date().max(
-    DateTime.now()
-      .minus({
-        years: 15,
-      })
-      .startOf('day')
-      .toJSDate(),
-    `Select a date prior to ${DateTime.now()
-      .minus({
-        years: 15,
-      })
-      .startOf('day')
-      .toFormat('dd/MM/yyyy')}`,
-  ),
-})
-
-interface DetailsInputProps {
+type DetailsInputProps = {
   loans: Loan[]
   salaryGrowth: number
   annualEarningsGrowth: number
-  handleSubmit(details: Details): any
+  handleSubmit: (details: Details) => void
   submitRef: RefObject<HTMLButtonElement>
   canSubmit: boolean
 }
 
-type FormData = {
-  salaryGrowth: number
-  annualEarningsGrowth: number
-  birthDate?: Date
-  salaryAdjustments: SalaryAdjustment[]
-  annualSalaryBeforeTax: number
-}
-
-type SalaryAdjustment = {
-  date?: Date
-  value?: number
-}
+type FormDataInput = z.input<typeof baseSchema>
+type FormDataOutput = z.output<typeof baseSchema>
 
 const DetailsInput: NextPage<DetailsInputProps> = ({
   salaryGrowth,
@@ -135,19 +111,14 @@ const DetailsInput: NextPage<DetailsInputProps> = ({
     })
   }
 
-  let fullSchema = baseSchema
-  if (isBirthDateRequired()) {
-    fullSchema = baseSchema.merge(birthDateRequiredSchema)
-  }
-
   const {
     register,
     formState: { errors },
     control,
     handleSubmit,
     watch,
-  } = useForm<FormData>({
-    resolver: zodResolver(fullSchema),
+  } = useForm<FormDataInput, unknown, FormDataOutput>({
+    resolver: zodResolver(baseSchema),
     defaultValues: {
       salaryGrowth: salaryGrowth * 100,
       annualEarningsGrowth: annualEarningsGrowth * 100,
@@ -162,7 +133,7 @@ const DetailsInput: NextPage<DetailsInputProps> = ({
     }
   }, [errors])
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = (data: FormDataOutput) => {
     handleSubmitHook({
       annualEarningsGrowth: data.annualEarningsGrowth,
       salaryAdjustments: data.salaryAdjustments.map((x) => {
@@ -171,7 +142,7 @@ const DetailsInput: NextPage<DetailsInputProps> = ({
       salaryGrowth: data.salaryGrowth,
       annualSalaryBeforeTax: data.annualSalaryBeforeTax,
       birthDate: data.birthDate,
-    } as Details)
+    } satisfies Details)
   }
 
   const { fields, append, remove } = useFieldArray({
@@ -186,7 +157,7 @@ const DetailsInput: NextPage<DetailsInputProps> = ({
   const annualSalaryBeforeTax = watch('annualSalaryBeforeTax')
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={(e) => void handleSubmit(onSubmit)(e)}>
       <div className="mb-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
         <div>
           <h2 className="mb-2 text-lg font-medium">Your details</h2>
@@ -281,26 +252,32 @@ const DetailsInput: NextPage<DetailsInputProps> = ({
         </p>
         {fields.length > 0 && (
           <div className="mb-4 flex flex-col gap-y-3">
-            {fields?.map((field, index) => (
+            {fields.map((field, index) => (
               <div key={field.id} className="flex gap-x-2 sm:gap-x-4">
                 <div className="grow">
                   <Controller
                     control={control}
                     name={`salaryAdjustments.${index}.date`}
                     render={({ field: innerField, fieldState }) => (
-                      <DatePicker
-                        id="salaryAdjustmentDate"
-                        key={field.id}
-                        label="Date"
-                        dateFormat="MM/yyyy"
-                        showMonthYearPicker
-                        error={fieldState.error?.message}
-                        onChange={(date) => {
-                          innerField.onChange(date)
-                        }}
-                        selected={innerField.value}
-                        minDate={nextMonth()}
-                      />
+                      <>
+                        <DatePicker
+                          id="salaryAdjustmentDate"
+                          key={field.id}
+                          label="Date"
+                          dateFormat="MM/yyyy"
+                          showMonthYearPicker
+                          error={fieldState.error?.message}
+                          onChange={(date) => {
+                            innerField.onChange(date)
+                          }}
+                          selected={
+                            innerField.value
+                              ? new Date(innerField.value)
+                              : undefined
+                          }
+                          minDate={nextMonth()}
+                        />
+                      </>
                     )}
                   />
                 </div>
@@ -310,7 +287,7 @@ const DetailsInput: NextPage<DetailsInputProps> = ({
                     type="number"
                     label="Salary"
                     symbol="£"
-                    error={errors['salaryAdjustments']?.[index]?.value?.message}
+                    error={errors.salaryAdjustments?.[index]?.value?.message}
                     {...register(`salaryAdjustments.${index}.value`, {
                       required: true,
                       valueAsNumber: true,
@@ -323,7 +300,9 @@ const DetailsInput: NextPage<DetailsInputProps> = ({
                     <button
                       type="button"
                       className="cursor-pointer text-slate-600 hover:text-slate-900"
-                      onClick={() => remove(index)}
+                      onClick={() => {
+                        remove(index)
+                      }}
                     >
                       <Trash />
                     </button>
@@ -337,14 +316,9 @@ const DetailsInput: NextPage<DetailsInputProps> = ({
           <Button
             id="addSalaryAdjustment"
             style="primary"
-            onClick={() =>
-              append(
-                {},
-                {
-                  shouldFocus: false,
-                },
-              )
-            }
+            onClick={() => {
+              append({ date: '', value: '' }, { shouldFocus: false })
+            }}
           >
             {fields.length == 0 ? 'Add adjustment' : 'Add another adjustment'}
           </Button>

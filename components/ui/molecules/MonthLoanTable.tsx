@@ -1,7 +1,7 @@
 import type { NextPage } from 'next'
 import React, { useCallback } from 'react'
 import LoanType from '../../../models/loanType'
-import { Results } from '../../../api/models/results'
+import Results from '../../../api/models/results'
 import {
   currencyFormatter,
   currencyFormatterNoFraction,
@@ -15,8 +15,9 @@ import {
   ChevronRight,
 } from 'react-bootstrap-icons'
 import { percentFormatter } from '../../../utils/percentFormatter'
+import RepaymentStatus from '../../../models/repaymentStatus'
 
-interface MonthLoanTableProps {
+type MonthLoanTableProps = {
   results: Results
   loanType: LoanType
 }
@@ -29,9 +30,10 @@ export const MonthLoanTable: NextPage<MonthLoanTableProps> = ({
     r.projections.find(
       (p) =>
         p.loanType == loanType &&
-        (p.repaymentStatus == 'WrittenOff' || p.repaymentStatus == 'PaidOff'),
+        (p.repaymentStatus == RepaymentStatus.WrittenOff ||
+          p.repaymentStatus == RepaymentStatus.PaidOff),
     ),
-  )!
+  )
 
   const completedResults = results.results.slice(0, periodCompleteIndex + 1)
   const paging = usePager(completedResults)
@@ -66,10 +68,15 @@ export const MonthLoanTable: NextPage<MonthLoanTableProps> = ({
             </tr>
           </thead>
           <tbody>
-            {paging.pageResults.map((result, index) => {
+            {paging.pageResults.map((result) => {
               const projection = result.projections.find(
                 (x) => x.loanType == loanType,
-              )!
+              )
+
+              if (!projection) {
+                throw new Error('Projection not found')
+              }
+
               const prevResult = results.results.find(
                 (x) => x.period == result.period - 1,
               )
@@ -78,10 +85,10 @@ export const MonthLoanTable: NextPage<MonthLoanTableProps> = ({
               )
               const prevProjection = prevResult?.projections.find(
                 (x) => x.loanType == loanType,
-              )!
+              )
               const prevPrevProjection = prevPrevResult?.projections.find(
                 (x) => x.loanType == loanType,
-              )!
+              )
 
               const salaryChange =
                 !prevResult || prevResult.salary == result.salary
@@ -98,14 +105,18 @@ export const MonthLoanTable: NextPage<MonthLoanTableProps> = ({
                     : 'down'
 
               const debtDecreasedFirstTime =
-                prevPrevProjection?.debtRemaining <
-                  prevProjection?.debtRemaining &&
-                prevProjection?.debtRemaining > projection.debtRemaining
+                prevProjection && prevPrevProjection
+                  ? prevPrevProjection.debtRemaining <
+                      prevProjection.debtRemaining &&
+                    prevProjection.debtRemaining > projection.debtRemaining
+                  : false
 
               const increasedFirstTime =
-                prevPrevProjection?.debtRemaining >
-                  prevProjection?.debtRemaining &&
-                prevProjection?.debtRemaining < projection.debtRemaining
+                prevProjection && prevPrevProjection
+                  ? prevPrevProjection.debtRemaining >
+                      prevProjection.debtRemaining &&
+                    prevProjection.debtRemaining < projection.debtRemaining
+                  : false
 
               return (
                 <tr
@@ -236,7 +247,7 @@ const Pagination = ({
 
   let i = 1
   while (pagesToDistribute > 0) {
-    let currentPagesToDistribute = pagesToDistribute
+    const currentPagesToDistribute = pagesToDistribute
     if (currentPage - i > 0) {
       pages.push(currentPage - i)
       pagesToDistribute--
@@ -264,7 +275,9 @@ const Pagination = ({
           <select
             id="records-per-page"
             value={itemsPerPage}
-            onChange={(e) => setItemsPerPage(Number(e.target.value))}
+            onChange={(e) => {
+              setItemsPerPage(Number(e.target.value))
+            }}
             className="h-8 rounded border bg-gray-50 px-2.5 text-sm font-light text-gray-900  "
           >
             {itemsPerPageOptions.map((pageSize) => (
@@ -284,7 +297,9 @@ const Pagination = ({
       <div className="flex gap-1">
         <button
           type="button"
-          onClick={() => setCurrentPage(1)}
+          onClick={() => {
+            setCurrentPage(1)
+          }}
           className={classNames('px-3 h-8 rounded', {
             'text-gray-300': !canGoBack,
             'hover:bg-sky-100': canGoBack,
@@ -296,7 +311,9 @@ const Pagination = ({
 
         <button
           type="button"
-          onClick={() => setCurrentPage(currentPage - 1)}
+          onClick={() => {
+            setCurrentPage(currentPage - 1)
+          }}
           className={classNames('px-3 h-8 rounded', {
             'text-gray-300': !canGoBack,
             'hover:bg-sky-100': canGoBack,
@@ -310,7 +327,9 @@ const Pagination = ({
           <button
             key={number}
             type="button"
-            onClick={() => setCurrentPage(number)}
+            onClick={() => {
+              setCurrentPage(number)
+            }}
             className={classNames(
               'px-3 h-8 rounded text-center hidden sm:block',
               {
@@ -326,7 +345,9 @@ const Pagination = ({
 
         <button
           type="button"
-          onClick={() => setCurrentPage(currentPage + 1)}
+          onClick={() => {
+            setCurrentPage(currentPage + 1)
+          }}
           className={classNames('px-3 h-8 rounded', {
             'text-gray-300': !canGoForward,
             'hover:bg-sky-100': canGoForward,
@@ -338,7 +359,9 @@ const Pagination = ({
 
         <button
           type="button"
-          onClick={() => setCurrentPage(pageCount)}
+          onClick={() => {
+            setCurrentPage(pageCount)
+          }}
           className={classNames('px-3 h-8 rounded', {
             'text-gray-300': !canGoForward,
             'hover:bg-sky-100': canGoForward,

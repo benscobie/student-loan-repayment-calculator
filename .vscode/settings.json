@@ -2,12 +2,9 @@
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "typescript.tsdk": "node_modules/typescript/lib",
   "typescript.enablePromptUseWorkspaceTsdk": true,
+  "typescript.tsserver.experimental.enableProjectDiagnostics": true,
   "editor.formatOnSave": true,
   "eslint.format.enable": true,
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit"
-  },
-  "search.exclude": {
-    "**/.yarn": true
-  }
+  "editor.codeActionsOnSave": { "source.fixAll.eslint": "explicit" },
+  "search.exclude": { "**/.yarn": true }
 }

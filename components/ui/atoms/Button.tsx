@@ -2,13 +2,12 @@ import classNames from 'classnames'
 import { useRef } from 'react'
 import { twMerge } from 'tailwind-merge'
 
-interface ButtonProps
-  extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'style'> {
+type ButtonProps = {
   id: string
   disabled?: boolean
   style: 'primary' | 'secondary'
   children?: React.ReactNode
-}
+} & Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'style'>
 
 const Button = (props: ButtonProps) => {
   const {

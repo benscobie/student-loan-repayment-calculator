@@ -1,4 +1,5 @@
-export default interface Assumptions {
+type Assumptions = {
   salaryGrowth: number
   annualEarningsGrowth: number
 }
+export default Assumptions

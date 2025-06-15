@@ -8,7 +8,7 @@ import Button from '../components/ui/atoms/Button'
 import LoanInput from '../components/ui/organisms/LoanInput'
 import LoanType, { LoanTypeToDescription } from '../models/loanType'
 import { InfoCircle } from 'react-bootstrap-icons'
-import { Results } from '../api/models/results'
+import Results from '../api/models/results'
 import LoanBreakdown from '../components/ui/organisms/LoanBreakdown'
 import { currencyFormatter } from '../utils/currencyFormatter'
 import { Details } from '../models/details'
@@ -55,7 +55,7 @@ const Home: NextPage = () => {
   })
 
   const updateLoan = (loan: Loan) => {
-    var loanExists = loanData.some((x) => x.id == loan.id)
+    const loanExists = loanData.some((x) => x.id == loan.id)
 
     if (loanExists) {
       setLoanData((current) =>
@@ -104,12 +104,12 @@ const Home: NextPage = () => {
     setEditingLoan(loanData[index])
   }
 
-  const calculateSubmit = async () => {
-    detailsSubmitRef.current!.click()
+  const calculateSubmit = () => {
+    detailsSubmitRef.current?.click()
   }
 
-  const handleDetailsSubmit = (details: Details) => {
-    calculate(details)
+  const handleDetailsSubmit = async (details: Details) => {
+    await calculate(details)
   }
 
   const calculate = async (details: Details) => {
@@ -151,7 +151,11 @@ const Home: NextPage = () => {
         },
       })
 
-      tracking.track('calculate', { types: loanData.map((x) => x.loanType) })
+      tracking
+        .track('calculate', { types: loanData.map((x) => x.loanType) })
+        .catch(() => {
+          // Ignore
+        })
       setCalculationResults(response.data)
     } catch (error: unknown) {
       if (isAxiosError(error)) {
@@ -261,14 +265,18 @@ const Home: NextPage = () => {
                           <button
                             type="button"
                             className="flex cursor-pointer items-center justify-center rounded-lg bg-slate-200 px-4 py-2 hover:bg-slate-300"
-                            onClick={() => editLoan(index)}
+                            onClick={() => {
+                              editLoan(index)
+                            }}
                           >
                             Edit
                           </button>
                           <button
                             type="button"
                             className="flex cursor-pointer items-center justify-center rounded-lg bg-slate-200 px-4 py-2 hover:bg-slate-300"
-                            onClick={() => removeLoan(index)}
+                            onClick={() => {
+                              removeLoan(index)
+                            }}
                           >
                             Delete
                           </button>
@@ -306,9 +314,9 @@ const Home: NextPage = () => {
                   salaryGrowth={assumptions.salaryGrowth}
                   loans={loanData}
                   submitRef={detailsSubmitRef}
-                  handleSubmit={(details: Details) =>
-                    handleDetailsSubmit(details)
-                  }
+                  handleSubmit={(details: Details) => {
+                    void handleDetailsSubmit(details)
+                  }}
                   canSubmit={canCalculate}
                 />
               </div>

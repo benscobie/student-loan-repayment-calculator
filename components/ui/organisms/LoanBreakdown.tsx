@@ -2,14 +2,14 @@ import type { NextPage } from 'next'
 import React from 'react'
 import LoanType, { LoanTypeToDescription } from '../../../models/loanType'
 import GraphHeader from '../molecules/GraphHeader'
-import { Results } from '../../../api/models/results'
+import Results from '../../../api/models/results'
 import LoanRepaymentNarrative from '../molecules/LoanRepaymentNarrative'
 import classNames from 'classnames'
 import { MonthLoanTable } from '../molecules/MonthLoanTable'
 import { GraphUp, Table } from 'react-bootstrap-icons'
 import TotalsGraph from '../molecules/TotalsGraph'
 
-interface LoanBreakdownProps {
+type LoanBreakdownProps = {
   results: Results
   loanType: LoanType
 }

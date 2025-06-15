@@ -1,4 +1,5 @@
-export default interface SalaryAdjustment {
+type SalaryAdjustment = {
   date: Date
   value: number
 }
+export default SalaryAdjustment

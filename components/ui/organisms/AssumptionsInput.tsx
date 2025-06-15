@@ -2,7 +2,7 @@ import { NextPage } from 'next'
 import { ChangeEvent } from 'react'
 import InputGroup from '../atoms/InputGroup'
 
-interface AssumptionsInputProps {
+type AssumptionsInputProps = {
   salaryGrowth: number
   annualEarningsGrowth: number
   onSalaryGrowthChange: (value: number) => void

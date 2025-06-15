@@ -1,6 +1,6 @@
 import { forwardRef } from 'react'
 
-interface CheckboxProps extends React.InputHTMLAttributes<HTMLInputElement> {
+type CheckboxProps = {
   id: string
   placeholder?: string
   label: string
@@ -9,7 +9,7 @@ interface CheckboxProps extends React.InputHTMLAttributes<HTMLInputElement> {
   errorText?: string
   required?: boolean
   children?: React.ReactNode
-}
+} & React.InputHTMLAttributes<HTMLInputElement>
 
 const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
   function InputGroup(props: CheckboxProps, ref) {

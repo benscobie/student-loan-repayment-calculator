@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { Results } from '../../api/models/results'
+import Results from '../../api/models/results'
 import { axios } from '../../utils/axios'
 import LoanType from '../../models/loanType'
 import { HttpStatusCode, isAxiosError } from 'axios'
@@ -49,7 +49,7 @@ export default async function handler(
       res.status(HttpStatusCode.Ok).json(response.data)
     } catch (error: unknown) {
       if (isAxiosError(error) && error.response?.status) {
-        res.status(error.response?.status).end()
+        res.status(error.response.status).end()
         return
       }
 

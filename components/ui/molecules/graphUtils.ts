@@ -20,13 +20,17 @@ export function groupDataEveryNthPeriod(results: Result[]) {
   periods.forEach((period) => {
     const periodResults = results.find((r) => r.period == period)
 
+    if (!periodResults) {
+      throw new Error('Could not find period in result set')
+    }
+
     if (
       period == 1 ||
       period == results.length ||
-      periodResults!.periodDate.month % getMonthGrouping(results) == 0
+      periodResults.periodDate.month % getMonthGrouping(results) == 0
     ) {
-      groupedResults.push(periodResults!)
-      groupedLabels.push(periodResults?.periodDate.toString() ?? '')
+      groupedResults.push(periodResults)
+      groupedLabels.push(periodResults.periodDate.toString())
     }
   })
 
@@ -37,7 +41,11 @@ export function getLabelsForGroupedDataCallback(
   results: Result[],
   label: string,
 ) {
-  var date = DateTime.fromISO(label)
+  const date = DateTime.fromISO(label)
+
+  if (date.monthShort == null) {
+    return 'Err'
+  }
 
   if (results.length <= 12) {
     return date.monthShort + ' ' + date.year.toString()
