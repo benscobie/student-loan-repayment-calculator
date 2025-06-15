@@ -2,12 +2,14 @@ import type { NextPage } from 'next'
 import React from 'react'
 import { DateTime } from 'luxon'
 import LoanType from '../../../models/loanType'
-import { Results } from '../../../api/models/results'
+import Results from '../../../api/models/results'
 import Highlight from '../atoms/Highlight'
 import { currencyFormatter } from '../../../utils/currencyFormatter'
-import { RepaymentStatusToDescription } from '../../../models/repaymentStatus'
+import RepaymentStatus, {
+  RepaymentStatusToDescription,
+} from '../../../models/repaymentStatus'
 
-interface LoanRepaymentNarrativeProps {
+type LoanRepaymentNarrativeProps = {
   results: Results
   loanType: LoanType
 }
@@ -20,18 +22,28 @@ const LoanRepaymentNarrative: NextPage<LoanRepaymentNarrativeProps> = ({
     r.projections.find(
       (p) =>
         p.loanType == loanType &&
-        (p.repaymentStatus == 'WrittenOff' || p.repaymentStatus == 'PaidOff'),
+        (p.repaymentStatus == RepaymentStatus.WrittenOff ||
+          p.repaymentStatus == RepaymentStatus.PaidOff),
     ),
-  )!
+  )
+
+  if (!periodComplete) {
+    throw new Error('The final period was not found in the result set')
+  }
+
   const periodCompleteProjection = periodComplete.projections.find(
     (p) => p.loanType == loanType,
-  )!
+  )
+
+  if (!periodCompleteProjection) {
+    throw new Error('The final period projection was not found')
+  }
 
   const paidOffDiff = () => {
     const paidOff = periodComplete.periodDate
 
-    var now = DateTime.local()
-    var rezoned = now.setZone(paidOff.zone, { keepLocalTime: true })
+    const now = DateTime.local()
+    const rezoned = now.setZone(paidOff.zone, { keepLocalTime: true })
 
     return paidOff.diff(rezoned, ['years', 'months'])
   }

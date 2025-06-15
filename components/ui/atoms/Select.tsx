@@ -1,28 +1,18 @@
 import { forwardRef } from 'react'
 
-interface SelectProps
-  extends React.SelectHTMLAttributes<HTMLSelectElement | HTMLInputElement> {
+type SelectProps = {
   id: string
-  placeholder?: string
   label: string
   error?: string
   required?: boolean
   children?: React.ReactNode
-}
+} & React.SelectHTMLAttributes<HTMLSelectElement | HTMLInputElement>
 
 const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select(
   props: SelectProps,
   ref,
 ) {
-  const {
-    id,
-    placeholder = '',
-    label = '',
-    required = false,
-    children,
-    error,
-    ...rest
-  } = props
+  const { id, label = '', required = false, children, error, ...rest } = props
 
   return (
     <>

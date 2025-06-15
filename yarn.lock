@@ -317,7 +317,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eslint/js@npm:9.29.0":
+"@eslint/js@npm:9.29.0, @eslint/js@npm:^9.29.0":
   version: 9.29.0
   resolution: "@eslint/js@npm:9.29.0"
   checksum: 10c0/d0ccf37063fa27a3fae9347cb044f84ca10b5a2fa19ffb2b3fedf3b96843ac1ff359ea9f0ab0e80f2f16fda4cb0dc61ea0fed0375090f050fe0a029e7d6de3a3
@@ -1972,7 +1972,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/eslint-plugin@npm:^5.4.2 || ^6.0.0 || ^7.0.0 || ^8.0.0":
+"@typescript-eslint/eslint-plugin@npm:8.34.0, @typescript-eslint/eslint-plugin@npm:^5.4.2 || ^6.0.0 || ^7.0.0 || ^8.0.0":
   version: 8.34.0
   resolution: "@typescript-eslint/eslint-plugin@npm:8.34.0"
   dependencies:
@@ -1993,7 +1993,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/parser@npm:^5.4.2 || ^6.0.0 || ^7.0.0 || ^8.0.0":
+"@typescript-eslint/parser@npm:8.34.0, @typescript-eslint/parser@npm:^5.4.2 || ^6.0.0 || ^7.0.0 || ^8.0.0, @typescript-eslint/parser@npm:^8.34.0":
   version: 8.34.0
   resolution: "@typescript-eslint/parser@npm:8.34.0"
   dependencies:
@@ -3787,7 +3787,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:9.29.0":
+"eslint@npm:^9.29.0":
   version: 9.29.0
   resolution: "eslint@npm:9.29.0"
   dependencies:
@@ -7495,6 +7495,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "student-loan-repayment-calculator@workspace:."
   dependencies:
+    "@eslint/js": "npm:^9.29.0"
     "@hookform/resolvers": "npm:^5.1.1"
     "@next/bundle-analyzer": "npm:^15.3.3"
     "@sentry/nextjs": "npm:^9.29.0"
@@ -7503,12 +7504,13 @@ __metadata:
     "@types/react": "npm:19.1.8"
     "@types/react-datepicker": "npm:^7.0.0"
     "@types/react-dom": "npm:19.1.6"
+    "@typescript-eslint/parser": "npm:^8.34.0"
     autoprefixer: "npm:^10.4.21"
     axios: "npm:^1.10.0"
     chart.js: "npm:^4.5.0"
     classnames: "npm:^2.5.1"
     cross-env: "npm:^7.0.3"
-    eslint: "npm:9.29.0"
+    eslint: "npm:^9.29.0"
     eslint-config-next: "npm:^15.3.3"
     eslint-config-prettier: "npm:^10.1.5"
     eslint-plugin-tailwindcss: "npm:^3.18.0"
@@ -7525,7 +7527,8 @@ __metadata:
     react-tooltip: "npm:^5.29.1"
     tailwind-merge: "npm:^2.6.0"
     tailwindcss: "npm:^3.4.17"
-    typescript: "npm:5.8.3"
+    typescript: "npm:^5.8.3"
+    typescript-eslint: "npm:^8.34.0"
     zod: "npm:^3.25.64"
   languageName: unknown
   linkType: soft
@@ -7883,7 +7886,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:5.8.3":
+"typescript-eslint@npm:^8.34.0":
+  version: 8.34.0
+  resolution: "typescript-eslint@npm:8.34.0"
+  dependencies:
+    "@typescript-eslint/eslint-plugin": "npm:8.34.0"
+    "@typescript-eslint/parser": "npm:8.34.0"
+    "@typescript-eslint/utils": "npm:8.34.0"
+  peerDependencies:
+    eslint: ^8.57.0 || ^9.0.0
+    typescript: ">=4.8.4 <5.9.0"
+  checksum: 10c0/20c748b714267836bf47b9ed71b02ab256083d889528857732d559bf85ba4924c60623eb158fe0f5704bb75d9f20fbb54bc79b4cb978883093c6071a484fc390
+  languageName: node
+  linkType: hard
+
+"typescript@npm:^5.8.3":
   version: 5.8.3
   resolution: "typescript@npm:5.8.3"
   bin:
@@ -7893,7 +7910,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@npm%3A5.8.3#optional!builtin<compat/typescript>":
+"typescript@patch:typescript@npm%3A^5.8.3#optional!builtin<compat/typescript>":
   version: 5.8.3
   resolution: "typescript@patch:typescript@npm%3A5.8.3#optional!builtin<compat/typescript>::version=5.8.3&hash=379a07"
   bin:

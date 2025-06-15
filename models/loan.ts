@@ -1,6 +1,6 @@
 import LoanType from './loanType'
 
-export interface NewLoan {
+export type NewLoan = {
   id: number
   balanceRemaining?: number
   loanType?: LoanType
@@ -10,7 +10,7 @@ export interface NewLoan {
   courseEndDate?: Date
 }
 
-export interface Loan {
+export type Loan = {
   id: number
   balanceRemaining: number
   loanType: LoanType

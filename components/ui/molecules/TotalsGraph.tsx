@@ -1,4 +1,4 @@
-import { Results } from '../../../api/models/results'
+import Results from '../../../api/models/results'
 import React from 'react'
 import {
   Chart as ChartJS,
@@ -9,9 +9,7 @@ import {
   Title,
   Tooltip,
   Legend,
-  CoreScaleOptions,
   Scale,
-  Tick,
   ChartOptions,
 } from 'chart.js'
 import { Line } from 'react-chartjs-2'
@@ -33,7 +31,7 @@ ChartJS.register(
   Legend,
 )
 
-interface TotalsGraphProps {
+type TotalsGraphProps = {
   results: Results
   loanTypes: LoanType[]
 }
@@ -46,10 +44,9 @@ const TotalsGraph = (props: TotalsGraphProps) => {
       x: {
         ticks: {
           callback(
-            this: Scale<CoreScaleOptions>,
+            this: Scale,
             tickValue: string | number,
             index: number,
-            ticks: Tick[],
           ): string {
             return getLabelsForGroupedDataCallback(
               props.results.results,
@@ -61,29 +58,26 @@ const TotalsGraph = (props: TotalsGraphProps) => {
       },
     },
     plugins: {
-      legend: {
-        position: 'top' as const,
-      },
-      title: {
-        display: false,
-      },
+      legend: { position: 'top' as const },
+      title: { display: false },
       tooltip: {
         callbacks: {
-          label: function (context: any) {
-            let label = context.dataset.label || ''
+          label: function (context) {
+            let label = context.dataset.label ?? ''
 
             if (label) {
               label += ': '
             }
 
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- I have seen this null before
             if (context.parsed.y !== null) {
               label += currencyFormatter.format(context.parsed.y)
             }
 
             return label
           },
-          title: function (context: any) {
-            var date = DateTime.fromISO(context[0].label)
+          title: function (context) {
+            const date = DateTime.fromISO(context[0].label)
             return date.toLocaleString()
           },
         },
@@ -108,10 +102,7 @@ const TotalsGraph = (props: TotalsGraphProps) => {
     },
   ]
 
-  const data = {
-    labels: groupedData.labels,
-    datasets: dataSetsPerLoanType,
-  }
+  const data = { labels: groupedData.labels, datasets: dataSetsPerLoanType }
 
   return (
     <div className="h-[500px] w-full">

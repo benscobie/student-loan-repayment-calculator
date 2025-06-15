@@ -1,4 +1,4 @@
-interface GraphHeaderProps {
+type GraphHeaderProps = {
   text: string
 }
 

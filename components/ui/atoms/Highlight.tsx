@@ -1,4 +1,4 @@
-interface HighlightProps {
+type HighlightProps = {
   children: React.ReactNode
 }
 

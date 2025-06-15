@@ -11,51 +11,30 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 
-interface LoanInputProps {
+type LoanInputProps = {
   loan: NewLoan | Loan
-  onChange(loan: Loan): void
-  onCancel(): void
+  onChange: (loan: Loan) => void
+  onCancel: () => void
   availableLoanTypes: LoanType[]
   canCancel: boolean
 }
 
-type FormData = {
-  loanType: LoanType
-  balanceRemaining: number
-  academicYearLoanTakenOut?: number
-  courseStartDate?: string
-  courseEndDate?: string
-  studyingPartTime: boolean
-}
-
 const schema = z
   .object({
-    loanType: z.enum(
-      [
-        LoanType.Type1,
-        LoanType.Type2,
-        LoanType.Type4,
-        LoanType.Postgraduate,
-        LoanType.Type5,
-      ],
-      {
-        errorMap: () => {
-          return { message: 'Loan type is required' }
-        },
-      },
-    ),
-    balanceRemaining: z
-      .number({
-        invalid_type_error: 'Invalid number',
-      })
-      .min(1),
+    loanType: z
+      .string()
+      .pipe(z.nativeEnum(LoanType))
+      .refine((value) => value !== LoanType.Unselected, {
+        message: 'Loan type is required',
+      }),
+    balanceRemaining: z.number({ invalid_type_error: 'Invalid number' }).min(1),
     academicYearLoanTakenOut: z
       .number({
         invalid_type_error: 'Academic year loan taken out is required',
       })
       .optional(),
-    courseStartDate: z.coerce.date().optional(),
-    courseEndDate: z.coerce.date().optional(),
+    courseStartDate: z.string().pipe(z.coerce.date()).optional(),
+    courseEndDate: z.string().pipe(z.coerce.date()).optional(),
     studyingPartTime: z.boolean(),
   })
   .superRefine((val, ctx) => {
@@ -93,6 +72,9 @@ const schema = z
     }
   })
 
+type FormDataInput = z.input<typeof schema>
+type FormDataOutput = z.output<typeof schema>
+
 const academicYearLoanTakenOutRequired = (loanType: LoanType) => {
   return loanType == LoanType.Type1 || loanType == LoanType.Type4
 }
@@ -121,7 +103,7 @@ const LoanInput: NextPage<LoanInputProps> = ({
     watch,
     resetField,
     formState: { errors },
-  } = useForm<FormData>({
+  } = useForm<FormDataInput, unknown, FormDataOutput>({
     resolver: zodResolver(schema),
     defaultValues: {
       loanType: loan.loanType,
@@ -129,27 +111,23 @@ const LoanInput: NextPage<LoanInputProps> = ({
       balanceRemaining: loan.balanceRemaining,
       courseStartDate: loan.courseStartDate
         ? loan.courseStartDate.toISOString().substring(0, 10)
-        : undefined,
+        : '',
       courseEndDate: loan.courseEndDate
         ? loan.courseEndDate.toISOString().substring(0, 10)
-        : undefined,
+        : '',
       studyingPartTime: loan.studyingPartTime,
     },
     shouldUnregister: true,
   })
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = (data: FormDataOutput) => {
     onChange({
       id: loan.id,
       loanType: data.loanType,
       balanceRemaining: data.balanceRemaining,
       academicYearLoanTakenOut: data.academicYearLoanTakenOut,
-      courseStartDate: data.courseStartDate
-        ? new Date(data.courseStartDate)
-        : undefined,
-      courseEndDate: data.courseEndDate
-        ? new Date(data.courseEndDate)
-        : undefined,
+      courseStartDate: data.courseStartDate,
+      courseEndDate: data.courseEndDate,
       studyingPartTime: data.studyingPartTime,
     })
   }
@@ -168,7 +146,7 @@ const LoanInput: NextPage<LoanInputProps> = ({
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={(e) => void handleSubmit(onSubmit)(e)}>
       <Select
         id="loanType"
         label="Loan type"
@@ -227,7 +205,7 @@ const LoanInput: NextPage<LoanInputProps> = ({
       </div>
 
       {courseStartDateRequired(
-        watchAllFields.loanType,
+        watchAllFields.loanType as LoanType,
         watchAllFields.studyingPartTime,
       ) && (
         <div className="mt-3">
@@ -236,28 +214,26 @@ const LoanInput: NextPage<LoanInputProps> = ({
             type="date"
             label="Course start date"
             error={errors.courseStartDate?.message}
-            {...register('courseStartDate', {
-              required: true,
-            })}
+            {...register('courseStartDate', { required: true })}
           />
         </div>
       )}
 
-      {courseEndDateRequired(watchAllFields.loanType) && (
+      {courseEndDateRequired(watchAllFields.loanType as LoanType) && (
         <div className="mt-3">
           <Input
             id="courseEndDate"
             type="date"
             label="Course end date"
             error={errors.courseEndDate?.message}
-            {...register('courseEndDate', {
-              required: true,
-            })}
+            {...register('courseEndDate', { required: true })}
           />
         </div>
       )}
 
-      {academicYearLoanTakenOutRequired(watchAllFields.loanType) && (
+      {academicYearLoanTakenOutRequired(
+        watchAllFields.loanType as LoanType,
+      ) && (
         <div className="mt-3">
           <Select
             id="academicYearLoanTakenOut"
@@ -269,13 +245,13 @@ const LoanInput: NextPage<LoanInputProps> = ({
             })}
           >
             <option value="">--Please choose an option--</option>
-            {watchAllFields.loanType == LoanType.Type1 && (
+            {(watchAllFields.loanType as LoanType) == LoanType.Type1 && (
               <>
                 <option value="2005">2005 to 2006, or earlier</option>
                 <option value="2006">2006 to 2007, or later</option>
               </>
             )}
-            {watchAllFields.loanType == LoanType.Type4 && (
+            {(watchAllFields.loanType as LoanType) == LoanType.Type4 && (
               <>
                 <option value="2006">2006 to 2007, or earlier</option>
                 <option value="2007">2007 to 2008, or later</option>
@@ -291,7 +267,13 @@ const LoanInput: NextPage<LoanInputProps> = ({
         </Button>
 
         {canCancel && (
-          <Button id="cancel" style="secondary" onClick={() => onCancel()}>
+          <Button
+            id="cancel"
+            style="secondary"
+            onClick={() => {
+              onCancel()
+            }}
+          >
             Cancel
           </Button>
         )}

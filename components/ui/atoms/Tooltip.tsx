@@ -1,6 +1,6 @@
 import { QuestionCircle } from 'react-bootstrap-icons'
 
-interface TooltipProps {
+type TooltipProps = {
   text: string
 }
 

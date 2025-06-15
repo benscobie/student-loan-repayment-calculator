@@ -1,7 +1,7 @@
 import { forwardRef } from 'react'
 import Tooltip from './Tooltip'
 
-interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+type InputProps = {
   id: string
   placeholder?: string
   label: string
@@ -11,7 +11,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   tooltip?: string
   symbol?: string
   children?: React.ReactNode
-}
+} & React.InputHTMLAttributes<HTMLInputElement>
 
 const InputGroup = forwardRef<HTMLInputElement, InputProps>(function InputGroup(
   props: InputProps,

@@ -1,7 +1,7 @@
 import LoanType from '../../models/loanType'
 import RepaymentStatus from '../../models/repaymentStatus'
 
-export default interface Projection {
+type Projection = {
   repaymentStatus: RepaymentStatus
   loanType: LoanType
   debtRemaining: number
@@ -12,3 +12,4 @@ export default interface Projection {
   totalInterestApplied: number
   threshold: number
 }
+export default Projection

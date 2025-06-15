@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon'
 import Projection from './projection'
 
-export default interface Result {
+type Result = {
   period: number
   periodDate: DateTime
   salary: number
@@ -12,3 +12,4 @@ export default interface Result {
   aggregatedTotalInterestApplied: number
   aggregatedTotalPaid: number
 }
+export default Result

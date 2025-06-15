@@ -1,10 +1,11 @@
 import { forwardRef } from 'react'
 import Tooltip from './Tooltip'
-import ReactDatePicker from 'react-datepicker'
+import ReactDatePicker, {
+  DatePickerProps as ReactDatePickerProps,
+} from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
-import { ReactDatePickerProps } from 'react-datepicker'
 
-interface DatePickerProps extends ReactDatePickerProps {
+type DatePickerProps = ReactDatePickerProps & {
   id: string
   label: string
   error?: string
