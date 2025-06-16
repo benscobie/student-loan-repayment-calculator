@@ -12,10 +12,12 @@ FROM base AS builder
 WORKDIR /app
 
 ARG NEXT_PUBLIC_SENTRY_DSN
+ARG GITHUB_SHA
 
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
+ENV GITHUB_SHA=$GITHUB_SHA
 ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN --mount=type=secret,id=SENTRY_AUTH_TOKEN \
