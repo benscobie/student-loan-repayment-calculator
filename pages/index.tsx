@@ -8,7 +8,7 @@ import Button from '../components/ui/atoms/Button'
 import LoanInput from '../components/ui/organisms/LoanInput'
 import LoanType, { LoanTypeToDescription } from '../models/loanType'
 import { InfoCircle } from 'react-bootstrap-icons'
-import Results from '../api/models/results'
+import { Results, isProblemDetails } from '../api/models/results'
 import LoanBreakdown from '../components/ui/organisms/LoanBreakdown'
 import { currencyFormatter } from '../utils/currencyFormatter'
 import { Details } from '../models/details'
@@ -164,9 +164,12 @@ const Home: NextPage = () => {
             'A network error occurred, please check your internet connection and try again.',
           )
         } else {
-          if (error.response.status === HttpStatusCode.BadRequest) {
+          if (
+            error.response.status === HttpStatusCode.BadRequest &&
+            isProblemDetails(error.response.data)
+          ) {
             setCalculationError(
-              'Invalid data was submitted. Please check your inputs and try again.',
+              error.response.data.detail ?? error.response.data.title,
             )
           } else {
             setCalculationError(
