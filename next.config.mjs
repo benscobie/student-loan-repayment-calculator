@@ -30,4 +30,5 @@ export default withSentryConfig(withBundleAnalyzer(nextConfig), {
   tunnelRoute: '/monitoring',
   hideSourceMaps: true,
   disableLogger: true,
+  debug: true,
 })
