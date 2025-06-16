@@ -2,7 +2,7 @@ import type { NextPage } from 'next'
 import React from 'react'
 import { DateTime } from 'luxon'
 import LoanType from '../../../models/loanType'
-import Results from '../../../api/models/results'
+import { Results } from '../../../api/models/results'
 import Highlight from '../atoms/Highlight'
 import { currencyFormatter } from '../../../utils/currencyFormatter'
 import RepaymentStatus, {

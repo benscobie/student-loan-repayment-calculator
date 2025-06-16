@@ -1,4 +1,4 @@
-import Results from '../../../api/models/results'
+import { Results } from '../../../api/models/results'
 import React from 'react'
 import {
   Chart as ChartJS,

@@ -1,7 +1,7 @@
 import type { NextPage } from 'next'
 import React, { useCallback } from 'react'
 import LoanType from '../../../models/loanType'
-import Results from '../../../api/models/results'
+import { Results } from '../../../api/models/results'
 import {
   currencyFormatter,
   currencyFormatterNoFraction,
