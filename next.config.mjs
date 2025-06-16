@@ -1,5 +1,5 @@
 import { withSentryConfig } from '@sentry/nextjs'
-import BundleAnalyzer from '@next/bundle-analyzer'
+import bundleAnalyzer from '@next/bundle-analyzer'
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -17,12 +17,11 @@ const nextConfig = {
   },
 }
 
-const withBundleAnalyzer = BundleAnalyzer({
+const withBundleAnalyzer = bundleAnalyzer({
   enabled: process.env.ANALYZE === 'true',
 })
 
 export default withSentryConfig(withBundleAnalyzer(nextConfig), {
-  silent: true,
   org: 'none-rai',
   project: 'slrc-frontend',
   widenClientFileUpload: true,
