@@ -10,7 +10,7 @@ Always reference these instructions first and fallback to search or bash command
 - Install dependencies and build the application:
   - `yarn install` -- takes 2 minutes. NEVER CANCEL. Set timeout to 180+ seconds.
   - `yarn build` -- takes 8 minutes. NEVER CANCEL. Set timeout to 600+ seconds.
-- NOTE: Google Fonts URL has been allowlisted and should work correctly. If build still fails due to network restrictions, see "Known Network Issues" section.
+- NOTE: If build fails due to Google Fonts network restrictions, the workaround is already implemented using fallback fonts.
 
 ### Development Server
 - Start the development server:
@@ -43,23 +43,18 @@ Always reference these instructions first and fallback to search or bash command
 ### Browser Testing
 - ALWAYS test with development server (`yarn dev`) after making UI changes.
 - Verify responsive design by testing different viewport sizes.
-- Check browser console for errors (ignore Umami analytics failures; Google Fonts should now load correctly).
+- Check browser console for errors (ignore Umami analytics failures).
 
-## Known Network Issues
-
-### Google Fonts
-- Google Fonts URL (`fonts.googleapis.com`) has been added to the allowlist.
-- Fonts should now load correctly in restricted environments.
-- If build still fails with Google Fonts errors, use the temporary workaround:
-  ```typescript
-  // import { Open_Sans } from 'next/font/google'
-  // const openSans = Open_Sans({ subsets: ['latin'], fallback: ['Arial', 'sans-serif'] })
-  // Use: <Layout className=""> instead of <Layout className={openSans.className}>
-  ```
+## Network Configuration
 
 ### External Service Dependencies
 - Umami Analytics: `umami.benscobie.com` - not accessible in restricted environments (non-critical).
 - Sentry: Requires `SENTRY_AUTH_TOKEN` for source map uploads (shows warnings but doesn't fail build).
+
+### Google Fonts Workaround
+- Google Fonts are implemented with fallback to system fonts (Arial, sans-serif).
+- No network dependencies required for fonts - application uses local fallbacks.
+- Font loading will not cause build failures.
 
 ## Backend Dependencies
 
@@ -69,14 +64,15 @@ Always reference these instructions first and fallback to search or bash command
 - Endpoint: `POST /ukstudentloans/calculate` - performs loan repayment calculations.
 
 ### Running the Backend API
-- The API can be run easily using Docker:
+- The API Docker image can be pulled but requires additional configuration:
   ```bash
   docker pull benscobie/loan-repayment-api:latest
-  docker run -p 8080:8080 benscobie/loan-repayment-api:latest
   ```
-- The API will listen on port 8080 and be accessible at `http://localhost:8080`.
+- **IMPORTANT**: The Docker image has configuration issues and may not start correctly without proper environment variables.
+- The simple `docker run -p 8080:8080 benscobie/loan-repayment-api:latest` command may fail due to missing Sentry DSN and CORS configuration.
+- For full calculator functionality, contact the repository owner for working API setup instructions.
 - Source code: https://github.com/benscobie/LoanRepaymentApi
-- TESTING: With the API running, calculator functionality can be fully validated.
+- TESTING: Without a working API, calculator functionality will show "An error occurred while calculating" which is expected behavior.
 
 ## Common Tasks
 
@@ -129,7 +125,7 @@ Always reference these instructions first and fallback to search or bash command
 ### Monitoring & Analytics
 - **Error Tracking**: Sentry for both client and server-side errors
 - **Analytics**: Umami self-hosted analytics
-- **Fonts**: Google Fonts (Open Sans with Arial fallback)
+- **Fonts**: System fonts (Arial, sans-serif) with Google Fonts fallback implementation
 
 ### Development Tools
 - **Linting**: ESLint with Next.js, TypeScript, and TailwindCSS rules
@@ -170,13 +166,11 @@ Always reference these instructions first and fallback to search or bash command
 ## Troubleshooting
 
 ### Build Failures
-- Google Fonts timeout: Apply font workaround from "Known Network Issues"
 - Dependency conflicts: Check yarn peer dependency warnings
 - TypeScript errors: Run `yarn lint` to identify type issues
 
 ### Runtime Issues
-- API calculation errors: Expected due to missing backend service
-- Font loading errors: Normal in restricted environments
+- API calculation errors: Expected due to backend API configuration issues
 - Analytics script failures: Non-critical, application continues to function
 
 ### Development Server

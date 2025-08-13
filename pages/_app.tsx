@@ -2,19 +2,19 @@ import '../styles/globals.css'
 import 'react-tooltip/dist/react-tooltip.css'
 import type { AppProps } from 'next/app'
 import Layout from '../components/Layout'
-import { Open_Sans } from 'next/font/google'
+// import { Open_Sans } from 'next/font/google'
 import { Tooltip } from 'react-tooltip'
 import Script from 'next/script'
 
 // If loading a variable font, you don't need to specify the font weight
-const openSans = Open_Sans({
-  subsets: ['latin'],
-  fallback: ['Arial', 'sans-serif'],
-})
+// const openSans = Open_Sans({
+//   subsets: ['latin'],
+//   fallback: ['Arial', 'sans-serif'],
+// })
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <Layout className={openSans.className}>
+    <Layout className="">{/* Using fallback fonts instead of openSans.className */}
       <Script
         async
         src="/t.js"
