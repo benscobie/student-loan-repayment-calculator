@@ -10,7 +10,7 @@ Always reference these instructions first and fallback to search or bash command
 - Install dependencies and build the application:
   - `yarn install` -- takes 2 minutes. NEVER CANCEL. Set timeout to 180+ seconds.
   - `yarn build` -- takes 8 minutes. NEVER CANCEL. Set timeout to 600+ seconds.
-- CRITICAL: The build fails in restricted network environments due to Google Fonts. See "Known Network Issues" section for workarounds.
+- NOTE: Google Fonts URL has been allowlisted and should work correctly. If build still fails due to network restrictions, see "Known Network Issues" section.
 
 ### Development Server
 - Start the development server:
@@ -35,25 +35,27 @@ Always reference these instructions first and fallback to search or bash command
   5. Click "Save plan" to add the loan
   6. Enter annual salary (e.g., 35000)
   7. Click "Calculate" to test the calculation API
-- EXPECTED BEHAVIOR: The calculate step will fail with "An error occurred while calculating" due to missing backend API (see "Backend Dependencies" section).
+- EXPECTED BEHAVIOR: 
+  - **Without API**: The calculate step will fail with "An error occurred while calculating" due to missing backend API.
+  - **With API running**: The calculation should complete successfully and display repayment results.
 - ALWAYS verify the UI renders correctly and form validation works properly.
 
 ### Browser Testing
 - ALWAYS test with development server (`yarn dev`) after making UI changes.
 - Verify responsive design by testing different viewport sizes.
-- Check browser console for errors (ignore Google Fonts and Umami analytics failures).
+- Check browser console for errors (ignore Umami analytics failures; Google Fonts should now load correctly).
 
 ## Known Network Issues
 
-### Google Fonts Failure
-- ISSUE: Build fails with "Failed to fetch Open Sans from Google Fonts" in restricted environments.
-- WORKAROUND: Temporarily comment out Google Fonts import in `pages/_app.tsx`:
+### Google Fonts
+- Google Fonts URL (`fonts.googleapis.com`) has been added to the allowlist.
+- Fonts should now load correctly in restricted environments.
+- If build still fails with Google Fonts errors, use the temporary workaround:
   ```typescript
   // import { Open_Sans } from 'next/font/google'
   // const openSans = Open_Sans({ subsets: ['latin'], fallback: ['Arial', 'sans-serif'] })
   // Use: <Layout className=""> instead of <Layout className={openSans.className}>
   ```
-- RESTORE: Always restore the original font imports after testing.
 
 ### External Service Dependencies
 - Umami Analytics: `umami.benscobie.com` - not accessible in restricted environments (non-critical).
@@ -65,8 +67,16 @@ Always reference these instructions first and fallback to search or bash command
 - The application requires an external backend API for calculations.
 - API URL: Configured via `API_URL` environment variable (default: `http://localhost:8080`).
 - Endpoint: `POST /ukstudentloans/calculate` - performs loan repayment calculations.
-- LIMITATION: Backend API is not available in this repository or development environment.
-- TESTING: Calculator functionality cannot be fully validated without the backend service.
+
+### Running the Backend API
+- The API can be run easily using Docker:
+  ```bash
+  docker pull benscobie/loan-repayment-api:latest
+  docker run -p 8080:8080 benscobie/loan-repayment-api:latest
+  ```
+- The API will listen on port 8080 and be accessible at `http://localhost:8080`.
+- Source code: https://github.com/benscobie/LoanRepaymentApi
+- TESTING: With the API running, calculator functionality can be fully validated.
 
 ## Common Tasks
 
