@@ -14,7 +14,8 @@ import Script from 'next/script'
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <Layout className="">{/* Using fallback fonts instead of openSans.className */}
+    <Layout className="">
+      {/* Using fallback fonts instead of openSans.className */}
       <Script
         async
         src="/t.js"
