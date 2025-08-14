@@ -40,7 +40,7 @@ Always reference these instructions first and fallback to search or bash command
   7. Click "Calculate" to test the calculation API
 - EXPECTED BEHAVIOR:
   - **Without API**: The calculate step will fail with "An error occurred while calculating" due to missing backend API.
-  - **With API running**: The calculation should complete successfully and display repayment results.
+  - **With API running**: The calculation completes successfully and displays comprehensive repayment results including loan projections, monthly payments, interest calculations, and debt clearance timeline.
 - ALWAYS verify the UI renders correctly and form validation works properly.
 
 ### Browser Testing
@@ -66,16 +66,20 @@ Always reference these instructions first and fallback to search or bash command
 
 ### Running the Backend API
 
-- The API Docker image can be pulled and run with basic commands:
+- The API Docker image can be pulled and run with the following commands:
   ```bash
   docker pull benscobie/loan-repayment-api:latest
-  docker run -p 8080:8080 -e SENTRY_DSN="" benscobie/loan-repayment-api:latest
+  docker run -p 8080:8080 \
+    -e ApplicationSettings__CORSOrigin=* \
+    -e Sentry__DSN="" \
+    benscobie/loan-repayment-api:latest
   ```
-- **IMPORTANT**: The Docker image requires proper environment configuration and may still have CORS configuration issues even with Sentry DSN set.
-- The simple commands above may not work completely due to missing environment variables for CORS configuration.
-- For full calculator functionality, contact the repository owner for complete API setup instructions.
+- **VERIFIED WORKING**: These commands have been tested and provide a fully functional API.
+- The API will be available at `http://localhost:8080` with endpoints:
+  - Health check: `GET /health`
+  - Calculate endpoint: `POST /ukstudentloans/calculate`
 - Source code: https://github.com/benscobie/LoanRepaymentApi
-- TESTING: Without a working API, calculator functionality will show "An error occurred while calculating" which is expected behavior.
+- TESTING: With the API running, calculator functionality works completely and displays accurate repayment projections.
 
 ## Common Tasks
 
