@@ -248,6 +248,28 @@ const Home: NextPage = () => {
                   https://www.moneysavingexpert.com/students/student-loans-repay/
                 </a>
               </p>
+
+              <h3 className="mt-6 text-xl font-medium">Official Resources</h3>
+              <p className="mt-2">
+                For official information about student loan repayments, visit
+                the government&apos;s student finance page:{' '}
+                <a
+                  className="break-words text-sky-700"
+                  href="https://www.gov.uk/repaying-your-student-loan"
+                >
+                  https://www.gov.uk/repaying-your-student-loan
+                </a>
+              </p>
+              <p className="mt-2">
+                You can also find detailed information and manage your loan on
+                the Student Loans Company website:{' '}
+                <a
+                  className="break-words text-sky-700"
+                  href="https://www.slc.co.uk/"
+                >
+                  https://www.slc.co.uk/
+                </a>
+              </p>
             </div>
             <div>
               <h2 className="mb-2 text-xl font-medium">Your plans</h2>
